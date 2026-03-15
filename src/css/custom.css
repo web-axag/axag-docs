@@ -1,0 +1,238 @@
+/**
+ * AXAG Documentation — Custom Styles
+ * Standards-grade documentation portal styling
+ */
+
+:root {
+  --ifm-color-primary: #6b21a8;
+  --ifm-color-primary-dark: #5a1c8e;
+  --ifm-color-primary-darker: #521a83;
+  --ifm-color-primary-darkest: #3b1260;
+  --ifm-color-primary-light: #7c2dc2;
+  --ifm-color-primary-lighter: #8637cf;
+  --ifm-color-primary-lightest: #a855f7;
+  --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --ifm-heading-font-weight: 700;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* AXAG Custom Tokens */
+  --axag-normative-bg: #e8f4f8;
+  --axag-normative-border: #0891b2;
+  --axag-warning-bg: #fef3c7;
+  --axag-warning-border: #d97706;
+  --axag-proposed-bg: #f3e8ff;
+  --axag-proposed-border: #7c3aed;
+  --axag-danger-bg: #fee2e2;
+  --axag-danger-border: #dc2626;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #a855f7;
+  --ifm-color-primary-dark: #9333ea;
+  --ifm-color-primary-darker: #8725e0;
+  --ifm-color-primary-darkest: #7e22ce;
+  --ifm-color-primary-light: #bf7af9;
+  --ifm-color-primary-lighter: #c98dfa;
+  --ifm-color-primary-lightest: #e9d5ff;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --axag-normative-bg: #164e63;
+  --axag-normative-border: #06b6d4;
+  --axag-warning-bg: #451a03;
+  --axag-warning-border: #f59e0b;
+  --axag-proposed-bg: #2e1065;
+  --axag-proposed-border: #a78bfa;
+  --axag-danger-bg: #450a0a;
+  --axag-danger-border: #ef4444;
+}
+
+/* ─── Normative Callout ───────────────────────── */
+.axag-normative {
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--axag-normative-border);
+  background: var(--axag-normative-bg);
+  border-radius: 0 6px 6px 0;
+}
+
+.axag-normative strong {
+  color: var(--axag-normative-border);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Proposed Pattern Callout ────────────────── */
+.axag-proposed {
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--axag-proposed-border);
+  background: var(--axag-proposed-bg);
+  border-radius: 0 6px 6px 0;
+}
+
+.axag-proposed strong {
+  color: var(--axag-proposed-border);
+}
+
+/* ─── Schema Field Table ─────────────────────── */
+.schema-field-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.schema-field-table th {
+  background: var(--ifm-color-primary);
+  color: white;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.schema-field-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  vertical-align: top;
+}
+
+.schema-field-table tr:hover td {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.schema-field-table code {
+  font-size: 0.85em;
+  padding: 0.15rem 0.4rem;
+}
+
+/* ─── Before / After Comparison ──────────────── */
+.comparison-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.comparison-before,
+.comparison-after {
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid;
+}
+
+.comparison-before {
+  border-color: var(--axag-danger-border);
+  background: var(--axag-danger-bg);
+}
+
+.comparison-after {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+[data-theme='dark'] .comparison-after {
+  background: #052e16;
+}
+
+.comparison-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.comparison-before .comparison-label {
+  color: var(--axag-danger-border);
+}
+
+.comparison-after .comparison-label {
+  color: #16a34a;
+}
+
+@media (max-width: 768px) {
+  .comparison-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Conformance Badge ──────────────────────── */
+.conformance-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.conformance-badge--basic {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.conformance-badge--intermediate {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.conformance-badge--full {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ─── Audience Banner ────────────────────────── */
+.audience-banner {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.audience-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  background: var(--ifm-color-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ─── Net-background layering ────────────────── */
+/* Ensure all page content sits above the fixed canvas background */
+.main-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Old homepage global styles removed ─────── */
+/* Hero, feature grid, and architecture diagram styles are now
+   handled by CSS Modules in src/pages/index.module.css and
+   individual component .module.css files. */
+
+/* ─── GitHub icon in navbar ──────────────────── */
+.header-github-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12' fill='%23181717'/%3E%3C/svg%3E")
+    no-repeat;
+}
+
+[data-theme='dark'] .header-github-link::before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12' fill='%23ffffff'/%3E%3C/svg%3E")
+    no-repeat;
+}

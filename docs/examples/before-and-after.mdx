@@ -1,0 +1,134 @@
+---
+id: before-and-after
+title: Before & After Examples
+sidebar_label: Before & After
+slug: /examples/before-and-after
+---
+
+import BeforeAfter from '@site/src/components/BeforeAfter';
+
+# Before & After Examples
+
+These examples show the transformation from un-annotated HTML to AXAG-annotated HTML.
+
+## Example 1: Search Button
+
+<BeforeAfter
+  before={`<button onclick="search()">
+  Search
+</button>`}
+  after={`<button onclick="search()"
+  axag-intent="product.search"
+  axag-entity="product"
+  axag-action-type="read"
+  axag-required-parameters='["query"]'
+  axag-optional-parameters='["category","sort_by"]'
+  axag-risk-level="none"
+  axag-idempotent="true"
+  axag-description="Search the product catalog"
+>Search</button>`}
+/>
+
+**What changed**: The button now declares its semantic purpose, parameters, and safety profile. An agent can discover and invoke this action without parsing the DOM.
+
+## Example 2: Delete Button
+
+<BeforeAfter
+  before={`<button class="btn btn-danger"
+  onclick="deleteUser(userId)">
+  Delete User
+</button>`}
+  after={`<button class="btn btn-danger"
+  onclick="deleteUser(userId)"
+  axag-intent="user.delete"
+  axag-entity="user"
+  axag-action-type="delete"
+  axag-required-parameters='["user_id"]'
+  axag-preconditions='["user must not have active sessions"]'
+  axag-postconditions='["user deactivated","sessions invalidated"]'
+  axag-risk-level="high"
+  axag-confirmation-required="true"
+  axag-idempotent="true"
+  axag-scope="tenant"
+  axag-description="Delete (deactivate) a user"
+>Delete User</button>`}
+/>
+
+**What changed**: The destructive nature is now machine-readable. An agent knows it must confirm with the user, that active sessions are a precondition, and that the operation is scoped to the current tenant.
+
+## Example 3: Form Submit
+
+<BeforeAfter
+  before={`<form onsubmit="submitForm()">
+  <input name="email" type="email" />
+  <input name="name" type="text" />
+  <button type="submit">
+    Create Account
+  </button>
+</form>`}
+  after={`<form onsubmit="submitForm()">
+  <input name="email" type="email" />
+  <input name="name" type="text" />
+  <button type="submit"
+    axag-intent="account.create"
+    axag-entity="account"
+    axag-action-type="write"
+    axag-required-parameters='["email","name"]'
+    axag-optional-parameters='["phone","company"]'
+    axag-postconditions='["account created","welcome email sent"]'
+    axag-risk-level="low"
+    axag-idempotent="false"
+    axag-side-effects='["welcome_email"]'
+    axag-description="Create a new user account"
+  >Create Account</button>
+</form>`}
+/>
+
+**What changed**: The form's submit action is now semantically declared. An agent knows exactly what parameters to provide, what side-effects to expect, and that duplicate submissions create duplicate accounts.
+
+## Example 4: Approval Button
+
+<BeforeAfter
+  before={`<button onclick="approve(reqId)">
+  Approve
+</button>`}
+  after={`<button onclick="approve(reqId)"
+  axag-intent="approval.approve"
+  axag-entity="purchase_requisition"
+  axag-action-type="write"
+  axag-required-parameters='["requisition_id","approval_step_id"]'
+  axag-optional-parameters='["comments"]'
+  axag-preconditions='["caller must be designated approver"]'
+  axag-postconditions='["step approved","next approver notified"]'
+  axag-risk-level="high"
+  axag-confirmation-required="true"
+  axag-idempotent="true"
+  axag-side-effects='["workflow_advancement","notification"]'
+  axag-scope="tenant"
+  axag-description="Approve a purchase requisition"
+>Approve</button>`}
+/>
+
+**What changed**: The approval action now declares the full workflow context — who can approve, what happens next, and that it's part of a multi-step process.
+
+## Example 5: Async Export
+
+<BeforeAfter
+  before={`<button onclick="exportData()">
+  Export CSV
+</button>`}
+  after={`<button onclick="exportData()"
+  axag-intent="dataset.export"
+  axag-entity="dataset"
+  axag-action-type="read"
+  axag-required-parameters='["dataset_id"]'
+  axag-optional-parameters='["columns","format","row_limit"]'
+  axag-risk-level="none"
+  axag-idempotent="false"
+  axag-async="true"
+  axag-scope="tenant"
+  axag-description="Export dataset as downloadable file"
+>Export CSV</button>`}
+/>
+
+**What changed**: The agent now knows this is an async operation — it will receive a job ID and should poll for completion rather than expecting immediate results.

@@ -1,0 +1,153 @@
+---
+id: risk-level-validation
+title: Risk-Level Validation
+sidebar_label: Risk-Level Validation
+slug: /validation/risk-level-validation
+---
+
+# Risk-Level Validation
+
+Risk-level validation ensures that the `axag-risk-level` attribute accurately reflects the operation's actual danger and that corresponding safety metadata is proportional.
+
+## Why It Matters
+
+Incorrect risk levels undermine the entire safety model:
+
+- **Under-classified risk** — Dangerous operations executed without safeguards
+- **Over-classified risk** — Benign operations blocked by unnecessary friction
+- **Missing risk metadata** — Agents cannot make informed execution decisions
+
+## Risk-Level Definitions
+
+| Level | Operations | Expected Safeguards |
+|-------|-----------|-------------------|
+| `none` | Read-only queries, searches, listings | None required |
+| `low` | Creating non-critical records, bookmarks | Logging |
+| `medium` | Updating records, status changes | Confirmation |
+| `high` | Financial transactions, bulk operations, deletions | Confirmation + preconditions |
+| `critical` | Permanent deletions, admin operations, compliance actions | Confirmation + approval + preconditions |
+
+## Validation Rules
+
+### AXAG-LINT-023: Missing Risk Level on Mutations
+
+```
+Rule: AXAG-LINT-023
+Severity: Error
+Message: Write or delete operation has no risk-level declared
+Fix: Add axag-risk-level appropriate to the operation's impact
+```
+
+```html title="❌ Missing risk level → ✅ Fix"
+<!-- ❌ Missing risk level -->
+<button
+  axag-intent="invoice.void"
+  axag-entity="invoice"
+  axag-action-type="write"
+>Void Invoice</button>
+
+<!-- ✅ Risk level declared -->
+<button
+  axag-intent="invoice.void"
+  axag-entity="invoice"
+  axag-action-type="write"
+  axag-risk-level="high"
+  axag-confirmation-required="true"
+>Void Invoice</button>
+```
+
+### AXAG-LINT-024: Risk Level Too Low for Action Type
+
+```
+Rule: AXAG-LINT-024
+Severity: Warning
+Message: Delete operation has risk-level below "high"
+Fix: Verify risk level — most deletions should be "high" or "critical"
+```
+
+### AXAG-LINT-025: Risk Level Too High for Action Type
+
+```
+Rule: AXAG-LINT-025
+Severity: Info
+Message: Read operation has risk-level above "low"
+Fix: Verify — reads are normally "none" unless exposing sensitive data
+```
+
+### AXAG-LINT-007: Unsupported Risk-Action Combination
+
+```
+Rule: AXAG-LINT-007
+Severity: Error
+Message: Invalid combination of risk-level and action-type
+```
+
+**Invalid combinations:**
+
+| Action Type | Invalid Risk Levels | Reason |
+|------------|-------------------|--------|
+| `read` | `critical` | Reads should never be critical |
+| `navigate` | `high`, `critical` | Navigation should not be high-risk |
+| `delete` | `none` | Deletions always carry risk |
+
+### AXAG-LINT-026: Safety Metadata Mismatch
+
+The required safety metadata must be proportional to the risk level:
+
+| Risk Level | Required Safety Metadata |
+|-----------|------------------------|
+| `none` | None |
+| `low` | `idempotent` recommended |
+| `medium` | `confirmation-required`, `idempotent` |
+| `high` | `confirmation-required`, `preconditions`, `idempotent`, `side-effects` |
+| `critical` | All of `high` + `approval-required`, `approval-roles` |
+
+```html
+<!-- ❌ High risk without required safety metadata -->
+<button
+  axag-intent="payment.refund"
+  axag-entity="payment"
+  axag-action-type="write"
+  axag-risk-level="high"
+>Refund</button>
+
+<!-- ✅ High risk with proportional safety metadata -->
+<button
+  axag-intent="payment.refund"
+  axag-entity="payment"
+  axag-action-type="write"
+  axag-risk-level="high"
+  axag-required-parameters='["payment_id","amount"]'
+  axag-preconditions='["payment exists","amount within refund limit"]'
+  axag-postconditions='["refund initiated","customer notified"]'
+  axag-confirmation-required="true"
+  axag-idempotent="true"
+  axag-side-effects='["payment_reversal","accounting_entry"]'
+  axag-scope="tenant"
+>Refund</button>
+```
+
+## Risk Assessment Checklist
+
+When assigning a risk level, consider:
+
+- [ ] Does this operation modify persistent state?
+- [ ] Is the operation reversible?
+- [ ] Does it affect financial records or payments?
+- [ ] Could it affect other users or tenants?
+- [ ] Does it trigger external side effects (emails, webhooks)?
+- [ ] Does it require regulatory compliance?
+- [ ] Could repeated execution cause harm?
+
+## CI Integration
+
+```yaml
+- name: Validate risk levels
+  run: npx axag-lint --rules risk-level --format=github
+```
+
+## Next Steps
+
+- [Contradictory Annotation Detection](/docs/validation/contradictory-annotation-detection)
+- [Common Validation Failures](/docs/validation/common-failures)
+- [Remediation Guidance](/docs/validation/remediation-guidance)

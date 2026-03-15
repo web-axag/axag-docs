@@ -1,0 +1,215 @@
+---
+id: convert-scraping-to-semantic
+title: "Tutorial: Convert Scraping to Semantic"
+sidebar_label: Convert Scraping to Semantic
+slug: /tutorials/convert-scraping-to-semantic
+---
+
+import BeforeAfterInteractive from '@site/src/components/BeforeAfterInteractive';
+
+# Tutorial: Convert Scraping to Semantic
+
+This tutorial shows how to replace a **brittle scraping-based** agent integration with **AXAG semantic annotations** — making your agent integrations reliable, typed, and safe.
+
+:::tip Why does this matter?
+Every time a website redesigns, scraping agents break. AXAG annotations let agents discover operations through a **stable semantic contract** instead of fragile CSS selectors.
+:::
+
+---
+
+## Interactive Comparison
+
+Use the tabs below to explore the difference between scraping and the AXAG semantic approach. Toggle between views, check off migration steps, and explore the full pipeline.
+
+<BeforeAfterInteractive
+  beforeCode={`# ❌ Fragile scraping approach
+from bs4 import BeautifulSoup
+import requests
+
+def search_products(query):
+    resp = requests.get(
+        f"https://store.example.com/search?q={query}"
+    )
+    soup = BeautifulSoup(resp.text, 'html.parser')
+
+    products = []
+    for card in soup.select('.product-card'):
+        # Breaks if class name changes
+        name = card.select_one('.product-name').text
+        # "$19.99" — needs locale-aware parsing
+        price_text = card.select_one('.price').text
+        price = float(
+            price_text.replace('$','').replace(',','')
+        )
+        products.append({
+            'name': name, 'price': price
+        })
+
+    return products`}
+  beforeLang="python"
+  beforeTitle="❌ Before — Fragile Scraping"
+  afterCode={`<button
+  axag-intent="product.search"
+  axag-entity="product"
+  axag-action-type="read"
+  axag-required-parameters='["query"]'
+  axag-optional-parameters='[
+    "category","price_min","price_max",
+    "sort_by","page"
+  ]'
+  axag-risk-level="none"
+  axag-idempotent="true"
+  axag-description="Search the product catalog"
+>Search</button>
+
+<!-- Agent calls the generated MCP tool: -->
+<!-- mcp.call("product_search", {query: "..."}) -->
+<!-- → Structured JSON result, no parsing -->`}
+  afterLang="html"
+  afterTitle="✅ After — AXAG Semantic"
+  comparisons={[
+    { label: 'Reliability', before: 'Breaks on redesign', after: 'Stable across redesigns', icon: '🛡️' },
+    { label: 'Type Safety', before: 'No', after: 'Yes (JSON Schema)', icon: '🔒' },
+    { label: 'Parameter Discovery', before: 'Reverse-engineer DOM', after: 'Declared in manifest', icon: '🔍' },
+    { label: 'Risk Awareness', before: 'None', after: 'Declared risk levels', icon: '⚠️' },
+    { label: 'Idempotency', before: 'Unknown', after: 'Declared per-action', icon: '🔄' },
+    { label: 'Maintenance', before: 'Per-site, per-redesign', after: 'Zero (site owner maintains)', icon: '🔧' },
+    { label: 'Speed', before: 'Slow (parse full HTML)', after: 'Fast (direct tool call)', icon: '⚡' },
+    { label: 'Error Handling', before: 'Catch DOM exceptions', after: 'Structured error codes', icon: '🚨' },
+  ]}
+  metrics={[
+    { label: 'Reliability', before: '~40%', after: '99.9%', improvement: '↑ 150% more reliable', icon: '🛡️' },
+    { label: 'Setup Time', before: '2-4 hrs', after: '15 min', improvement: '↓ 90% faster', icon: '⏱️' },
+    { label: 'Maintenance', before: 'Weekly', after: 'Zero', improvement: '↓ 100% eliminated', icon: '🔧' },
+    { label: 'Code Lines', before: '200+', after: '10', improvement: '↓ 95% less code', icon: '📄' },
+  ]}
+  pipeline={[
+    {
+      step: 1,
+      title: 'Annotate the HTML',
+      description: 'Add axag-* attributes to interactive elements in your source HTML.',
+      icon: '🏷️',
+      code: '<button axag-intent="product.search" ...>',
+      lang: 'html',
+    },
+    {
+      step: 2,
+      title: 'Generate Semantic Manifest',
+      description: 'Run the CLI to extract annotations into a structured JSON manifest.',
+      icon: '📋',
+      code: 'npx axag-generate-manifest --input src/ --output axag-manifest.json',
+      lang: 'bash',
+    },
+    {
+      step: 3,
+      title: 'Generate MCP Tools',
+      description: 'Auto-generate typed tool definitions from the manifest.',
+      icon: '🔧',
+      code: 'npx axag-generate-tools --manifest axag-manifest.json --output tools/',
+      lang: 'bash',
+    },
+    {
+      step: 4,
+      title: 'Agent Calls Tools',
+      description: 'Agents invoke structured MCP tools instead of scraping HTML.',
+      icon: '🤖',
+      code: 'result = mcp.call("product_search", {"query": "shoes"})',
+      lang: 'python',
+    },
+  ]}
+  checklist={[
+    { text: 'Identify all scraping targets (pages, selectors)' },
+    { text: 'Map each scraping target to an AXAG intent' },
+    { text: 'Add axag-* annotations to source HTML' },
+    { text: 'Generate semantic manifest' },
+    { text: 'Generate MCP tools from manifest' },
+    { text: 'Replace scraping code with tool calls' },
+    { text: 'Remove BeautifulSoup / Selenium / Puppeteer dependencies' },
+    { text: 'Add CI validation (npx axag-validate)' },
+    { text: 'Run integration tests against generated tools' },
+  ]}
+/>
+
+---
+
+## Step-by-Step Walkthrough
+
+### Step 1: The scraping approach (what we're replacing)
+
+A typical scraping agent for a product search page:
+
+```python title="❌ Fragile scraping approach" showLineNumbers
+# ❌ Fragile scraping approach
+from bs4 import BeautifulSoup
+import requests
+
+def search_products(query):
+    response = requests.get(f"https://store.example.com/search?q={query}")
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    products = []
+    for card in soup.select('.product-card'):  # Breaks if class changes
+        name = card.select_one('.product-name').text  # Breaks if structure changes
+        price_text = card.select_one('.price').text  # "$19.99" — needs parsing
+        price = float(price_text.replace('$', '').replace(',', ''))
+        products.append({'name': name, 'price': price})
+
+    return products
+```
+
+**Problems with scraping**:
+- CSS selectors break with every redesign
+- Price parsing varies by locale
+- Pagination requires DOM interaction
+- No type safety or parameter validation
+- No safety metadata (risk level, idempotency)
+
+### Step 2: Annotate the search button
+
+Add AXAG attributes to your existing HTML element — annotations are purely additive:
+
+```html title="✅ Annotated search button" showLineNumbers
+<button
+  axag-intent="product.search"
+  axag-entity="product"
+  axag-action-type="read"
+  axag-required-parameters='["query"]'
+  axag-optional-parameters='["category","price_min","price_max","sort_by","page"]'
+  axag-risk-level="none"
+  axag-idempotent="true"
+  axag-description="Search the product catalog"
+>Search</button>
+```
+
+### Step 3: Generate the Semantic Manifest
+
+```bash title="Generate manifest from annotations"
+npx axag-generate-manifest --input src/ --output axag-manifest.json
+```
+
+### Step 4: Generate the MCP Tool
+
+```bash title="Generate MCP tools from manifest"
+npx axag-generate-tools --manifest axag-manifest.json --output tools/
+```
+
+### Step 5: Agent uses the generated tool
+
+```python title="✅ Semantic approach — structured tool call"
+# ✅ Semantic approach — no scraping needed
+def search_products(query, category=None, price_max=None):
+    result = mcp_client.call_tool("product_search", {
+        "query": query,
+        "category": category,
+        "price_max": price_max,
+    })
+    return result  # Structured JSON, no parsing needed
+```
+
+---
+
+## Key Takeaway
+
+> **Scraping is coupling to presentation. AXAG is coupling to intent.**
+>
+> When a site's CSS classes change, scraping agents break. When a site's *purpose* stays the same, AXAG agents keep working — because they're bound to semantic operations, not DOM structure.

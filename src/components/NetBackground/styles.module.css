@@ -1,0 +1,17 @@
+/* ─── NetBackground canvas ───────────────────── */
+
+.canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;   /* let clicks pass through to page content */
+  z-index: 0;
+  opacity: 0.28;          /* subtle in light mode so text stays readable */
+  transition: opacity 0.3s ease;
+}
+
+/* full strength in dark mode — lighter lines on dark bg have natural contrast */
+[data-theme='dark'] .canvas {
+  opacity: 0.85;
+}

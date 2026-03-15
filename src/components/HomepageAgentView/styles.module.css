@@ -1,0 +1,308 @@
+.agentView {
+  padding: 4rem 0;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+[data-theme='dark'] .agentView {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--ifm-color-emphasis-800);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* ─── Toggle ─────────────────────────────────── */
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.toggleLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-400);
+  transition: color 0.2s;
+}
+
+.toggleLabelActive {
+  color: var(--ifm-color-emphasis-800);
+}
+
+.toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border-radius: 14px;
+  background: #dc2626;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  padding: 0;
+}
+
+.toggleOn {
+  background: #16a34a;
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(24px);
+}
+
+/* ─── Mock UI ────────────────────────────────── */
+.mockUI {
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid var(--ifm-color-emphasis-200);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background: var(--ifm-background-color);
+}
+
+.mockUIScraper {
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.1), 0 8px 30px rgba(220, 38, 38, 0.08);
+}
+
+.mockUIAxag {
+  border-color: #86efac;
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.1), 0 8px 30px rgba(22, 163, 74, 0.08);
+}
+
+.mockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.mockLogo {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.mockNav {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.mockBody {
+  padding: 24px;
+}
+
+.productCard {
+  text-align: center;
+}
+
+.productImage {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.productInfo h4 {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.productPrice {
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+/* ─── Action Buttons ─────────────────────────── */
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.actionWrapper {
+  position: relative;
+}
+
+.mockButton {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-background-color);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: default;
+  transition: all 0.25s;
+}
+
+.mockButtonScraper {
+  opacity: 0.7;
+  border-style: dashed;
+  border-color: #fca5a5;
+}
+
+.mockButtonAxag {
+  border-color: #86efac;
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.15);
+}
+
+.mockButtonAxag.mockButtonDanger {
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.15);
+}
+
+.mockButtonAxag.mockButtonWarn {
+  border-color: #fed7aa;
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.15);
+}
+
+/* ─── Tooltip ────────────────────────────────── */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  animation: tooltipIn 0.2s ease;
+  pointer-events: none;
+}
+
+.tooltipScraper {
+  background: #1c1917;
+  color: #fca5a5;
+  border: 1px solid #dc2626;
+}
+
+.tooltipAxag {
+  background: #052e16;
+  color: #bbf7d0;
+  border: 1px solid #16a34a;
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.tooltipTitle {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+
+.tooltipRow {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 2px;
+  align-items: center;
+}
+
+.tooltipRow span {
+  color: #a3a3a3;
+}
+
+.tooltipRow code {
+  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: inherit;
+}
+
+.tooltipExtra {
+  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #86efac;
+}
+
+.tooltipSelector {
+  display: block;
+  font-size: 0.72rem;
+  margin-bottom: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #fca5a5;
+}
+
+.tooltipProblem {
+  font-size: 0.68rem;
+  color: #a3a3a3;
+  font-style: italic;
+}
+
+.riskHigh {
+  color: #fca5a5 !important;
+  background: rgba(220, 38, 38, 0.2) !important;
+}
+
+.riskMedium {
+  color: #fed7aa !important;
+  background: rgba(234, 179, 8, 0.2) !important;
+}
+
+.riskLow {
+  color: #bbf7d0 !important;
+}
+
+.caption {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-500);
+}
+
+@media (max-width: 600px) {
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tooltip {
+    white-space: normal;
+    min-width: 200px;
+  }
+}

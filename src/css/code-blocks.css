@@ -1,0 +1,391 @@
+/**
+ * AXAG Code Block Styles
+ * Enhanced code formatting with language badges, file tabs,
+ * accent colours, better scrollbars, and AXAG attribute highlighting.
+ */
+
+/* ─── Container ──────────────────────────────────────────────── */
+
+.axag-code-block {
+  position: relative;
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.axag-code-block:hover {
+  border-color: var(--axag-code-accent, var(--ifm-color-emphasis-300));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'] .axag-code-block {
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .axag-code-block:hover {
+  border-color: var(--axag-code-accent, var(--ifm-color-emphasis-400));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Remove the default border-radius from inner Docusaurus code blocks */
+.axag-code-block div[class*='codeBlockContainer'] {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.axag-code-block div[class*='codeBlockTitle'] {
+  display: none !important; /* We render our own title */
+}
+
+/* ─── Language Badge ─────────────────────────────────────────── */
+
+.axag-code-block__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-700);
+  background: var(--ifm-color-emphasis-100);
+  border-bottom-left-radius: 6px;
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  user-select: none;
+  pointer-events: none;
+}
+
+[data-theme='dark'] .axag-code-block__badge {
+  color: var(--ifm-color-emphasis-600);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+.axag-code-block__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── File Tab Title ─────────────────────────────────────────── */
+
+.axag-code-block__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--ifm-font-family-monospace);
+  color: var(--ifm-color-emphasis-800);
+  background: var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .axag-code-block__title {
+  color: var(--ifm-color-emphasis-700);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+.axag-code-block__title-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.axag-code-block__title-lang {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+/* ─── Inner Code Styling ─────────────────────────────────────── */
+
+/* Better font settings */
+.axag-code-block code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Consolas', monospace !important;
+  font-size: 0.85rem !important;
+  line-height: 1.65 !important;
+  font-variant-ligatures: contextual;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Better padding */
+.axag-code-block pre {
+  padding: 0.75rem 1rem !important;
+  margin: 0 !important;
+}
+
+/* Line number styling */
+.axag-code-block span[class*='codeLineNumber'] {
+  min-width: 2.5rem !important;
+  padding-right: 1rem !important;
+  color: var(--ifm-color-emphasis-400) !important;
+  user-select: none;
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+  margin-right: 1rem !important;
+  text-align: right;
+}
+
+[data-theme='dark'] .axag-code-block span[class*='codeLineNumber'] {
+  color: var(--ifm-color-emphasis-500) !important;
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+/* ─── Highlighted Lines ──────────────────────────────────────── */
+
+.axag-code-block .theme-code-block-highlighted-line {
+  background-color: rgba(107, 33, 168, 0.08) !important;
+  border-left: 3px solid var(--ifm-color-primary) !important;
+  margin-left: -3px;
+  display: block;
+}
+
+[data-theme='dark'] .axag-code-block .theme-code-block-highlighted-line {
+  background-color: rgba(168, 85, 247, 0.1) !important;
+  border-left-color: var(--ifm-color-primary) !important;
+}
+
+/* ─── AXAG-specific highlights (magic comments) ──────────────── */
+
+.axag-code-block .axag-attr-highlight {
+  background-color: rgba(111, 66, 193, 0.08);
+  border-left: 3px solid #7c3aed;
+  margin-left: -3px;
+  display: block;
+}
+
+[data-theme='dark'] .axag-code-block .axag-attr-highlight {
+  background-color: rgba(167, 139, 250, 0.1);
+  border-left-color: #a78bfa;
+}
+
+/* ─── Copy Button ────────────────────────────────────────────── */
+
+.axag-code-block button[class*='copyButton'] {
+  top: auto !important;
+  bottom: 8px !important;
+  right: 8px !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font-size: 0.7rem !important;
+  background: var(--ifm-color-emphasis-200) !important;
+  border: 1px solid var(--ifm-color-emphasis-300) !important;
+  color: var(--ifm-color-emphasis-700) !important;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.axag-code-block:hover button[class*='copyButton'] {
+  opacity: 1;
+}
+
+.axag-code-block button[class*='copyButton']:hover {
+  background: var(--ifm-color-emphasis-300) !important;
+}
+
+[data-theme='dark'] .axag-code-block button[class*='copyButton'] {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: var(--ifm-color-emphasis-600) !important;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+
+.axag-code-block pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.axag-code-block pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.axag-code-block pre::-webkit-scrollbar-thumb {
+  background: var(--ifm-color-emphasis-300);
+  border-radius: 3px;
+}
+
+.axag-code-block pre::-webkit-scrollbar-thumb:hover {
+  background: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .axag-code-block pre::-webkit-scrollbar-thumb {
+  background: var(--ifm-color-emphasis-400);
+}
+
+/* ─── Language-Specific Accent Borders ───────────────────────── */
+
+.axag-code-block--html {
+  --axag-code-accent: #e34f26;
+}
+
+.axag-code-block--json {
+  --axag-code-accent: #f5a623;
+}
+
+.axag-code-block--yaml,
+.axag-code-block--yml {
+  --axag-code-accent: #cb171e;
+}
+
+.axag-code-block--bash,
+.axag-code-block--sh,
+.axag-code-block--shell {
+  --axag-code-accent: #4eaa25;
+}
+
+.axag-code-block--typescript,
+.axag-code-block--ts {
+  --axag-code-accent: #3178c6;
+}
+
+.axag-code-block--javascript,
+.axag-code-block--js {
+  --axag-code-accent: #f7df1e;
+}
+
+.axag-code-block--jsx,
+.axag-code-block--tsx {
+  --axag-code-accent: #61dafb;
+}
+
+.axag-code-block--css,
+.axag-code-block--scss {
+  --axag-code-accent: #264de4;
+}
+
+.axag-code-block--python,
+.axag-code-block--py {
+  --axag-code-accent: #3776ab;
+}
+
+.axag-code-block--markdown,
+.axag-code-block--md {
+  --axag-code-accent: #083fa1;
+}
+
+.axag-code-block--diff {
+  --axag-code-accent: #41b883;
+}
+
+.axag-code-block--sql {
+  --axag-code-accent: #e38c00;
+}
+
+/* Top accent stripe */
+.axag-code-block::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--axag-code-accent, var(--ifm-color-primary));
+  border-radius: 8px 8px 0 0;
+}
+
+/* Reduce gap between consecutive code blocks */
+.axag-code-block + .axag-code-block {
+  margin-top: 0.75rem;
+}
+
+/* Tighten space between a heading and immediately following code block */
+h2 + .axag-code-block,
+h3 + .axag-code-block,
+h4 + .axag-code-block {
+  margin-top: 0.5rem;
+}
+
+/* Tighten space between paragraph and code block */
+p + .axag-code-block {
+  margin-top: 0.5rem;
+}
+
+/* ─── Inline Code ────────────────────────────────────────────── */
+/* Better styling for inline `code` in paragraphs */
+
+:not(pre) > code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+  font-size: 0.85em !important;
+  padding: 0.15em 0.4em !important;
+  border-radius: 4px !important;
+  background: rgba(107, 33, 168, 0.06) !important;
+  color: #6b21a8 !important;
+  border: 1px solid rgba(107, 33, 168, 0.12);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+[data-theme='dark'] :not(pre) > code {
+  background: rgba(168, 85, 247, 0.1) !important;
+  color: #c4b5fd !important;
+  border-color: rgba(168, 85, 247, 0.15);
+}
+
+/* AXAG attribute inline code — extra emphasis */
+:not(pre) > code[class*='axag-'] {
+  background: rgba(111, 66, 193, 0.08) !important;
+  color: #7c3aed !important;
+  border-color: rgba(111, 66, 193, 0.15);
+}
+
+[data-theme='dark'] :not(pre) > code[class*='axag-'] {
+  background: rgba(167, 139, 250, 0.12) !important;
+  color: #c4b5fd !important;
+  border-color: rgba(167, 139, 250, 0.2);
+}
+
+/* ─── Mobile Adjustments ─────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .axag-code-block code {
+    font-size: 0.78rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .axag-code-block pre {
+    padding: 0.75rem 1rem !important;
+  }
+
+  .axag-code-block__badge {
+    font-size: 0.6rem;
+    padding: 3px 8px 3px 6px;
+  }
+}
+
+/* ─── Print Styles ───────────────────────────────────────────── */
+
+@media print {
+  .axag-code-block {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+
+  .axag-code-block::before {
+    display: none;
+  }
+
+  .axag-code-block__badge {
+    display: none;
+  }
+
+  .axag-code-block button[class*='copyButton'] {
+    display: none !important;
+  }
+}

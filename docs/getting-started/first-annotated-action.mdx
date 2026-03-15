@@ -1,0 +1,121 @@
+---
+id: first-annotated-action
+title: Your First Annotated Action
+sidebar_label: First Annotated Action
+slug: /getting-started/first-annotated-action
+description: Step-by-step guide to annotating your first UI element with AXAG.
+keywords: [quickstart, annotation, first steps]
+---
+
+import ProposedPattern from '@site/src/components/ProposedPattern';
+import BeforeAfter from '@site/src/components/BeforeAfter';
+
+# Your First Annotated Action
+
+This guide walks you through annotating a single button with AXAG semantics in under five minutes.
+
+## Scenario
+
+You have a product search button on an e-commerce page. Currently, it looks like this:
+
+```html title="Before — unannotated search"
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search products..." />
+  <button class="btn-search" onclick="searchProducts()">
+    Search
+  </button>
+</div>
+```
+
+An agent looking at this HTML cannot determine:
+- What entity is being searched
+- What parameters are required vs optional
+- Whether this operation has side effects
+- What scope the search operates within
+
+## Step 1: Identify the Semantic Dimensions
+
+Before annotating, answer these questions:
+
+| Question | Answer |
+|----------|--------|
+| What is the intent? | Search for products |
+| What entity does this operate on? | Product |
+| What type of action is this? | Read (non-mutating) |
+| What parameters are required? | query |
+| What parameters are optional? | category, price_min, price_max |
+| What scope does this operate in? | Catalog (public) |
+| What is the risk level? | None |
+| Is it idempotent? | Yes |
+
+## Step 2: Add AXAG Annotations
+
+<ProposedPattern>
+The attribute syntax shown below is a Proposed Implementation Pattern.
+</ProposedPattern>
+
+```html title="After — fully annotated product search" showLineNumbers
+<div class="search-container">
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Search products..."
+    axag-parameter="query"
+    axag-parameter-type="string"
+    axag-parameter-required="true"
+    axag-parameter-description="Free-text search query for product name, description, or SKU"
+  />
+  <button
+    axag-intent="product.search"
+    axag-entity="product"
+    axag-action-type="read"
+    axag-required-parameters='["query"]'
+    axag-optional-parameters='["category","price_min","price_max"]'
+    axag-scope="catalog"
+    axag-risk-level="none"
+    axag-idempotent="true"
+    axag-description="Search the product catalog by text query with optional filters"
+    class="btn-search"
+    onclick="searchProducts()"
+  >
+    Search
+  </button>
+</div>
+```
+
+## Step 3: Validate Your Annotation
+
+Check your annotation against these rules:
+
+- ✅ `axag-intent` uses `entity.verb` format
+- ✅ `axag-entity` identifies the domain object
+- ✅ `axag-action-type` is one of: `read`, `create`, `mutate`, `delete`, `navigate`
+- ✅ Required parameters are listed
+- ✅ Risk level is appropriate for the action type
+- ✅ Idempotency is declared for read operations
+
+## Step 4: Verify the Semantic Contract
+
+The annotation now declares a contract:
+
+> "This button performs a **product search** (a **read** operation on the **product** entity) that **requires** a `query` parameter, **optionally** accepts `category`, `price_min`, and `price_max`, operates within the **catalog** scope, has **no risk**, and is **idempotent**."
+
+An agent reading this contract can:
+1. Discover the operation without parsing the DOM
+2. Construct valid parameters without guessing
+3. Assess safety without inspecting visual indicators
+4. Retry safely because idempotency is declared
+
+## Common Mistakes
+
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Missing `axag-intent` | Agent cannot determine purpose | Always declare intent |
+| Using `axag-action-type="mutate"` for a search | Misclassifies a read operation | Use `read` for non-mutating operations |
+| Omitting `axag-scope` | Agent cannot determine access boundaries | Always declare scope |
+| Setting `axag-risk-level="high"` for a search | Over-classifying a safe operation | Match risk to actual impact |
+
+## Next Steps
+
+- [First Semantic Manifest](/docs/getting-started/first-semantic-manifest) — Generate a manifest from your annotation
+- [First Generated Tool](/docs/getting-started/first-generated-tool) — Produce an MCP tool definition

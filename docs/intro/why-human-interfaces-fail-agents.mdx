@@ -1,0 +1,161 @@
+---
+id: why-human-interfaces-fail-agents
+title: Why Human Interfaces Fail Agents
+sidebar_label: Why Human Interfaces Fail
+slug: /intro/why-human-interfaces-fail-agents
+description: Human-designed interfaces are semantically insufficient for AI agent interaction. This page explains why.
+keywords: [scraping, DOM, agent failure, semantic gap]
+---
+
+import AudienceBanner from '@site/src/components/AudienceBanner';
+import BeforeAfter from '@site/src/components/BeforeAfter';
+
+<AudienceBanner audiences={['Engineers', 'Architects', 'Agent Runtime Builders']} />
+
+# Why Human Interfaces Fail Agents
+
+Human interfaces are designed for **visual perception and manual interaction**. They encode meaning through spatial layout, typography, color, iconography, and interactive affordances that humans interpret intuitively. AI agents have none of these perceptual capabilities.
+
+When agents attempt to interact with human-designed interfaces, they encounter systematic failure modes that no amount of prompt engineering or scraping sophistication can reliably solve.
+
+## Failure Mode 1: DOM Instability
+
+Modern frontend frameworks (React, Vue, Angular, Svelte) generate DOM structures dynamically. Class names are hashed, element hierarchies change between renders, and component boundaries shift with every build.
+
+```html
+<!-- Build 1 -->
+<div class="ProductCard_wrapper__x7kf2">
+  <button class="ProductCard_addBtn__m9p1q">Add to Cart</button>
+</div>
+
+<!-- Build 2 (after CSS modules rehash) -->
+<div class="ProductCard_wrapper__a3bc1">
+  <button class="ProductCard_addBtn__z8y2r">Add to Cart</button>
+</div>
+```
+
+An agent relying on the CSS class `ProductCard_addBtn__m9p1q` will fail silently after the next deployment.
+
+## Failure Mode 2: Ambiguous Labels
+
+Human interfaces frequently use short, context-dependent labels that rely on visual context for disambiguation:
+
+- **"Submit"** — Submit what? A form? An application? A payment?
+- **"Delete"** — Delete which entity? Is this reversible?
+- **"Go"** — Navigate where? Execute what?
+- **"Process"** — Process what? With what parameters?
+- **"More"** — More of what? Expand details? Load additional items?
+
+Humans disambiguate these labels through visual context — the surrounding form, the page title, the section heading. Agents cannot reliably perform this disambiguation.
+
+## Failure Mode 3: Hidden State Logic
+
+Many interface interactions depend on state that is only visible through visual indicators:
+
+- A button is grayed out (disabled) because a precondition is not met
+- A form field turns red because validation failed
+- A modal appears because a confirmation step was triggered
+- A loading spinner indicates an async operation in progress
+
+None of this state logic is exposed semantically. An agent cannot determine:
+- *Why* a button is disabled
+- *What* precondition must be satisfied
+- *Whether* a confirmation step will be required
+- *What* state transitions are occurring
+
+## Failure Mode 4: Multi-Step Modal Complexity
+
+Complex workflows involve multi-step modals, wizard flows, and conditional form paths:
+
+```
+Step 1: Select product → Step 2: Configure options → Step 3: Review → Step 4: Confirm
+```
+
+Each step may conditionally show or hide fields based on previous selections. The entire flow is orchestrated through client-side state management that is completely opaque to agents.
+
+## Failure Mode 5: Localization and A/B Testing
+
+- Button text changes by locale: "Search" → "Buscar" → "検索"
+- A/B tests change button placement, labels, and behavior
+- Feature flags alter available interactions per user segment
+
+Agents that depend on text content or element positioning break whenever these variations change.
+
+## Failure Mode 6: Anti-Bot Defenses
+
+Many applications implement:
+- CAPTCHA challenges
+- Rate limiting
+- Browser fingerprinting
+- Behavioral analysis
+- IP-based blocking
+
+These defenses treat automated interaction as adversarial by default. AXAG provides a legitimate, sanctioned interaction path that distinguishes authorized agent access from unauthorized scraping.
+
+## Failure Mode 7: Asynchronous State Transitions
+
+Modern SPAs use asynchronous data fetching, optimistic updates, and eventual consistency:
+
+```
+User clicks "Place Order"
+  → UI shows spinner
+  → Payment service processes (3-5 seconds)
+  → Inventory service reserves (1-2 seconds)
+  → Order service creates order
+  → UI shows confirmation
+```
+
+An agent has no semantic signal for:
+- When the operation completes
+- Whether it succeeded or failed
+- What the resulting state is
+- Whether it is safe to proceed
+
+## Failure Mode 8: Undeclared Side Effects
+
+A "Merge Contacts" button in a CRM might:
+- Combine two contact records
+- Reassign all related opportunities
+- Trigger notification emails
+- Update analytics dashboards
+- Modify billing records
+
+None of these side effects are declared in the button's HTML. An agent that invokes this action has no way to assess its full impact.
+
+## The Fundamental Problem
+
+All of these failure modes share a common root cause:
+
+> **Human interfaces encode meaning through presentation. Agents need meaning encoded through declaration.**
+
+This is the semantic gap that AXAG closes.
+
+## The Cost of the Semantic Gap
+
+| Impact | Description |
+|--------|-------------|
+| **Brittle automation** | Scraping-based agents break with every UI deployment |
+| **Unsafe mutations** | Agents trigger destructive operations without understanding consequences |
+| **Maintenance burden** | Every UI change requires scraper updates |
+| **Non-portability** | Scrapers are product-specific; no reuse across applications |
+| **Trust deficit** | Organizations cannot trust agent interactions without semantic guarantees |
+| **Compliance risk** | Uncontrolled agent mutations may violate regulatory requirements |
+
+## How AXAG Addresses Each Failure Mode
+
+| Failure Mode | AXAG Solution |
+|-------------|---------------|
+| DOM instability | Semantic annotations are stable across renders |
+| Ambiguous labels | `axag-intent` declares explicit purpose |
+| Hidden state logic | `axag-preconditions` declares required state |
+| Multi-step complexity | `axag-workflow-step` declares flow position |
+| Localization changes | Intent identifiers are locale-independent |
+| Anti-bot defenses | AXAG provides a sanctioned interaction path |
+| Async transitions | `axag-postconditions` declares expected outcomes |
+| Undeclared side effects | `axag-side-effects` declares observable changes |
+
+## Next Steps
+
+- [What Problems AXAG Solves](/docs/intro/what-problems-axag-solves) — The specific problems AXAG addresses
+- [AXAG as a Semantic Contract](/docs/intro/axag-as-semantic-contract) — Understanding the contract model
+- [Getting Started](/docs/getting-started/mental-model) — Build your first annotated interaction

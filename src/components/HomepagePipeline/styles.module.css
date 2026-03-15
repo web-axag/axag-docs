@@ -1,0 +1,230 @@
+.pipeline {
+  padding: 4rem 0 3rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+[data-theme='dark'] .pipeline {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--ifm-color-emphasis-800);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ─── Stage Node ─────────────────────────────── */
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 1.25rem;
+  border-radius: 16px;
+  border: 2px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-background-color);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 160px;
+  max-width: 220px;
+  flex: 1;
+  position: relative;
+}
+
+.stage:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 4px 20px rgba(26, 86, 219, 0.12);
+  transform: translateY(-2px);
+}
+
+.stageExpanded {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 8px 32px rgba(26, 86, 219, 0.15);
+  max-width: 340px;
+}
+
+.stageIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stageTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+
+.stageSubtitle {
+  font-size: 0.75rem;
+  color: var(--ifm-color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.stageDetail {
+  margin-top: 1rem;
+  text-align: left;
+  animation: fadeSlideDown 0.3s ease;
+}
+
+.stageDetail p {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.stageCode {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.stageCode code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Arrow Connector ────────────────────────── */
+.arrow {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 48px;
+  flex-shrink: 0;
+  margin-top: 3rem; /* align with stage icons */
+}
+
+.arrowLine {
+  width: 100%;
+  height: 2px;
+  background: var(--ifm-color-emphasis-300);
+}
+
+.arrowHead {
+  position: absolute;
+  right: 0;
+  color: var(--ifm-color-emphasis-400);
+  display: flex;
+}
+
+.arrowPulse {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ifm-color-primary);
+  transform: translateY(-50%);
+  animation: travelPulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--ifm-color-primary);
+}
+
+@keyframes travelPulse {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 8px);
+    opacity: 0;
+  }
+}
+
+/* ─── Responsive ─────────────────────────────── */
+@media (max-width: 900px) {
+  .flow {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .stage {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .stageExpanded {
+    max-width: 100%;
+  }
+
+  .arrow {
+    width: 2px;
+    height: 32px;
+    flex-direction: column;
+    margin-top: 0;
+  }
+
+  .arrowLine {
+    width: 2px;
+    height: 100%;
+  }
+
+  .arrowHead {
+    bottom: 0;
+    right: auto;
+    transform: rotate(90deg);
+  }
+
+  .arrowPulse {
+    animation: travelPulseVert 2.4s ease-in-out infinite;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+  }
+
+  @keyframes travelPulseVert {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: calc(100% - 8px); opacity: 0; }
+  }
+}

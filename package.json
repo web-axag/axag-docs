@@ -1,0 +1,49 @@
+{
+  "name": "axag-docs",
+  "version": "0.1.0",
+  "description": "AXAG Standard Documentation — Agent Context Annotation Guidelines",
+  "private": true,
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/ docs/ --ext .ts,.tsx,.md,.mdx",
+    "lint:fix": "eslint src/ docs/ --ext .ts,.tsx,.md,.mdx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,md,mdx}\" \"docs/**/*.{md,mdx}\"",
+    "validate:axag": "node scripts/validate-axag-examples.mjs",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.6.0",
+    "@docusaurus/preset-classic": "^3.6.0",
+    "@docusaurus/theme-mermaid": "^3.6.0",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.1.0",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^3.6.0",
+    "@docusaurus/tsconfig": "^3.6.0",
+    "@docusaurus/types": "^3.6.0",
+    "@types/react": "^18.2.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0"
+  },
+  "browserslist": {
+    "production": [">0.5%", "not dead", "not op_mini all"],
+    "development": ["last 3 chrome version", "last 3 firefox version", "last 5 safari version"]
+  },
+  "engines": {
+    "node": ">=18.0"
+  }
+}

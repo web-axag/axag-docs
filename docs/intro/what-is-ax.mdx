@@ -1,0 +1,105 @@
+---
+id: what-is-ax
+title: What is Agent Experience (AX)?
+sidebar_label: What is AX?
+slug: /intro/what-is-ax
+description: Agent Experience (AX) is a design discipline that treats AI agents as first-class product consumers alongside human users.
+keywords: [agent experience, AX, AI agents, design discipline]
+---
+
+import AudienceBanner from '@site/src/components/AudienceBanner';
+
+<AudienceBanner audiences={['Product Engineers', 'Architects', 'Platform Teams', 'Agent Runtime Builders']} />
+
+# What is Agent Experience (AX)?
+
+**Agent Experience (AX)** is a design discipline that treats AI agents as first-class product consumers. Just as User Experience (UX) designs for human perception, cognition, and behavior, AX designs for agent perception, planning, and execution.
+
+## The Problem
+
+Modern software interfaces are designed exclusively for human users. Every button label, layout decision, navigation pattern, and interaction flow is optimized for human visual processing and manual interaction. When AI agents attempt to interact with these interfaces, they must:
+
+1. **Infer meaning** from visual layout, CSS classes, and button text
+2. **Guess relationships** between form fields, validation rules, and submission actions
+3. **Reconstruct intent** from ambiguous labels like "Submit", "Go", or "Process"
+4. **Navigate state machines** that were never documented for non-human consumers
+5. **Handle side effects** that are only described in human-readable tooltips or documentation
+
+This approach is fundamentally brittle. It fails whenever:
+
+- A CSS class name changes
+- A button label is reworded
+- A component is replaced with a different visual design
+- A page layout is restructured
+- Localization changes text content
+- Dynamic rendering alters the DOM tree
+- Anti-bot defenses are activated
+
+## The AX Discipline
+
+AX addresses this by establishing a parallel design dimension:
+
+| Dimension | UX (Human) | AX (Agent) |
+|-----------|-----------|------------|
+| **Perception** | Visual rendering, color, layout | Semantic annotations, structured metadata |
+| **Understanding** | Labels, tooltips, documentation | Declared intent, entity types, action semantics |
+| **Interaction** | Click, type, drag, scroll | Structured operation invocation |
+| **Validation** | Visual error messages, inline hints | Declared constraints, preconditions, error codes |
+| **Safety** | Confirmation dialogs, undo buttons | Risk classification, approval requirements, idempotency declarations |
+| **Discovery** | Navigation menus, search bars | Semantic manifests, tool registries |
+
+AX does not replace UX. AX complements UX by making the semantic layer of an interface explicit and machine-readable.
+
+## Core Principles of AX
+
+### 1. Agents Are Consumers, Not Scrapers
+
+An agent should be able to discover what operations are available, what parameters they require, what constraints apply, and what side effects they produce — without parsing visual layout or inferring meaning from presentation.
+
+### 2. Intent Must Be Explicit
+
+A button labeled "Go" tells a human what to do through visual context. An agent has no visual context. AX requires that every interactive element carries declared intent: `product.search`, `order.cancel`, `ticket.escalate`.
+
+### 3. Constraints Must Be Declared
+
+Validation rules that only exist in client-side JavaScript are invisible to agents. AX requires that constraints — required fields, value ranges, format rules, preconditions — are part of the semantic contract.
+
+### 4. Safety Must Be Engineered
+
+An agent that can submit a form can also submit a destructive operation. AX requires that risk levels, confirmation requirements, approval gates, and side-effect declarations are part of every interaction's metadata.
+
+### 5. Discovery Must Be Structured
+
+Agents cannot browse a navigation menu visually. AX requires that available operations are discoverable through structured manifests and tool registries.
+
+## AX vs Accessibility (A11Y)
+
+AX is conceptually adjacent to accessibility but serves a different consumer:
+
+| Aspect | A11Y | AX |
+|--------|------|-----|
+| **Consumer** | Humans with disabilities | AI agents |
+| **Medium** | Screen readers, keyboard navigation | Semantic manifests, tool registries |
+| **Goal** | Equal access for all humans | Machine-readable interaction contracts |
+| **Standard** | WCAG, ARIA | AXAG |
+| **Annotations** | `aria-label`, `role`, `aria-describedby` | `axag-intent`, `axag-entity`, `axag-action-type` |
+
+Both disciplines share a common insight: **explicit semantics improve interaction quality for non-visual consumers.** ARIA annotations help screen readers understand interface structure. AXAG annotations help agent runtimes understand interaction semantics.
+
+## Why AX Matters Now
+
+The proliferation of AI agents — from customer service bots to autonomous workflow engines — has created an urgent need for reliable, deterministic agent–interface interaction. Current approaches rely on:
+
+- **Screen scraping** — parsing rendered DOM to extract data and trigger actions
+- **Prompt engineering** — instructing LLMs to interpret screenshots or HTML dumps
+- **Custom API integration** — building bespoke connectors for every product
+
+Each of these approaches is expensive, brittle, and non-portable.
+
+AX, implemented through the AXAG standard, provides a **universal semantic contract layer** that any agent runtime can consume without product-specific integration work.
+
+## Next Steps
+
+- [What is AXAG?](/docs/intro/what-is-axag) — Learn about the annotation standard that implements AX
+- [Why Human Interfaces Fail Agents](/docs/intro/why-human-interfaces-fail-agents) — Understand the failure modes in detail
+- [Core Concepts](/docs/concepts/agent-experience) — Explore the conceptual foundations

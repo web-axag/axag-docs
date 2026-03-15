@@ -1,0 +1,180 @@
+---
+id: overview
+title: AXAG Specification Overview
+sidebar_label: Overview
+slug: /specification/overview
+description: Overview of the AXAG specification — the formal definition of semantic interaction contracts for AI agents.
+keywords: [specification, standard, normative, overview]
+---
+
+import AudienceBanner from '@site/src/components/AudienceBanner';
+import NormativeCallout from '@site/src/components/NormativeCallout';
+import ConformanceBadge from '@site/src/components/ConformanceBadge';
+import SchemaFieldTable from '@site/src/components/SchemaFieldTable';
+
+<AudienceBanner audiences={['Specification Implementors', 'Platform Teams', 'Standards Committees']} />
+
+# AXAG Specification Overview
+
+**Status:** Draft 0.1.0  
+**Classification:** Normative  
+**Last Updated:** 2026-03-14
+
+This document provides the normative specification for the Agent Context Annotation Guidelines (AXAG) standard. It defines the vocabulary, annotation primitives, required and optional fields, conformance levels, and validation rules that govern AXAG implementations.
+
+## Specification Scope
+
+The AXAG specification defines:
+
+1. **Canonical Vocabulary** — The set of reserved annotation attribute names and their semantics
+2. **Annotation Primitives** — The atomic annotation units from which semantic contracts are composed
+3. **Field Requirements** — Which fields are required at each conformance level
+4. **Semantic Dimensions** — The categories of meaning that annotations can express
+5. **Conformance Levels** — The tiers of implementation completeness
+6. **Validation Rules** — The rules for checking annotation correctness
+7. **Versioning Model** — How the specification evolves
+
+## Content Classification
+
+This specification uses RFC 2119 keywords:
+
+<NormativeCallout level="MUST">
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
+</NormativeCallout>
+
+Content in this specification is classified as:
+
+| Classification | Meaning |
+|---------------|---------|
+| **Normative** | Binding requirements. Implementations MUST comply. |
+| **Recommended** | Best practices. Implementations SHOULD follow. |
+| **Informative** | Explanatory context. Not binding. |
+| **Example** | Illustrative code or configuration. |
+| **Proposed Pattern** | Inferred implementation approach. Not yet canonical. |
+
+## Conformance Levels
+
+AXAG defines three conformance levels:
+
+### <ConformanceBadge level="basic" /> Basic Conformance
+
+Minimum viable annotation. Every annotated element MUST include:
+
+<SchemaFieldTable
+  title="Basic Conformance — Required Fields"
+  fields={[
+    { name: 'axag-intent', type: 'string', required: true, description: 'The semantic intent of the interaction', example: 'product.search' },
+    { name: 'axag-entity', type: 'string', required: true, description: 'The domain entity being operated on', example: 'product' },
+    { name: 'axag-action-type', type: 'enum', required: true, description: 'The operation classification: read, create, mutate, delete, navigate', example: 'read' },
+  ]}
+/>
+
+### <ConformanceBadge level="intermediate" /> Intermediate Conformance
+
+Production-ready annotation. In addition to Basic fields, every annotated element SHOULD include:
+
+<SchemaFieldTable
+  title="Intermediate Conformance — Additional Fields"
+  fields={[
+    { name: 'axag-required-parameters', type: 'string[]', required: true, description: 'JSON array of required parameter names', example: '["query"]' },
+    { name: 'axag-scope', type: 'string', required: true, description: 'The operational boundary', example: 'catalog' },
+    { name: 'axag-risk-level', type: 'enum', required: true, description: 'Risk classification: none, low, medium, high, critical', example: 'none' },
+    { name: 'axag-description', type: 'string', required: true, description: 'Human-readable operation description', example: 'Search the product catalog' },
+  ]}
+/>
+
+### <ConformanceBadge level="full" /> Full Conformance
+
+Enterprise-grade annotation. In addition to Intermediate fields, annotations SHOULD include all applicable semantic dimensions:
+
+<SchemaFieldTable
+  title="Full Conformance — Additional Fields"
+  fields={[
+    { name: 'axag-optional-parameters', type: 'string[]', required: false, description: 'JSON array of optional parameter names', example: '["category","sort"]' },
+    { name: 'axag-preconditions', type: 'string[]', required: false, description: 'Required state before execution', example: '["cart_validated"]' },
+    { name: 'axag-postconditions', type: 'string[]', required: false, description: 'Guaranteed state after execution', example: '["order_created"]' },
+    { name: 'axag-confirmation-required', type: 'boolean', required: false, description: 'Whether explicit confirmation is needed', example: 'true' },
+    { name: 'axag-approval-required', type: 'boolean', required: false, description: 'Whether multi-party approval is needed', example: 'false' },
+    { name: 'axag-idempotent', type: 'boolean', required: false, description: 'Whether the operation is safe to repeat', example: 'true' },
+    { name: 'axag-side-effects', type: 'string[]', required: false, description: 'Observable changes beyond primary result', example: '["email_sent"]' },
+    { name: 'axag-required-roles', type: 'string[]', required: false, description: 'Roles permitted to invoke this operation', example: '["admin"]' },
+    { name: 'axag-rate-limit', type: 'string', required: false, description: 'Maximum invocation frequency', example: '100/hour' },
+  ]}
+/>
+
+## Annotation Format
+
+<NormativeCallout level="MUST">
+AXAG annotations MUST be expressed as HTML data attributes prefixed with `axag-`. The prefix is reserved and MUST NOT be used for non-AXAG purposes.
+</NormativeCallout>
+
+### Attribute Naming Convention
+
+- All attributes use kebab-case: `axag-intent`, `axag-action-type`
+- Array values are JSON-encoded strings: `axag-required-parameters='["a","b"]'`
+- Boolean values use string `"true"` or `"false"`
+- Enum values use lowercase strings from the defined vocabulary
+
+### Example: Minimal Annotation (Basic Conformance)
+
+```html
+<button
+  axag-intent="product.search"
+  axag-entity="product"
+  axag-action-type="read"
+>
+  Search
+</button>
+```
+
+### Example: Full Annotation (Full Conformance)
+
+```html
+<button
+  axag-intent="checkout.begin"
+  axag-entity="order"
+  axag-action-type="mutate"
+  axag-required-parameters='["cart_id","payment_method_id","shipping_address_id"]'
+  axag-optional-parameters='["promo_code"]'
+  axag-preconditions='["cart_validated","inventory_reserved"]'
+  axag-postconditions='["checkout_session_created"]'
+  axag-scope="customer"
+  axag-risk-level="high"
+  axag-confirmation-required="true"
+  axag-idempotent="false"
+  axag-side-effects='["inventory_locked","payment_hold_created"]'
+  axag-description="Start checkout for a validated cart and create a checkout session"
+>
+  Checkout
+</button>
+```
+
+## Specification Sections
+
+The full specification is organized into the following sections:
+
+| Section | Content |
+|---------|---------|
+| [Canonical Vocabulary](/docs/specification/vocabulary) | Reserved attribute names and allowed values |
+| [Annotation Primitives](/docs/specification/annotation-primitives) | Atomic annotation units |
+| [Required Fields](/docs/specification/required-fields) | Mandatory fields per conformance level |
+| [Optional Fields](/docs/specification/optional-fields) | Additional semantic dimensions |
+| [Entities](/docs/specification/entities) | Entity naming conventions |
+| [Actions](/docs/specification/actions) | Action type definitions |
+| [Parameters](/docs/specification/parameters) | Parameter declaration model |
+| [Constraints](/docs/specification/constraints) | Constraint declaration model |
+| [Risk Classification](/docs/specification/risk-classification) | Risk level definitions |
+| [Safety Boundaries](/docs/specification/safety-boundaries) | Confirmation, approval, rate limits |
+| [Confirmation Requirements](/docs/specification/confirmation-requirements) | When and how confirmation is required |
+| [Approval Requirements](/docs/specification/approval-requirements) | Multi-party approval model |
+| [Context Inheritance](/docs/specification/context-inheritance) | How child elements inherit parent context |
+| [Namespacing](/docs/specification/namespacing) | Namespace rules for custom extensions |
+| [Versioning](/docs/specification/versioning) | Specification version model |
+| [Error Semantics](/docs/specification/error-semantics) | Error code and message conventions |
+| [Conformance Levels](/docs/specification/conformance-levels) | Detailed conformance requirements |
+
+## Next Steps
+
+- [Canonical Vocabulary](/docs/specification/vocabulary)
+- [Annotation Primitives](/docs/specification/annotation-primitives)
+- [Semantic Manifest](/docs/semantic-manifest/what-it-is)

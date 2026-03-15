@@ -1,0 +1,673 @@
+/**
+ * BeforeAfterInteractive — CSS Module Styles
+ * Interactive side-by-side code comparison with metrics, pipeline, and checklist.
+ */
+
+/* ─── Container ──────────────────────────────────────────────── */
+
+.container {
+  margin: 1.5rem 0 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-background-color);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.animateIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-theme='dark'] .container {
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-color-emphasis-100);
+  overflow-x: auto;
+}
+
+[data-theme='dark'] .tabs {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-600);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.tab:hover {
+  color: var(--ifm-color-primary);
+  background: var(--ifm-color-emphasis-200);
+}
+
+.tabActive {
+  color: var(--ifm-color-primary);
+  border-bottom-color: var(--ifm-color-primary);
+  background: var(--ifm-background-color);
+}
+
+[data-theme='dark'] .tabActive {
+  background: var(--ifm-background-color);
+}
+
+/* ─── Panels ─────────────────────────────────────────────────── */
+
+.panels {
+  display: flex;
+  gap: 0;
+  min-height: 200px;
+}
+
+.panels[data-view='before'],
+.panels[data-view='after'] {
+  flex-direction: column;
+}
+
+.panels[data-view='side-by-side'] {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.panels[data-view='pipeline'] {
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  animation: fadeSlideIn 0.35s ease both;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panelAfter {
+  animation-name: fadeSlideInRight;
+}
+
+@keyframes fadeSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─── Panel Header ───────────────────────────────────────────── */
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--ifm-font-family-monospace);
+  background: var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.panelBefore .panelHeader {
+  background: rgba(239, 68, 68, 0.04);
+  border-bottom-color: rgba(239, 68, 68, 0.15);
+}
+
+.panelAfter .panelHeader {
+  background: rgba(34, 197, 94, 0.04);
+  border-bottom-color: rgba(34, 197, 94, 0.15);
+}
+
+[data-theme='dark'] .panelBefore .panelHeader {
+  background: rgba(239, 68, 68, 0.08);
+  border-bottom-color: rgba(239, 68, 68, 0.2);
+}
+
+[data-theme='dark'] .panelAfter .panelHeader {
+  background: rgba(34, 197, 94, 0.08);
+  border-bottom-color: rgba(34, 197, 94, 0.2);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusDot[data-status='bad'] {
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+}
+
+.statusDot[data-status='good'] {
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
+.panelTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.langBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-600);
+}
+
+/* ─── Code Area ──────────────────────────────────────────────── */
+
+.code {
+  flex: 1;
+  margin: 0 !important;
+  padding: 0.75rem 1rem !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  background: var(--ifm-background-color);
+  border-radius: 0;
+}
+
+.panelBefore .code {
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.panelAfter .code {
+  background: rgba(34, 197, 94, 0.02);
+}
+
+[data-theme='dark'] .panelBefore .code {
+  background: rgba(239, 68, 68, 0.04);
+}
+
+[data-theme='dark'] .panelAfter .code {
+  background: rgba(34, 197, 94, 0.04);
+}
+
+/* ─── Arrow Divider ──────────────────────────────────────────── */
+
+.arrowDivider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  flex-shrink: 0;
+  background: var(--ifm-color-emphasis-100);
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .arrowDivider {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+.arrowLine {
+  width: 2px;
+  flex: 1;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--ifm-color-primary),
+    transparent
+  );
+  opacity: 0.3;
+}
+
+.arrowIcon {
+  font-size: 1.4rem;
+  color: var(--ifm-color-primary);
+  padding: 8px 0;
+  font-weight: bold;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ─── Pipeline ───────────────────────────────────────────────── */
+
+.pipelineContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: fadeSlideIn 0.35s ease both;
+}
+
+.pipelineStep {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 0;
+  position: relative;
+}
+
+.pipelineIcon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 10px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.pipelineContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.pipelineNumber {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ifm-color-primary);
+  margin-bottom: 2px;
+}
+
+.pipelineTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ifm-color-emphasis-900);
+  margin-bottom: 4px;
+}
+
+.pipelineDesc {
+  font-size: 0.82rem;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1.5;
+}
+
+.pipelineCode {
+  margin: 8px 0 0 !important;
+  padding: 8px 12px !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.pipelineConnector {
+  position: absolute;
+  left: 19px;
+  bottom: -6px;
+  font-size: 0.7rem;
+  color: var(--ifm-color-emphasis-400);
+  z-index: 1;
+}
+
+/* ─── Metrics ────────────────────────────────────────────────── */
+
+.metricsSection {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.sectionTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.metricCard {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-color-emphasis-100);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metricCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.metricIcon {
+  font-size: 1.3rem;
+  margin-bottom: 4px;
+}
+
+.metricLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.metricValues {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.metricBefore {
+  color: #ef4444;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.metricArrow {
+  color: var(--ifm-color-emphasis-400);
+  font-size: 0.75rem;
+}
+
+.metricAfter {
+  color: #22c55e;
+}
+
+.metricImprovement {
+  font-size: 0.7rem;
+  color: #22c55e;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ─── Comparison Table ───────────────────────────────────────── */
+
+.comparisonSection {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.comparisonTable {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.compRow {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  transition: background 0.15s ease;
+}
+
+.compRow:last-child {
+  border-bottom: none;
+}
+
+.compRow:not(.compHeader):hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.compHeader {
+  background: var(--ifm-color-emphasis-100);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.compCell {
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.compCell:last-child {
+  border-right: none;
+}
+
+.compLabel {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compIcon {
+  font-size: 0.9rem;
+}
+
+.compBefore {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.compAfter {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .compAfter {
+  color: #4ade80;
+}
+
+/* ─── Checklist ──────────────────────────────────────────────── */
+
+.checklistSection {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.checkProgress {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+  margin-left: auto;
+  background: rgba(26, 86, 219, 0.08);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.progressBar {
+  height: 4px;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ifm-color-primary), #22c55e);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.checklistList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checklistItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.checklistItem:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.checklistDone {
+  opacity: 0.6;
+}
+
+.checklistDone .checkText {
+  text-decoration: line-through;
+}
+
+.checkbox {
+  font-size: 1.1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  color: var(--ifm-color-emphasis-400);
+}
+
+.checklistDone .checkbox {
+  color: #22c55e;
+}
+
+.checkText {
+  flex: 1;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .panels[data-view='side-by-side'] {
+    flex-direction: column;
+  }
+
+  .arrowDivider {
+    width: auto;
+    height: 32px;
+    flex-direction: row;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  }
+
+  .arrowLine {
+    width: auto;
+    height: 2px;
+  }
+
+  .arrowIcon {
+    transform: rotate(90deg);
+  }
+
+  .compRow {
+    grid-template-columns: 1fr;
+  }
+
+  .compHeader .compCell:not(:first-child) {
+    display: none;
+  }
+
+  .compRow:not(.compHeader) .compCell {
+    padding: 4px 12px;
+  }
+
+  .compRow:not(.compHeader) .compCell:first-child {
+    padding-top: 8px;
+    font-weight: 700;
+  }
+
+  .compRow:not(.compHeader) .compCell:last-child {
+    padding-bottom: 8px;
+  }
+
+  .compCell {
+    border-right: none;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tabs {
+    gap: 0;
+  }
+
+  .tab {
+    font-size: 0.75rem;
+    padding: 8px 10px;
+  }
+}
+
+/* ─── Print ──────────────────────────────────────────────────── */
+
+@media print {
+  .container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .tabs {
+    display: none;
+  }
+
+  .panels {
+    flex-direction: column !important;
+  }
+
+  .arrowDivider {
+    display: none;
+  }
+
+  .checklistItem {
+    cursor: default;
+  }
+}
