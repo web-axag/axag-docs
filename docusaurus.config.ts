@@ -38,13 +38,6 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/web-axag/axag-docs/tree/main/',
-          versions: {
-            current: {
-              label: '0.1.0-draft',
-              path: '',
-              banner: 'unreleased',
-            },
-          },
           remarkPlugins: [],
           rehypePlugins: [],
         },
@@ -106,11 +99,6 @@ const config: Config = {
           to: '/docs/reference/schema-reference',
           label: 'Reference',
           position: 'left',
-        },
-        {
-          type: 'docsVersionDropdown',
-          position: 'right',
-          dropdownActiveClassDisabled: true,
         },
         {
           href: 'https://github.com/web-axag/axag-docs',

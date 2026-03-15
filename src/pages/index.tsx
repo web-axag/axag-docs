@@ -67,10 +67,6 @@ function HomepageHero() {
   return (
     <header className={styles.hero}>
       <div className="container">
-        <div className={styles.heroBadge}>
-          <span className={styles.heroBadgeDot} />
-          v0.1.0-draft — Open Standard
-        </div>
         <div className={styles.heroLogoRow}>
           <img
             src="/img/axag-logo.svg"
