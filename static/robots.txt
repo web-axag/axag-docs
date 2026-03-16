@@ -1,0 +1,5 @@
+# axag.org robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://axag.org/sitemap.xml

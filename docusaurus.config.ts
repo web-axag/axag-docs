@@ -17,6 +17,31 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'AXAG Standard',
+        alternateName: 'Agent Context Annotation Guidelines',
+        url: 'https://axag.org',
+        description:
+          'An open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
+        publisher: {
+          '@type': 'Organization',
+          name: 'AXAG Standard Contributors',
+          url: 'https://github.com/web-axag',
+        },
+      }),
+    },
+    {
+      tagName: 'link',
+      attributes: { rel: 'canonical', href: 'https://axag.org' },
+    },
+  ],
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -38,6 +63,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/web-axag/axag-docs/tree/main/',
+          showLastUpdateTime: true,
           remarkPlugins: [],
           rehypePlugins: [],
         },
@@ -203,13 +229,39 @@ const config: Config = {
 
     metadata: [
       {
-        name: 'keywords',
-        content: 'AXAG, agent experience, semantic contract, MCP, AI agents, accessibility, web standards',
+        name: 'description',
+        content: 'AXAG (Agent Context Annotation Guidelines) is an open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
       },
       {
-        name: 'og:description',
-        content: 'AXAG Standard — Designing Interfaces for AI Agents as First-Class Clients',
+        name: 'keywords',
+        content: 'AXAG, Agent Context Annotation Guidelines, agent experience, semantic contract, MCP, Model Context Protocol, AI agents, accessibility, web standards, semantic HTML, agent-first design',
       },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: 'AXAG Standard' },
+      {
+        property: 'og:title',
+        content: 'AXAG Standard — Agent Context Annotation Guidelines',
+      },
+      {
+        property: 'og:description',
+        content: 'An open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
+      },
+      { property: 'og:url', content: 'https://axag.org' },
+      { property: 'og:image', content: 'https://axag.org/img/axag-social-card.png' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      {
+        name: 'twitter:title',
+        content: 'AXAG Standard — Agent Context Annotation Guidelines',
+      },
+      {
+        name: 'twitter:description',
+        content: 'An open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
+      },
+      { name: 'twitter:image', content: 'https://axag.org/img/axag-social-card.png' },
+      { name: 'robots', content: 'index, follow' },
+      { name: 'author', content: 'AXAG Standard Contributors' },
     ],
   } satisfies Preset.ThemeConfig,
 };
