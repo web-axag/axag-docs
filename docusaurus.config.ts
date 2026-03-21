@@ -127,6 +127,11 @@ const config: Config = {
           position: 'left',
         },
         {
+          href: 'https://cli.axag.org',
+          label: 'CLI',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/web-axag/axag-docs',
           position: 'right',
           className: 'header-github-link',
