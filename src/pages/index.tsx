@@ -230,6 +230,12 @@ function HomepageCTA() {
           </Link>
           <Link
             className="button button--outline button--lg"
+            to="https://cli.axag.org"
+          >
+            ⚡ Try the CLI
+          </Link>
+          <Link
+            className="button button--outline button--lg"
             to="https://github.com/web-axag/axag-docs"
           >
             ⭐ Star on GitHub

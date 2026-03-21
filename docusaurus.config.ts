@@ -163,6 +163,7 @@ const config: Config = {
             { label: 'Governance', to: '/docs/governance/ownership-model' },
             { label: 'GitHub (Docs)', href: 'https://github.com/web-axag/axag-docs' },
             { label: 'GitHub (CLI)', href: 'https://github.com/axag-cli/axag-cli' },
+            { label: 'axag-cli', href: 'https://cli.axag.org' },
             { label: 'Discussions', href: 'https://github.com/web-axag/axag-docs/discussions' },
           ],
         },
