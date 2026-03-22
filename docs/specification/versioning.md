@@ -16,7 +16,7 @@ The AXAG specification follows semantic versioning: `MAJOR.MINOR.PATCH`.
 ## Annotation Versioning
 Annotations MAY declare the specification version they conform to:
 ```html
-<button axag-version="0.1.0" axag-intent="product.search" ...>Search</button>
+<button axag-version="1.0.0" axag-intent="product.search" ...>Search</button>
 ```
 
 ## Backward Compatibility

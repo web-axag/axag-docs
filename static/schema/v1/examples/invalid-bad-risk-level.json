@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-03-21T10:00:00Z",
+  "source": {
+    "tool": "axag-cli",
+    "tool_version": "1.0.0"
+  },
+  "conformance": "basic",
+  "actions": [
+    {
+      "intent": "account.delete",
+      "entity": "account",
+      "action_type": "delete",
+      "description": "Delete account",
+      "risk_level": "extreme"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-03-21T10:00:00Z",
+  "source": {
+    "tool": "axag-cli",
+    "tool_version": "1.0.0",
+    "paths": ["src/"]
+  },
+  "conformance": "basic",
+  "actions": [
+    {
+      "intent": "product.search",
+      "entity": "product",
+      "action_type": "read",
+      "description": "Search the product catalogue"
+    },
+    {
+      "intent": "cart.add_item",
+      "entity": "cart",
+      "action_type": "write",
+      "description": "Add an item to the shopping cart"
+    }
+  ]
+}

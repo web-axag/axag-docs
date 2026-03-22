@@ -13,7 +13,7 @@ Complete field reference for the AXAG Semantic Manifest JSON document.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `version` | string | MUST | Spec version (e.g., `"0.1.0-draft"`) |
+| `version` | string | MUST | Spec version (e.g., `"1.0.0"`) |
 | `entities` | Entity[] | MUST | Array of entity definitions |
 | `metadata` | Metadata | MAY | Generation metadata |
 
@@ -77,7 +77,7 @@ Complete field reference for the AXAG Semantic Manifest JSON document.
 
 ```json
 {
-  "version": "0.1.0-draft",
+  "version": "1.0.0",
   "metadata": {
     "generator": "axag-cli",
     "generated_at": "2024-01-15T10:30:00Z",

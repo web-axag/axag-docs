@@ -98,7 +98,7 @@ function generateManifest(parsed: ParsedAnnotation): object | null {
   if (!parsed.intent) return null;
 
   const manifest: any = {
-    $schema: 'https://axag.dev/schema/v1/manifest.json',
+    $schema: 'https://axag.org/schema/v1/manifest.json',
     intent: parsed.intent,
   };
 

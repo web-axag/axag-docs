@@ -22,7 +22,7 @@ The manifest:
 
 ```json title="axag-manifest.json — example structure" showLineNumbers
 {
-  "version": "0.1.0",
+  "version": "1.0.0",
   "conformance_level": "intermediate",
   "generated_at": "2026-03-14T10:00:00Z",
   "source": "ecommerce-app",

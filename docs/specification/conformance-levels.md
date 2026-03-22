@@ -27,7 +27,7 @@ Suitable for: regulated industries, high-trust agent interactions, enterprise st
 Implementations SHOULD declare their conformance level in the Semantic Manifest:
 ```json
 {
-  "version": "0.1.0",
+  "version": "1.0.0",
   "conformance_level": "intermediate",
   "operations": ["product.search", "product.create"]
 }

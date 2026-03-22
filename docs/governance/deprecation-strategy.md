@@ -68,5 +68,5 @@ npx axag-lint src/ --check-deprecations
 # Output
 ⚠️ DEPRECATED: axag-side-effects at src/Cart.tsx:42
    Use axag-postconditions instead (removal in v1.0.0)
-   Migration: https://axag.dev/docs/governance/deprecation-strategy#migration-guides
+   Migration: https://axag.org/docs/governance/deprecation-strategy#migration-guides
 ```

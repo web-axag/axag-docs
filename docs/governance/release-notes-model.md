@@ -16,7 +16,7 @@ Every AXAG specification release includes structured release notes that communic
 
 **Release Date**: 2024-07-01
 **Status**: Stable
-**Previous Version**: 0.1.0
+**Previous Version**: 1.0.0
 
 ## Highlights
 - Brief summary of the most important changes
@@ -84,7 +84,7 @@ The project maintains a `CHANGELOG.md` following [Keep a Changelog](https://keep
 ### Fixed
 - Schema validation for nested parameter objects
 
-## [0.1.0] - 2024-01-15
+## [1.0.0] - 2024-01-15
 ### Added
 - Initial specification draft
 - Core annotation attributes

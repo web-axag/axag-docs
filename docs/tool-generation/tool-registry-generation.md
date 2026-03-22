@@ -11,7 +11,7 @@ The Tool Registry is a collection of all MCP tool definitions generated from the
 ## Registry Structure
 ```json title="Tool registry structure"
 {
-  "registry_version": "0.1.0",
+  "registry_version": "1.0.0",
   "generated_at": "2026-03-14T10:00:00Z",
   "source_manifest": "ecommerce-app",
   "tools": [

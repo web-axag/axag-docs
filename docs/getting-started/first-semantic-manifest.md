@@ -35,7 +35,7 @@ The generated Semantic Manifest entry is:
 
 ```json title="axag-manifest.json — generated output" showLineNumbers
 {
-  "version": "0.1.0",
+  "version": "1.0.0",
   "generated_at": "2026-03-14T00:00:00Z",
   "source": "product-search-page",
   "operations": [

@@ -1,7 +1,7 @@
 # AXAG — Agent Context Annotation Guidelines
 
 [![Build](https://img.shields.io/github/actions/workflow/status/me-saurabhkohli/mcp-agentify/ci.yml?branch=main&label=build)](https://github.com/me-saurabhkohli/mcp-agentify/actions)
-[![Version](https://img.shields.io/badge/version-0.1.0--draft-orange)](https://axag.dev)
+[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://axag.org)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 **AXAG** is a semantic annotation standard that makes web UIs machine-readable for AI agents. Instead of scraping ambiguous HTML, agents consume structured semantic manifests generated from AXAG annotations.

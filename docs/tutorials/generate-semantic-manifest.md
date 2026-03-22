@@ -35,9 +35,9 @@ The scanner:
 
 ```json title="axag-manifest.json" showLineNumbers
 {
-  "version": "0.1.0-draft",
+  "version": "1.0.0",
   "metadata": {
-    "generator": "@axag/cli@0.1.0",
+    "generator": "@axag/cli@1.0.0",
     "generated_at": "2024-01-15T10:30:00Z",
     "source_files": ["src/SearchPage.tsx", "src/CartPage.tsx", "src/AdminPage.tsx"]
   },

@@ -16,7 +16,7 @@ The canonical AXAG manifest schema is a JSON Schema document:
 ```json title="AXAG Manifest JSON Schema" showLineNumbers
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://axag.dev/schema/manifest/0.1.0-draft",
+  "$id": "https://axag.org/schema/manifest/1.0.0",
   "title": "AXAG Semantic Manifest",
   "type": "object",
   "required": ["version", "entities"],
@@ -105,7 +105,7 @@ Intermediate + preconditions/postconditions, side-effects, approval roles, error
 npx axag-validate-manifest axag-manifest.json
 
 # Validate with specific schema version
-npx axag-validate-manifest axag-manifest.json --schema-version 0.1.0-draft
+npx axag-validate-manifest axag-manifest.json --schema-version 1.0.0
 
 # Check conformance level
 npx axag-conformance --manifest axag-manifest.json --level full --verbose

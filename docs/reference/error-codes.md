@@ -63,7 +63,7 @@ These codes are returned by AXAG-aware runtimes when contract violations occur.
       "failed_precondition": "cart must have at least one item",
       "suggestion": "Add items to cart using cart.add_item before beginning checkout"
     },
-    "documentation_url": "https://axag.dev/docs/reference/error-codes#AXAG_PRECONDITION_FAILED"
+    "documentation_url": "https://axag.org/docs/reference/error-codes#AXAG_PRECONDITION_FAILED"
   }
 }
 ```

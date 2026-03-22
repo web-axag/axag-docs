@@ -18,11 +18,11 @@ MAJOR.MINOR.PATCH[-PRERELEASE]
 - **MAJOR**: Breaking changes to required fields or fundamental semantics
 - **MINOR**: New optional fields, new conformance rules, new lint rules
 - **PATCH**: Documentation fixes, typo corrections, schema bug fixes
-- **PRERELEASE**: Draft versions (e.g., `0.1.0-draft`)
+- **PRERELEASE**: Draft versions (e.g., `1.0.0-rc.1`)
 
 ## Current Version
 
-The current AXAG specification version is **0.1.0-draft**.
+The current AXAG specification version is **1.0.0**.
 
 ## Version Lifecycle
 
@@ -50,7 +50,7 @@ Each Semantic Manifest includes a version field:
 
 ```json
 {
-  "version": "0.1.0-draft",
+  "version": "1.0.0",
   "entities": ["product", "cart", "order"]
 }
 ```

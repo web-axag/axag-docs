@@ -161,7 +161,7 @@ JSON-LD is an alternative annotation format being evaluated for future specifica
 ```html
 <script type="application/ld+json">
 {
-  "@context": "https://axag.dev/schema/v1",
+  "@context": "https://axag.org/schema/v1",
   "@type": "AXAGAnnotation",
   "intent": "product.search",
   "entity": "product",

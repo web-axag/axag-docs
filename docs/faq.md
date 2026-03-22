@@ -23,7 +23,7 @@ No. AXAG annotations are HTML data attributes that layer on top of any framework
 
 ### Is AXAG an official W3C standard?
 
-Not yet. AXAG is a proposed community standard currently at **v0.1.0-draft**. The goal is to evolve it through community adoption and eventually pursue formal standardisation.
+Not yet. AXAG is a proposed community standard currently at **v1.0.0**. The goal is to evolve it through community adoption and eventually pursue formal standardisation.
 
 ---
 
