@@ -11,7 +11,7 @@ slug: /faq
 
 ### What does AXAG stand for?
 
-**Agent Context Annotation Guidelines.** AXAG is a semantic annotation standard that makes web UIs machine-readable so AI agents can operate them without scraping.
+**Agent Experience Accessibility Guidelines.** AXAG is a semantic annotation standard that makes web UIs machine-readable so AI agents can operate them without scraping.
 
 ### How is AXAG different from WCAG?
 

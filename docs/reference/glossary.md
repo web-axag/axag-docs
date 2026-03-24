@@ -25,7 +25,7 @@ Canonical definitions of terms used throughout the AXAG specification.
 
 **Approval** — A gate that requires authorization from a designated role before an action can execute. Stronger than confirmation.
 
-**AXAG** — Agent Context Annotation Guidelines. The specification that defines how to annotate web interfaces for agent consumption.
+**AXAG** — Agent Experience Accessibility Guidelines. The specification that defines how to annotate web interfaces for agent consumption.
 
 ## C
 

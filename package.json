@@ -1,7 +1,7 @@
 {
   "name": "axag-docs",
-  "version": "1.0.0",
-  "description": "AXAG Standard Documentation — Agent Context Annotation Guidelines",
+  "version": "1.0.1",
+  "description": "AXAG Standard Documentation — Agent Experience Accessibility Guidelines",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",

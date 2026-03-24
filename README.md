@@ -1,4 +1,4 @@
-# AXAG — Agent Context Annotation Guidelines
+# AXAG — Agent Experience Accessibility Guidelines
 
 [![Build](https://img.shields.io/github/actions/workflow/status/me-saurabhkohli/mcp-agentify/ci.yml?branch=main&label=build)](https://github.com/me-saurabhkohli/mcp-agentify/actions)
 [![Version](https://img.shields.io/badge/version-1.0.0-green)](https://axag.org)

@@ -80,7 +80,7 @@ function HomepageHero() {
             <span className={styles.heroTitleSub}>Standard</span>
           </h1>
         </div>
-        <p className={styles.heroSubtitle}>Agent Context Annotation Guidelines</p>
+        <p className={styles.heroSubtitle}>Agent Experience Accessibility Guidelines</p>
         <div className={styles.typewriterContainer}>
           <span className={styles.typewriterText}>{typedText}</span>
           <span className={styles.typewriterCursor}>|</span>
@@ -250,7 +250,7 @@ function HomepageCTA() {
 export default function Home(): JSX.Element {
   return (
     <Layout
-      title="AXAG Standard — Agent Context Annotation Guidelines"
+      title="AXAG Standard — Agent Experience Accessibility Guidelines"
       description="A semantic contract standard that makes human interfaces machine-readable for AI agents. Eliminate scraping. Ship semantic contracts."
     >
       <NetBackground />

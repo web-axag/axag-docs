@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'AXAG Standard',
-  tagline: 'Agent Context Annotation Guidelines — Designing Interfaces for AI Agents as First-Class Clients',
+  tagline: 'Agent Experience Accessibility Guidelines — Designing Interfaces for AI Agents as First-Class Clients',
   favicon: 'img/favicon.svg',
 
   url: 'https://axag.org',
@@ -25,7 +25,7 @@ const config: Config = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'AXAG Standard',
-        alternateName: 'Agent Context Annotation Guidelines',
+        alternateName: 'Agent Experience Accessibility Guidelines',
         url: 'https://axag.org',
         description:
           'An open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
@@ -236,17 +236,17 @@ const config: Config = {
     metadata: [
       {
         name: 'description',
-        content: 'AXAG (Agent Context Annotation Guidelines) is an open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
+        content: 'AXAG (Agent Experience Accessibility Guidelines) is an open standard for designing web interfaces that AI agents can understand and interact with as first-class clients.',
       },
       {
         name: 'keywords',
-        content: 'AXAG, Agent Context Annotation Guidelines, agent experience, semantic contract, MCP, Model Context Protocol, AI agents, accessibility, web standards, semantic HTML, agent-first design',
+        content: 'AXAG, Agent Experience Accessibility Guidelines, agent experience, semantic contract, MCP, Model Context Protocol, AI agents, accessibility, web standards, semantic HTML, agent-first design',
       },
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: 'AXAG Standard' },
       {
         property: 'og:title',
-        content: 'AXAG Standard — Agent Context Annotation Guidelines',
+        content: 'AXAG Standard — Agent Experience Accessibility Guidelines',
       },
       {
         property: 'og:description',
@@ -259,7 +259,7 @@ const config: Config = {
       { name: 'twitter:card', content: 'summary_large_image' },
       {
         name: 'twitter:title',
-        content: 'AXAG Standard — Agent Context Annotation Guidelines',
+        content: 'AXAG Standard — Agent Experience Accessibility Guidelines',
       },
       {
         name: 'twitter:description',
