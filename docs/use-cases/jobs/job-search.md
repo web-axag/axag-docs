@@ -45,52 +45,67 @@ Job search involves querying listings by keywords, location, experience level, s
 {
   "intent": "job.search",
   "entity": "job_listing",
-  "operation_id": "job_search",
   "action_type": "read",
-  "parameters": {
-    "query": { "type": "string", "required": true },
-    "location": { "type": "string", "required": false },
-    "job_type": {
+  "operation_id": "job_search",
+  "description": "Search for job listings matching criteria",
+  "required_parameters": [{ "name": "query", "type": "string" }],
+  "optional_parameters": [
+    { "name": "location", "type": "string" },
+    {
+      "name": "job_type",
       "type": "string",
-      "required": false,
-      "enum": ["full_time","part_time","contract","internship","freelance"]
+      "enum": ["full_time", "part_time", "contract", "internship", "freelance"]
     },
-    "experience_level": {
+    {
+      "name": "experience_level",
       "type": "string",
-      "required": false,
-      "enum": ["entry","mid","senior","lead","executive"]
+      "enum": ["entry", "mid", "senior", "lead", "executive"]
     },
-    "salary_min": { "type": "number", "required": false, "minimum": 0 },
-    "salary_max": { "type": "number", "required": false, "minimum": 0 },
-    "remote": { "type": "boolean", "required": false },
-    "posted_within_days": { "type": "integer", "required": false, "minimum": 1 },
-    "page": { "type": "integer", "required": false, "minimum": 1 }
-  },
-  "scope": "public",
+    { "name": "salary_min", "type": "number", "min": 0 },
+    { "name": "salary_max", "type": "number", "min": 0 },
+    { "name": "remote", "type": "boolean" },
+    { "name": "posted_within_days", "type": "integer", "min": 1 },
+    { "name": "page", "type": "integer", "min": 1 }
+  ],
   "risk_level": "none",
-  "idempotent": true
+  "idempotent": true,
+  "scope": "public"
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — job_search"
 {
-  "tool_name": "job_search",
+  "name": "job_search",
   "description": "Search for job listings matching criteria",
   "input_schema": {
     "type": "object",
     "properties": {
       "query": { "type": "string" },
       "location": { "type": "string" },
-      "job_type": { "type": "string", "enum": ["full_time","part_time","contract","internship","freelance"] },
-      "experience_level": { "type": "string", "enum": ["entry","mid","senior","lead","executive"] },
+      "job_type": {
+        "type": "string",
+        "enum": ["full_time", "part_time", "contract", "internship", "freelance"]
+      },
+      "experience_level": {
+        "type": "string",
+        "enum": ["entry", "mid", "senior", "lead", "executive"]
+      },
       "salary_min": { "type": "number", "minimum": 0 },
       "salary_max": { "type": "number", "minimum": 0 },
       "remote": { "type": "boolean" }
     },
     "required": ["query"]
   },
-  "safety": { "risk_level": "none", "idempotent": true }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "job.search",
+    "source_entity": "job_listing"
+  }
 }
 ```
 

@@ -96,25 +96,27 @@ Here is the complete transformation path for a single UI element:
 {
   "intent": "checkout.begin",
   "entity": "order",
-  "operation": "begin_checkout",
-  "parameters": {
-    "cart_id": { "type": "string", "required": true },
-    "payment_method_id": { "type": "string", "required": true },
-    "shipping_address_id": { "type": "string", "required": true }
-  },
-  "preconditions": ["cart_validated", "inventory_reserved"],
-  "postconditions": ["checkout_session_created"],
+  "action_type": "write",
+  "operation_id": "checkout_begin",
+  "description": "Start checkout for a validated cart and create a checkout session.",
+  "required_parameters": [
+    { "name": "cart_id", "type": "string" },
+    { "name": "payment_method_id", "type": "string" },
+    { "name": "shipping_address_id", "type": "string" }
+  ],
+  "optional_parameters": [],
   "risk_level": "high",
+  "confirmation_required": true,
   "scope": "user",
-  "execution_type": "write",
-  "confirmation_required": true
+  "preconditions": ["cart_validated", "inventory_reserved"],
+  "postconditions": ["checkout_session_created"]
 }
 ```
 
 ### Step 4: Generate MCP Tool Definition
-```json title="MCP tool definition — begin_checkout" showLineNumbers
+```json title="MCP tool definition — checkout_begin" showLineNumbers
 {
-  "tool_name": "begin_checkout",
+  "name": "checkout_begin",
   "description": "Start checkout for a validated cart and create a checkout session.",
   "input_schema": {
     "type": "object",
@@ -125,17 +127,21 @@ Here is the complete transformation path for a single UI element:
     },
     "required": ["cart_id", "payment_method_id", "shipping_address_id"]
   },
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "high",
-    "confirmation_required": true
+    "idempotent": false,
+    "confirmation_required": true,
+    "approval_required": false,
+    "source_intent": "checkout.begin",
+    "source_entity": "order"
   }
 }
 ```
 
 ### Step 5: Agent Invokes the Tool
 The agent runtime:
-1. Discovers `begin_checkout` in the tool registry
+1. Discovers `checkout_begin` in the tool registry
 2. Validates that `cart_id`, `payment_method_id`, and `shipping_address_id` are provided
 3. Checks that `cart_validated` and `inventory_reserved` preconditions are met
 4. Notes that this is a high-risk mutating operation requiring confirmation

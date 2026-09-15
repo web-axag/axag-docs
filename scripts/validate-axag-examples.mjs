@@ -14,6 +14,8 @@
 
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { join, extname } from 'path';
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
 
 const DOCS_DIR = join(process.cwd(), 'docs');
 const REQUIRED_ATTRIBUTES = ['axag-intent', 'axag-entity', 'axag-action-type'];
@@ -33,6 +35,37 @@ let totalHtmlBlocks = 0;
 let jsonErrors = 0;
 let htmlWarnings = 0;
 let passed = 0;
+let schemaChecked = 0;
+
+const schema = JSON.parse(readFileSync(join(process.cwd(), 'static/schema/v1.1/axag-manifest.schema.json'), 'utf-8'));
+const ajv = new Ajv({ allErrors: true, strict: false });
+addFormats(ajv);
+const validateManifest = ajv.compile(schema);
+const validateAction = ajv.compile({ ...schema, $id: undefined, ...schema.definitions.Action, definitions: schema.definitions });
+const TOOL_METADATA_REQUIRED = [
+  'action_type', 'risk_level', 'idempotent', 'confirmation_required', 'approval_required', 'source_intent', 'source_entity',
+];
+
+/** Schema-check blocks that are a whole manifest, a whole action, or a whole tool. Excerpts are skipped. */
+function schemaErrors(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+  if ('version' in value && 'actions' in value && 'generated_at' in value) {
+    schemaChecked++;
+    return validateManifest(value) ? [] : validateManifest.errors.map(e => `${e.instancePath} ${e.message}`);
+  }
+  if (typeof value.intent === 'string' && 'action_type' in value && 'required_parameters' in value) {
+    schemaChecked++;
+    return validateAction(value) ? [] : validateAction.errors.map(e => `${e.instancePath} ${e.message}`);
+  }
+  if (typeof value.name === 'string' && value.input_schema && Object.keys(value.metadata ?? {}).length > 0) {
+    schemaChecked++;
+    const missing = TOOL_METADATA_REQUIRED.filter(k => !(k in value.metadata));
+    return missing.length ? [`/metadata missing ${missing.join(', ')}`] : [];
+  }
+  if (Array.isArray(value.actions)) return value.actions.flatMap(schemaErrors);
+  if (Array.isArray(value.tools)) return value.tools.flatMap(schemaErrors);
+  return [];
+}
 
 function getFiles(dir) {
   const files = [];
@@ -49,7 +82,8 @@ function getFiles(dir) {
 }
 
 function extractCodeBlocks(content, lang) {
-  const regex = new RegExp('```' + lang + '\\n([\\s\\S]*?)```', 'g');
+  // Allow a title or other meta after the language: ```json title="..."
+  const regex = new RegExp('```' + lang + '(?:[ \\t][^\\n]*)?\\n([\\s\\S]*?)```', 'g');
   const blocks = [];
   let match;
   while ((match = regex.exec(content)) !== null) {
@@ -67,7 +101,13 @@ function getLineNumber(content, index) {
 
 function validateJsonBlock(code, file, line) {
   try {
-    JSON.parse(code);
+    const errors = schemaErrors(JSON.parse(code));
+    if (errors.length > 0) {
+      console.error(`❌ Schema violation in ${file}:${line}`);
+      for (const err of errors.slice(0, 5)) console.error(`   ${err}`);
+      jsonErrors++;
+      return false;
+    }
     passed++;
     return true;
   } catch (e) {
@@ -141,6 +181,7 @@ console.log(`   Files scanned:     ${totalFiles}`);
 console.log(`   JSON blocks:       ${totalJsonBlocks} (${jsonErrors} errors)`);
 console.log(`   HTML blocks:       ${totalHtmlBlocks} (${htmlWarnings} warnings)`);
 console.log(`   JSON blocks valid: ${passed}/${totalJsonBlocks}`);
+console.log(`   Schema-checked:    ${schemaChecked} manifests, actions and tools`);
 
 if (jsonErrors > 0 || (STRICT_MODE && htmlWarnings > 0)) {
   console.log('\n❌ Validation failed');

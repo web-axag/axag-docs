@@ -12,21 +12,21 @@ Each MCP tool has a signature consisting of: name, description, input schema, an
 
 ```json title="MCP tool signature — product_search" showLineNumbers
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalogue",
   "input_schema": {
     "type": "object",
-    "properties": {
-      "query": { "type": "string", "description": "Search query" }
-    },
+    "properties": { "query": { "type": "string", "description": "Search query" } },
     "required": ["query"]
   },
-  "safety": {
-    "execution_type": "read",
+  "metadata": {
+    "action_type": "read",
     "risk_level": "none",
     "idempotent": true,
     "confirmation_required": false,
-    "approval_required": false
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
   }
 }
 ```

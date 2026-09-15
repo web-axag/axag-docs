@@ -44,13 +44,14 @@ Building audience segments involves composing filter rules (demographics, behavi
 {
   "intent": "audience.create_segment",
   "entity": "audience_segment",
-  "operation_id": "audience_create_segment",
   "action_type": "write",
-  "parameters": {
-    "name": { "type": "string", "required": true, "maxLength": 100 },
-    "rules": {
+  "operation_id": "audience_create_segment",
+  "description": "Create a reusable audience segment with filter rules",
+  "required_parameters": [
+    { "name": "name", "type": "string", "maxLength": 100 },
+    {
+      "name": "rules",
       "type": "object",
-      "required": true,
       "properties": {
         "operator": { "type": "string", "enum": ["AND", "OR"] },
         "conditions": {
@@ -59,16 +60,21 @@ Building audience segments involves composing filter rules (demographics, behavi
             "type": "object",
             "properties": {
               "field": { "type": "string" },
-              "operator": { "type": "string", "enum": ["equals","not_equals","contains","gt","lt","between","in"] },
+              "operator": {
+                "type": "string",
+                "enum": ["equals", "not_equals", "contains", "gt", "lt", "between", "in"]
+              },
               "value": {}
             }
           }
         }
       }
-    },
-    "description": { "type": "string", "required": false },
-    "tags": { "type": "array", "required": false, "items": { "type": "string" } }
-  },
+    }
+  ],
+  "optional_parameters": [
+    { "name": "description", "type": "string" },
+    { "name": "tags", "type": "array", "items": { "type": "string" } }
+  ],
   "risk_level": "none",
   "idempotent": false
 }
@@ -77,7 +83,7 @@ Building audience segments involves composing filter rules (demographics, behavi
 ## Generated Tool Example
 ```json title="Tool — audience_create_segment"
 {
-  "tool_name": "audience_create_segment",
+  "name": "audience_create_segment",
   "description": "Create a reusable audience segment with filter rules",
   "input_schema": {
     "type": "object",
@@ -86,26 +92,37 @@ Building audience segments involves composing filter rules (demographics, behavi
       "rules": {
         "type": "object",
         "properties": {
-          "operator": { "type": "string", "enum": ["AND","OR"] },
+          "operator": { "type": "string", "enum": ["AND", "OR"] },
           "conditions": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "field": { "type": "string" },
-                "operator": { "type": "string", "enum": ["equals","not_equals","contains","gt","lt","between","in"] },
+                "operator": {
+                  "type": "string",
+                  "enum": ["equals", "not_equals", "contains", "gt", "lt", "between", "in"]
+                },
                 "value": {}
               },
-              "required": ["field","operator","value"]
+              "required": ["field", "operator", "value"]
             }
           }
         },
-        "required": ["operator","conditions"]
+        "required": ["operator", "conditions"]
       }
     },
-    "required": ["name","rules"]
+    "required": ["name", "rules"]
   },
-  "safety": { "risk_level": "none", "idempotent": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "none",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "audience.create_segment",
+    "source_entity": "audience_segment"
+  }
 }
 ```
 

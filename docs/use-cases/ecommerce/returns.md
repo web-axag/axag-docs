@@ -48,13 +48,14 @@ Initiating a return involves selecting an order, choosing items, specifying a re
 {
   "intent": "return.initiate",
   "entity": "return",
-  "operation_id": "return_initiate",
   "action_type": "write",
-  "parameters": {
-    "order_id": { "type": "string", "required": true },
-    "items": {
+  "operation_id": "return_initiate",
+  "description": "Initiate a return for one or more items from an order",
+  "required_parameters": [
+    { "name": "order_id", "type": "string" },
+    {
+      "name": "items",
       "type": "array",
-      "required": true,
       "items": {
         "type": "object",
         "properties": {
@@ -63,27 +64,29 @@ Initiating a return involves selecting an order, choosing items, specifying a re
         }
       }
     },
-    "reason": {
+    {
+      "name": "reason",
       "type": "string",
-      "required": true,
       "enum": ["defective", "wrong_item", "not_as_described", "changed_mind", "other"]
-    },
-    "notes": { "type": "string", "required": false, "maxLength": 1000 },
-    "evidence_urls": { "type": "array", "required": false, "items": { "type": "string" } }
-  },
-  "preconditions": ["order must be within return window", "items must not be final-sale"],
-  "postconditions": ["return request created", "refund processing initiated"],
+    }
+  ],
+  "optional_parameters": [
+    { "name": "notes", "type": "string", "maxLength": 1000 },
+    { "name": "evidence_urls", "type": "array", "items": { "type": "string" } }
+  ],
   "risk_level": "high",
   "confirmation_required": true,
   "idempotent": false,
-  "side_effects": ["refund_processing", "inventory_update"]
+  "side_effects": ["refund_processing", "inventory_update"],
+  "preconditions": ["order must be within return window", "items must not be final-sale"],
+  "postconditions": ["return request created", "refund processing initiated"]
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "return_initiate",
+  "name": "return_initiate",
   "description": "Initiate a return for one or more items from an order",
   "input_schema": {
     "type": "object",
@@ -102,18 +105,22 @@ Initiating a return involves selecting an order, choosing items, specifying a re
       },
       "reason": {
         "type": "string",
-        "enum": ["defective","wrong_item","not_as_described","changed_mind","other"]
+        "enum": ["defective", "wrong_item", "not_as_described", "changed_mind", "other"]
       },
       "notes": { "type": "string", "maxLength": 1000 }
     },
     "required": ["order_id", "items", "reason"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "write",
     "risk_level": "high",
-    "confirmation_required": true,
     "idempotent": false,
+    "confirmation_required": true,
+    "approval_required": false,
     "side_effects": ["refund_processing", "inventory_update"],
-    "preconditions": ["order must be within return window", "items must not be final-sale"]
+    "preconditions": ["order must be within return window", "items must not be final-sale"],
+    "source_intent": "return.initiate",
+    "source_entity": "return"
   }
 }
 ```

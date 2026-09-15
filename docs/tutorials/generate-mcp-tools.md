@@ -19,22 +19,18 @@ This tutorial shows how to generate Model Context Protocol (MCP) tool definition
 npx axag generate-tools --manifest axag-manifest.json --output tools/
 ```
 
-This produces individual tool files:
+This writes a single registry file, `tools/tool-registry.json`, and prints each tool with its parameter count and risk level:
 
-```bash title="Generated tool files"
+```bash title="Generated registry"
 tools/
-├── product_search.json
-├── cart_add_item.json
-├── cart_begin_checkout.json
-├── account_delete.json
-└── index.json          # Registry of all tools
+└── tool-registry.json   # { schema_version, generated_at, source_manifest, tools: [...] }
 ```
 
 ## Step 2: Review a Generated Tool
 
-```json title="tools/product_search.json" showLineNumbers
+```json title="tools/tool-registry.json — tools[0]" showLineNumbers
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalog",
   "input_schema": {
     "type": "object",
@@ -46,64 +42,75 @@ tools/
     },
     "required": ["query"]
   },
-  "safety": {
-    "execution_type": "read",
+  "metadata": {
+    "action_type": "read",
     "risk_level": "none",
-    "idempotent": true
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
   }
 }
 ```
 
 ## Step 3: Register Tools with MCP Server
 
+The registry's `input_schema` is plain JSON Schema, so it can be served directly with the low-level MCP SDK server:
+
 ```typescript title="server.ts" showLineNumbers
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import toolRegistry from "./tools/index.json";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import registry from "./tools/tool-registry.json" with { type: "json" };
 
-const server = new Server({
-  name: "my-axag-server",
-  version: "1.0.0",
-});
+const server = new Server(
+  { name: "my-axag-server", version: "1.0.0" },
+  { capabilities: { tools: {} } },
+);
 
-// Register all generated tools
-for (const tool of toolRegistry.tools) {
-  server.addTool({
-    name: tool.tool_name,
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: registry.tools.map((tool) => ({
+    name: tool.name,
     description: tool.description,
     inputSchema: tool.input_schema,
-    handler: async (params) => {
-      // Route to your API based on tool_name
-      return await apiRouter.handle(tool.tool_name, params);
-    },
-  });
-}
+  })),
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  // Route to your API based on the tool name
+  const result = await apiRouter.handle(request.params.name, request.params.arguments ?? {});
+  return { content: [{ type: "text", text: JSON.stringify(result) }] };
+});
+
+await server.connect(new StdioServerTransport());
 ```
 
 ## Step 4: Test with an Agent
 
 ```typescript title="agent-client.ts"
 // Agent discovers and uses the tool
-const tools = await mcpClient.listTools();
-const searchTool = tools.find(t => t.name === "product_search");
+const { tools } = await client.listTools();
+const searchTool = tools.find((t) => t.name === "product_search");
 
-const result = await mcpClient.callTool("product_search", {
-  query: "wireless headphones",
-  price_max: 100,
+const result = await client.callTool({
+  name: "product_search",
+  arguments: { query: "wireless headphones", price_max: 100 },
 });
 
-console.log(result); // Structured product data
+console.log(result.content); // Structured product data
 ```
 
 ## Step 5: Safety-Aware Execution
 
-For tools with safety metadata, implement gates:
+Safety fields live in each tool's `metadata`. Check them before dispatching a call:
 
 ```typescript title="safe-execution.ts" showLineNumbers
-async function safeToolCall(toolName, params) {
-  const tool = toolRegistry.tools.find(t => t.tool_name === toolName);
+async function safeToolCall(name, args) {
+  const tool = registry.tools.find((t) => t.name === name);
 
   // Check confirmation requirement
-  if (tool.safety.confirmation_required) {
+  if (tool.metadata.confirmation_required) {
     const confirmed = await promptUser(
       `This action requires confirmation: ${tool.description}. Proceed?`
     );
@@ -111,14 +118,18 @@ async function safeToolCall(toolName, params) {
   }
 
   // Check approval requirement
-  if (tool.safety.approval_required) {
-    const approval = await requestApproval(tool.safety.approval_roles);
+  if (tool.metadata.approval_required) {
+    const approval = await requestApproval(tool.metadata.approval_roles ?? []);
     if (!approval) return { error: "Approval not granted" };
   }
 
-  return await mcpClient.callTool(toolName, params);
+  return await client.callTool({ name, arguments: args });
 }
 ```
+
+:::warning
+Client-side checks only guide a cooperative agent. Enforce confirmation, approval and tenant boundaries on the server as well.
+:::
 
 ## Next Steps
 - [Add Validation to CI](/docs/tutorials/add-validation-to-ci)

@@ -21,7 +21,7 @@ Agent runtimes consume MCP tool registries through standard patterns.
 
 ## Invocation Pattern
 1. Validate parameters against `input_schema`
-2. Check preconditions from `safety`
+2. Check preconditions from `metadata`
 3. Request confirmation if `confirmation_required`
 4. Submit approval if `approval_required`
 5. Execute tool

@@ -21,7 +21,7 @@ The agent queries the MCP Tool Registry and finds:
 
 ```json title="Tool registry — product_search" showLineNumbers
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalog by text query with optional filters",
   "input_schema": {
     "type": "object",
@@ -33,11 +33,14 @@ The agent queries the MCP Tool Registry and finds:
     },
     "required": ["query"]
   },
-  "safety": {
-    "execution_type": "read",
+  "metadata": {
+    "action_type": "read",
     "risk_level": "none",
     "idempotent": true,
-    "confirmation_required": false
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
   }
 }
 ```

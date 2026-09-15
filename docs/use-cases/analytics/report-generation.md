@@ -47,49 +47,52 @@ Generating reports involves selecting data sources, date ranges, metrics, and ou
 {
   "intent": "report.generate",
   "entity": "report",
-  "operation_id": "report_generate",
   "action_type": "write",
-  "async": true,
-  "parameters": {
-    "report_type": {
+  "operation_id": "report_generate",
+  "description": "Generate an analytics report",
+  "required_parameters": [
+    {
+      "name": "report_type",
       "type": "string",
-      "required": true,
-      "enum": ["summary","detailed","comparison","trend"]
+      "enum": ["summary", "detailed", "comparison", "trend"]
     },
-    "date_range": {
+    {
+      "name": "date_range",
       "type": "object",
-      "required": true,
       "properties": {
         "start": { "type": "string", "format": "date" },
         "end": { "type": "string", "format": "date" }
       }
-    },
-    "metrics": { "type": "array", "required": false, "items": { "type": "string" } },
-    "dimensions": { "type": "array", "required": false, "items": { "type": "string" } },
-    "format": {
+    }
+  ],
+  "optional_parameters": [
+    { "name": "metrics", "type": "array", "items": { "type": "string" } },
+    { "name": "dimensions", "type": "array", "items": { "type": "string" } },
+    {
+      "name": "format",
       "type": "string",
-      "required": false,
-      "enum": ["pdf","csv","xlsx","json"],
+      "enum": ["pdf", "csv", "xlsx", "json"],
       "default": "json"
     },
-    "filters": { "type": "object", "required": false }
-  },
-  "postconditions": ["report generation job created"],
+    { "name": "filters", "type": "object" }
+  ],
   "risk_level": "low",
   "idempotent": false,
-  "scope": "tenant"
+  "async": true,
+  "scope": "tenant",
+  "postconditions": ["report generation job created"]
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "report_generate",
+  "name": "report_generate",
   "description": "Generate an analytics report (async — returns job ID)",
   "input_schema": {
     "type": "object",
     "properties": {
-      "report_type": { "type": "string", "enum": ["summary","detailed","comparison","trend"] },
+      "report_type": { "type": "string", "enum": ["summary", "detailed", "comparison", "trend"] },
       "date_range": {
         "type": "object",
         "properties": {
@@ -99,11 +102,20 @@ Generating reports involves selecting data sources, date ranges, metrics, and ou
         "required": ["start", "end"]
       },
       "metrics": { "type": "array", "items": { "type": "string" } },
-      "format": { "type": "string", "enum": ["pdf","csv","xlsx","json"], "default": "json" }
+      "format": { "type": "string", "enum": ["pdf", "csv", "xlsx", "json"], "default": "json" }
     },
     "required": ["report_type", "date_range"]
   },
-  "safety": { "risk_level": "low", "idempotent": false, "async": true }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "low",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "async": true,
+    "source_intent": "report.generate",
+    "source_entity": "report"
+  }
 }
 ```
 

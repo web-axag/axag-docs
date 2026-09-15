@@ -48,55 +48,52 @@ Scheduling interviews requires coordinating availability between candidates and 
 {
   "intent": "interview.schedule",
   "entity": "interview",
-  "operation_id": "interview_schedule",
   "action_type": "write",
-  "parameters": {
-    "application_id": { "type": "string", "required": true },
-    "slot_id": { "type": "string", "required": true },
-    "format": {
-      "type": "string",
-      "required": true,
-      "enum": ["video","phone","in_person"]
-    },
-    "interviewer_notes": { "type": "string", "required": false },
-    "candidate_timezone": { "type": "string", "required": false }
-  },
-  "preconditions": [
-    "application must be in interview stage",
-    "slot must be available"
+  "operation_id": "interview_schedule",
+  "description": "Schedule an interview for a job application",
+  "required_parameters": [
+    { "name": "application_id", "type": "string" },
+    { "name": "slot_id", "type": "string" },
+    { "name": "format", "type": "string", "enum": ["video", "phone", "in_person"] }
   ],
-  "postconditions": [
-    "interview scheduled",
-    "calendar invites sent to all participants"
+  "optional_parameters": [
+    { "name": "interviewer_notes", "type": "string" },
+    { "name": "candidate_timezone", "type": "string" }
   ],
   "risk_level": "medium",
   "confirmation_required": true,
   "idempotent": true,
-  "side_effects": ["calendar_invite", "email_notification"]
+  "side_effects": ["calendar_invite", "email_notification"],
+  "preconditions": ["application must be in interview stage", "slot must be available"],
+  "postconditions": ["interview scheduled", "calendar invites sent to all participants"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — interview_schedule"
 {
-  "tool_name": "interview_schedule",
+  "name": "interview_schedule",
   "description": "Schedule an interview for a job application",
   "input_schema": {
     "type": "object",
     "properties": {
       "application_id": { "type": "string" },
       "slot_id": { "type": "string" },
-      "format": { "type": "string", "enum": ["video","phone","in_person"] },
+      "format": { "type": "string", "enum": ["video", "phone", "in_person"] },
       "interviewer_notes": { "type": "string" },
       "candidate_timezone": { "type": "string" }
     },
     "required": ["application_id", "slot_id", "format"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "write",
     "risk_level": "medium",
-    "confirmation_required": true,
     "idempotent": true,
-    "side_effects": ["calendar_invite", "email_notification"]
+    "confirmation_required": true,
+    "approval_required": false,
+    "side_effects": ["calendar_invite", "email_notification"],
+    "source_intent": "interview.schedule",
+    "source_entity": "interview"
   }
 }
 ```

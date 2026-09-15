@@ -35,7 +35,7 @@ What the interaction is trying to accomplish. Example: `checkout.begin`, `produc
 The domain object being operated on. Example: `order`, `product`, `ticket`, `campaign`.
 
 ### Action Type
-The classification of the operation: `read`, `create`, `mutate`, `delete`, `navigate`.
+The classification of the operation: `read`, `write`, `delete`, `navigate`.
 
 ### Parameters
 The inputs required and optional for the operation, with type information and validation rules.

@@ -46,50 +46,60 @@ Creating a support ticket involves categorizing the issue, providing a descripti
 {
   "intent": "ticket.create",
   "entity": "ticket",
-  "operation_id": "ticket_create",
   "action_type": "write",
-  "parameters": {
-    "subject": { "type": "string", "required": true, "maxLength": 200 },
-    "description": { "type": "string", "required": true, "maxLength": 10000 },
-    "category": {
+  "operation_id": "ticket_create",
+  "description": "Create a new support ticket",
+  "required_parameters": [
+    { "name": "subject", "type": "string", "maxLength": 200 },
+    { "name": "description", "type": "string", "maxLength": 10000 },
+    {
+      "name": "category",
       "type": "string",
-      "required": true,
-      "enum": ["billing","technical","account","feature_request","bug_report","other"]
+      "enum": ["billing", "technical", "account", "feature_request", "bug_report", "other"]
     },
-    "priority": {
-      "type": "string",
-      "required": true,
-      "enum": ["low","medium","high","urgent"]
-    },
-    "attachment_urls": { "type": "array", "required": false, "items": { "type": "string", "format": "uri" } },
-    "tags": { "type": "array", "required": false, "items": { "type": "string" } },
-    "cc_emails": { "type": "array", "required": false, "items": { "type": "string", "format": "email" } }
-  },
-  "postconditions": ["ticket created", "routing rules applied", "SLA timer started"],
+    { "name": "priority", "type": "string", "enum": ["low", "medium", "high", "urgent"] }
+  ],
+  "optional_parameters": [
+    { "name": "attachment_urls", "type": "array", "items": { "type": "string", "format": "uri" } },
+    { "name": "tags", "type": "array", "items": { "type": "string" } },
+    { "name": "cc_emails", "type": "array", "items": { "type": "string", "format": "email" } }
+  ],
   "risk_level": "low",
   "idempotent": false,
-  "scope": "tenant"
+  "scope": "tenant",
+  "postconditions": ["ticket created", "routing rules applied", "SLA timer started"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — ticket_create"
 {
-  "tool_name": "ticket_create",
+  "name": "ticket_create",
   "description": "Create a new support ticket",
   "input_schema": {
     "type": "object",
     "properties": {
       "subject": { "type": "string", "maxLength": 200 },
       "description": { "type": "string", "maxLength": 10000 },
-      "category": { "type": "string", "enum": ["billing","technical","account","feature_request","bug_report","other"] },
-      "priority": { "type": "string", "enum": ["low","medium","high","urgent"] },
+      "category": {
+        "type": "string",
+        "enum": ["billing", "technical", "account", "feature_request", "bug_report", "other"]
+      },
+      "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"] },
       "attachment_urls": { "type": "array", "items": { "type": "string", "format": "uri" } },
       "tags": { "type": "array", "items": { "type": "string" } }
     },
     "required": ["subject", "description", "category", "priority"]
   },
-  "safety": { "risk_level": "low", "idempotent": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "low",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "ticket.create",
+    "source_entity": "ticket"
+  }
 }
 ```
 

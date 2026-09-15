@@ -47,11 +47,11 @@ const stages: Stage[] = [
     detail: 'The manifest maps to MCP-compatible tool definitions with input schemas, safety metadata, and execution constraints.',
     code: `{
   "name": "order_place",
-  "inputSchema": {
+  "input_schema": {
     "type": "object",
     "required": ["cart_id"]
   },
-  "safety": {
+  "metadata": {
     "risk_level": "high",
     "confirmation_required": true
   }

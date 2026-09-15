@@ -46,48 +46,51 @@ Creating a marketing campaign involves naming the campaign, selecting channels, 
 {
   "intent": "campaign.create",
   "entity": "campaign",
-  "operation_id": "campaign_create",
   "action_type": "write",
-  "parameters": {
-    "name": { "type": "string", "required": true, "maxLength": 200 },
-    "channel": { "type": "string", "required": true, "enum": ["email","sms","push","social","display"] },
-    "audience_segment_id": { "type": "string", "required": true },
-    "budget": {
+  "operation_id": "campaign_create",
+  "description": "Create a new marketing campaign",
+  "required_parameters": [
+    { "name": "name", "type": "string", "maxLength": 200 },
+    { "name": "channel", "type": "string", "enum": ["email", "sms", "push", "social", "display"] },
+    { "name": "audience_segment_id", "type": "string" },
+    {
+      "name": "budget",
       "type": "object",
-      "required": true,
       "properties": {
         "amount": { "type": "number", "minimum": 0 },
-        "currency": { "type": "string", "enum": ["USD","EUR","GBP"] }
+        "currency": { "type": "string", "enum": ["USD", "EUR", "GBP"] }
       }
-    },
-    "start_date": { "type": "string", "format": "date", "required": false },
-    "end_date": { "type": "string", "format": "date", "required": false },
-    "creative_asset_ids": { "type": "array", "required": false, "items": { "type": "string" } },
-    "tags": { "type": "array", "required": false, "items": { "type": "string" } }
-  },
-  "preconditions": ["user must have campaign_create permission"],
-  "postconditions": ["campaign created in draft status"],
+    }
+  ],
+  "optional_parameters": [
+    { "name": "start_date", "type": "string", "format": "date" },
+    { "name": "end_date", "type": "string", "format": "date" },
+    { "name": "creative_asset_ids", "type": "array", "items": { "type": "string" } },
+    { "name": "tags", "type": "array", "items": { "type": "string" } }
+  ],
   "risk_level": "low",
-  "idempotent": false
+  "idempotent": false,
+  "preconditions": ["user must have campaign_create permission"],
+  "postconditions": ["campaign created in draft status"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — campaign_create"
 {
-  "tool_name": "campaign_create",
+  "name": "campaign_create",
   "description": "Create a new marketing campaign",
   "input_schema": {
     "type": "object",
     "properties": {
       "name": { "type": "string", "maxLength": 200 },
-      "channel": { "type": "string", "enum": ["email","sms","push","social","display"] },
+      "channel": { "type": "string", "enum": ["email", "sms", "push", "social", "display"] },
       "audience_segment_id": { "type": "string" },
       "budget": {
         "type": "object",
         "properties": {
           "amount": { "type": "number", "minimum": 0 },
-          "currency": { "type": "string", "enum": ["USD","EUR","GBP"] }
+          "currency": { "type": "string", "enum": ["USD", "EUR", "GBP"] }
         },
         "required": ["amount", "currency"]
       },
@@ -96,7 +99,15 @@ Creating a marketing campaign involves naming the campaign, selecting channels, 
     },
     "required": ["name", "channel", "audience_segment_id", "budget"]
   },
-  "safety": { "risk_level": "low", "idempotent": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "low",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "campaign.create",
+    "source_entity": "campaign"
+  }
 }
 ```
 

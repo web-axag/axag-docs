@@ -65,22 +65,23 @@ Generated MCP tools follow this structure:
 
 ```json
 {
-  "tool_name": "entity_action",
+  "name": "entity_action",
   "description": "Description of the action",
   "input_schema": {
     "type": "object",
-    "properties": {
-      "param_name": { "type": "string", "description": "Parameter description" }
-    },
+    "properties": { "param_name": { "type": "string", "description": "Parameter description" } },
     "required": ["param_name"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "read",
     "risk_level": "medium",
     "idempotent": true,
     "confirmation_required": true,
     "approval_required": false,
     "side_effects": ["state_change"],
-    "preconditions": ["entity exists"]
+    "preconditions": ["entity exists"],
+    "source_intent": "entity.action",
+    "source_entity": "entity"
   }
 }
 ```

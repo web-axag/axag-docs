@@ -47,43 +47,33 @@ Exporting raw datasets lets users download filtered data for external analysis. 
 {
   "intent": "dataset.export",
   "entity": "dataset",
-  "operation_id": "dataset_export",
   "action_type": "read",
-  "async": true,
-  "parameters": {
-    "dataset_id": { "type": "string", "required": true },
-    "columns": {
+  "operation_id": "dataset_export",
+  "description": "Export a dataset as a downloadable file",
+  "required_parameters": [{ "name": "dataset_id", "type": "string" }],
+  "optional_parameters": [
+    {
+      "name": "columns",
       "type": "array",
-      "required": false,
-      "items": { "type": "string" },
-      "description": "Columns to include; defaults to all"
+      "description": "Columns to include; defaults to all",
+      "items": { "type": "string" }
     },
-    "filters": { "type": "object", "required": false },
-    "format": {
-      "type": "string",
-      "required": false,
-      "enum": ["csv","json","parquet"],
-      "default": "csv"
-    },
-    "row_limit": {
-      "type": "integer",
-      "required": false,
-      "minimum": 1,
-      "maximum": 10000000,
-      "default": 100000
-    }
-  },
-  "postconditions": ["export job created", "download link available when complete"],
+    { "name": "filters", "type": "object" },
+    { "name": "format", "type": "string", "enum": ["csv", "json", "parquet"], "default": "csv" },
+    { "name": "row_limit", "type": "integer", "min": 1, "max": 10000000, "default": 100000 }
+  ],
   "risk_level": "none",
   "idempotent": false,
-  "scope": "tenant"
+  "async": true,
+  "scope": "tenant",
+  "postconditions": ["export job created", "download link available when complete"]
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "dataset_export",
+  "name": "dataset_export",
   "description": "Export a dataset as a downloadable file (async — returns job ID)",
   "input_schema": {
     "type": "object",
@@ -91,12 +81,21 @@ Exporting raw datasets lets users download filtered data for external analysis. 
       "dataset_id": { "type": "string" },
       "columns": { "type": "array", "items": { "type": "string" } },
       "filters": { "type": "object" },
-      "format": { "type": "string", "enum": ["csv","json","parquet"], "default": "csv" },
+      "format": { "type": "string", "enum": ["csv", "json", "parquet"], "default": "csv" },
       "row_limit": { "type": "integer", "minimum": 1, "maximum": 10000000, "default": 100000 }
     },
     "required": ["dataset_id"]
   },
-  "safety": { "risk_level": "none", "idempotent": false, "async": true }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "async": true,
+    "source_intent": "dataset.export",
+    "source_entity": "dataset"
+  }
 }
 ```
 

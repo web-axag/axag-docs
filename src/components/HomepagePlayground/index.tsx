@@ -94,82 +94,71 @@ function parseAxagAttributes(html: string): ParsedAnnotation {
   return result;
 }
 
+// Mirrors @axag/core's readAnnotation and actionToTool so the playground shows real output.
+function humanizeIntent(intent: string): string {
+  return intent.replace(/\./g, ' ').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 function generateManifest(parsed: ParsedAnnotation): object | null {
   if (!parsed.intent) return null;
 
-  const manifest: any = {
-    $schema: 'https://axag.org/schema/v1/manifest.json',
+  const toParams = (names?: string[]) => (names ?? []).map(name => ({ name, type: 'string' }));
+  const action: any = {
     intent: parsed.intent,
+    entity: parsed.entity || parsed.intent.split('.')[0],
+    action_type: parsed.actionType || 'read',
+    operation_id: parsed.intent.replace(/\./g, '_'),
+    description: parsed.description || humanizeIntent(parsed.intent),
+    required_parameters: toParams(parsed.requiredParameters),
+    optional_parameters: toParams(parsed.optionalParameters),
   };
 
-  if (parsed.entity) manifest.entity = parsed.entity;
-  if (parsed.actionType) manifest.action_type = parsed.actionType;
-  if (parsed.description) manifest.description = parsed.description;
+  if (parsed.riskLevel) action.risk_level = parsed.riskLevel;
+  if (parsed.confirmationRequired !== undefined) action.confirmation_required = parsed.confirmationRequired;
+  if (parsed.approvalRequired !== undefined) action.approval_required = parsed.approvalRequired;
+  if (parsed.approvalRoles) action.approval_roles = parsed.approvalRoles;
+  if (parsed.idempotent !== undefined) action.idempotent = parsed.idempotent;
+  if (parsed.scope) action.scope = parsed.scope;
+  if (parsed.requiredRoles) action.required_roles = parsed.requiredRoles;
+  if (parsed.sideEffects) action.side_effects = parsed.sideEffects;
+  if (parsed.preconditions) action.preconditions = parsed.preconditions;
+  if (parsed.postconditions) action.postconditions = parsed.postconditions;
 
-  if (parsed.requiredParameters || parsed.optionalParameters) {
-    manifest.parameters = {};
-    if (parsed.requiredParameters) manifest.parameters.required = parsed.requiredParameters;
-    if (parsed.optionalParameters) manifest.parameters.optional = parsed.optionalParameters;
-  }
-
-  if (parsed.riskLevel) manifest.risk_level = parsed.riskLevel;
-  if (parsed.idempotent !== undefined) manifest.idempotent = parsed.idempotent;
-  if (parsed.confirmationRequired !== undefined) manifest.confirmation_required = parsed.confirmationRequired;
-  if (parsed.approvalRequired !== undefined) manifest.approval_required = parsed.approvalRequired;
-  if (parsed.approvalRoles) manifest.approval_roles = parsed.approvalRoles;
-  if (parsed.preconditions) manifest.preconditions = parsed.preconditions;
-  if (parsed.postconditions) manifest.postconditions = parsed.postconditions;
-  if (parsed.sideEffects) manifest.side_effects = parsed.sideEffects;
-  if (parsed.scope) manifest.scope = parsed.scope;
-  if (parsed.requiredRoles) manifest.required_roles = parsed.requiredRoles;
-
-  return manifest;
+  return action;
 }
 
 function generateMCPTool(parsed: ParsedAnnotation): object | null {
-  if (!parsed.intent) return null;
+  const action = generateManifest(parsed) as any;
+  if (!action) return null;
 
-  const toolName = parsed.intent.replace(/\./g, '_');
-  const tool: any = {
-    name: toolName,
-    description: parsed.description || `Execute ${parsed.intent}`,
-    inputSchema: {
-      type: 'object',
-      properties: {},
-      required: [] as string[],
-    },
+  const properties: Record<string, { type: string }> = {};
+  for (const param of [...action.required_parameters, ...action.optional_parameters]) {
+    properties[param.name] = { type: param.type };
+  }
+
+  const metadata: any = {
+    action_type: action.action_type,
+    risk_level: action.risk_level ?? 'none',
+    idempotent: action.idempotent ?? false,
+    confirmation_required: action.confirmation_required ?? false,
+    approval_required: action.approval_required ?? false,
+    source_intent: action.intent,
+    source_entity: action.entity,
   };
-
-  // Build properties from parameters
-  const allParams = [
-    ...(parsed.requiredParameters || []),
-    ...(parsed.optionalParameters || []),
-  ];
-
-  for (const param of allParams) {
-    tool.inputSchema.properties[param] = {
-      type: 'string',
-      description: `The ${param.replace(/_/g, ' ')}`,
-    };
+  for (const key of ['approval_roles', 'scope', 'required_roles', 'side_effects', 'preconditions', 'postconditions']) {
+    if (action[key] !== undefined && action[key].length !== 0) metadata[key] = action[key];
   }
 
-  if (parsed.requiredParameters) {
-    tool.inputSchema.required = parsed.requiredParameters;
-  }
-
-  // Safety metadata
-  const safety: any = {};
-  if (parsed.riskLevel) safety.risk_level = parsed.riskLevel;
-  if (parsed.idempotent !== undefined) safety.idempotent = parsed.idempotent;
-  if (parsed.confirmationRequired !== undefined) safety.confirmation_required = parsed.confirmationRequired;
-  if (parsed.approvalRequired !== undefined) safety.approval_required = parsed.approvalRequired;
-  if (parsed.sideEffects) safety.side_effects = parsed.sideEffects;
-
-  if (Object.keys(safety).length > 0) {
-    tool.safety = safety;
-  }
-
-  return tool;
+  return {
+    name: action.intent.replace(/\./g, '_'),
+    description: action.description,
+    input_schema: {
+      type: 'object',
+      properties,
+      required: action.required_parameters.map((p: { name: string }) => p.name),
+    },
+    metadata,
+  };
 }
 
 type TabId = 'manifest' | 'mcp-tool';

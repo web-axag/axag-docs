@@ -68,13 +68,13 @@ axag-x-my-custom-attribute="value"
 
 These field names are reserved in the Semantic Manifest JSON:
 
-- `version`, `entities`, `metadata`
-- `name`, `description`, `actions`
-- `intent`, `operation_id`, `action_type`
-- `parameters`, `type`, `required`, `enum`, `minimum`, `maximum`, `format`, `default`
+- `version`, `generated_at`, `source`, `conformance`, `actions`
+- `intent`, `entity`, `operation_id`, `action_type`, `description`
+- `required_parameters`, `optional_parameters`, and parameter fields `name`, `type`, `enum`, `min`, `max`, `minLength`, `maxLength`, `pattern`, `format`, `default`, `items`, `properties`
 - `preconditions`, `postconditions`, `side_effects`
 - `risk_level`, `idempotent`, `confirmation_required`, `approval_required`, `approval_roles`
-- `scope`, `tenant_boundary`, `async`
+- `scope`, `tenant_boundary`, `required_roles`, `async`
+- `element_selector`, `source_file`, `source_line`
 
 ## Reserved Error Codes
 

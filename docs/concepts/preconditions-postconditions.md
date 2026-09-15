@@ -40,7 +40,7 @@ Preconditions and postconditions enable automatic workflow planning:
 ```
 validate_cart → postcondition: cart_validated
 reserve_inventory → precondition: cart_validated → postcondition: inventory_reserved
-begin_checkout → precondition: cart_validated, inventory_reserved → postcondition: checkout_session_created
+checkout_begin → precondition: cart_validated, inventory_reserved → postcondition: checkout_session_created
 ```
 
 An agent can automatically determine the correct execution order.

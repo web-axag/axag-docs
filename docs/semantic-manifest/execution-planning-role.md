@@ -15,7 +15,7 @@ Given operations with declared pre/postconditions, an agent can automatically de
 ```
 validate_cart       → post: cart_validated
 reserve_inventory   → pre: cart_validated → post: inventory_reserved
-begin_checkout      → pre: cart_validated, inventory_reserved → post: checkout_session_created
+checkout_begin      → pre: cart_validated, inventory_reserved → post: checkout_session_created
 process_payment     → pre: checkout_session_created → post: payment_processed
 confirm_order       → pre: payment_processed → post: order_confirmed
 ```

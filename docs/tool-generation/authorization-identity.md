@@ -9,24 +9,32 @@ slug: /tool-generation/authorization-identity
 Tool definitions carry role and tenant context from AXAG annotations, enabling agent runtimes to enforce access control.
 
 ## Role-Based Access
-```json title="Role-based access control"
+`axag-required-roles` becomes `metadata.required_roles`:
+```json title="Role-based access control — tool metadata excerpt"
 {
-  "tool_name": "user_delete",
-  "safety": {
+  "name": "user_delete",
+  "metadata": {
+    "action_type": "delete",
+    "risk_level": "high",
     "required_roles": ["admin", "super_admin"],
-    "role_escalation": false
+    "source_intent": "user.delete",
+    "source_entity": "user"
   }
 }
 ```
 
 ## Tenant Isolation
-```json title="Tenant isolation context"
+`axag-scope` and `axag-tenant-boundary` become `metadata.scope` and `metadata.tenant_boundary`:
+```json title="Tenant isolation — tool metadata excerpt"
 {
-  "tool_name": "settings_update",
-  "safety": {
+  "name": "settings_update",
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "medium",
     "scope": "tenant",
-    "cross_tenant": false,
-    "tenant_context": "current"
+    "tenant_boundary": "strict",
+    "source_intent": "settings.update",
+    "source_entity": "settings"
   }
 }
 ```

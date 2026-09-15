@@ -48,28 +48,33 @@ Agents read the AXAG annotation and Semantic Manifest to discover `product.searc
 {
   "intent": "product.search",
   "entity": "product",
-  "operation_id": "product_search",
   "action_type": "read",
-  "parameters": {
-    "query": { "type": "string", "required": true },
-    "category": { "type": "string", "required": false },
-    "price_min": { "type": "number", "required": false, "minimum": 0 },
-    "price_max": { "type": "number", "required": false, "minimum": 0 },
-    "brand": { "type": "string", "required": false },
-    "sort_by": { "type": "string", "required": false, "enum": ["relevance","price_asc","price_desc","newest","rating"] },
-    "page": { "type": "number", "required": false, "minimum": 1 },
-    "page_size": { "type": "number", "required": false, "minimum": 1, "maximum": 100 }
-  },
-  "scope": "public",
+  "operation_id": "product_search",
+  "description": "Search the product catalog with text query and optional filters",
+  "required_parameters": [{ "name": "query", "type": "string" }],
+  "optional_parameters": [
+    { "name": "category", "type": "string" },
+    { "name": "price_min", "type": "number", "min": 0 },
+    { "name": "price_max", "type": "number", "min": 0 },
+    { "name": "brand", "type": "string" },
+    {
+      "name": "sort_by",
+      "type": "string",
+      "enum": ["relevance", "price_asc", "price_desc", "newest", "rating"]
+    },
+    { "name": "page", "type": "number", "min": 1 },
+    { "name": "page_size", "type": "number", "min": 1, "max": 100 }
+  ],
   "risk_level": "none",
-  "idempotent": true
+  "idempotent": true,
+  "scope": "public"
 }
 ```
 
 ## Generated Tool Example
 ```json title="tools/product_search.json" showLineNumbers
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalog with text query and optional filters",
   "input_schema": {
     "type": "object",
@@ -78,11 +83,22 @@ Agents read the AXAG annotation and Semantic Manifest to discover `product.searc
       "category": { "type": "string" },
       "price_min": { "type": "number", "minimum": 0 },
       "price_max": { "type": "number", "minimum": 0 },
-      "sort_by": { "type": "string", "enum": ["relevance","price_asc","price_desc","newest","rating"] }
+      "sort_by": {
+        "type": "string",
+        "enum": ["relevance", "price_asc", "price_desc", "newest", "rating"]
+      }
     },
     "required": ["query"]
   },
-  "safety": { "execution_type": "read", "risk_level": "none", "idempotent": true }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
+  }
 }
 ```
 

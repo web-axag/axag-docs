@@ -66,24 +66,25 @@ This element is accessible to:
 
 ## Semantic Manifest Excerpt
 
-```json title="Manifest — with accessibility metadata"
+```json title="Manifest excerpt"
 {
   "intent": "product.search",
   "entity": "product",
   "action_type": "read",
+  "operation_id": "product_search",
   "description": "Search the product catalogue by keyword",
-  "parameters": {
-    "required": ["query"],
-    "optional": ["category", "price_min", "price_max"]
-  },
+  "required_parameters": [{ "name": "query", "type": "string" }],
+  "optional_parameters": [
+    { "name": "category", "type": "string" },
+    { "name": "price_min", "type": "string" },
+    { "name": "price_max", "type": "string" }
+  ],
   "risk_level": "none",
-  "idempotent": true,
-  "accessibility": {
-    "aria_label": "Search products",
-    "keyboard_shortcut": "Ctrl+K"
-  }
+  "idempotent": true
 }
 ```
+
+The manifest does not copy ARIA attributes. The accessible name stays in the markup, where screen readers and agents both read it.
 
 ## Generated MCP Tool
 

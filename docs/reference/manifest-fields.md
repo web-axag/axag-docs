@@ -7,101 +7,92 @@ slug: /reference/manifest-fields
 
 # Manifest Fields Reference
 
-Complete field reference for the AXAG Semantic Manifest JSON document.
+Every Semantic Manifest field, and the annotation attribute it is generated from. The JSON Schema that enforces these fields is described in [Manifest Schema](/docs/semantic-manifest/manifest-schema).
 
 ## Top-Level Fields
 
-| Field | Type | Required | Description |
+| Field | Type | Required | Filled from |
 |-------|------|----------|-------------|
-| `version` | string | MUST | Spec version (e.g., `"1.0.0"`) |
-| `entities` | Entity[] | MUST | Array of entity definitions |
-| `metadata` | Metadata | MAY | Generation metadata |
+| `version` | string | MUST | Specification version of the generator (`"1.1.0"`) |
+| `generated_at` | string (ISO 8601) | MUST | Time of generation |
+| `source` | object | MUST | `url`, `paths`, `tool`, `tool_version` of the run |
+| `conformance` | string | MUST | Computed — see [Conformance Levels](/docs/specification/conformance-levels) |
+| `actions` | Action[] | MUST | One entry per distinct `axag-intent`, sorted by intent |
 
-## Metadata Object
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `generator` | string | MAY | Tool that generated the manifest |
-| `generated_at` | string (ISO 8601) | MAY | Timestamp of generation |
-| `source_url` | string (URI) | MAY | URL of the annotated source |
-| `checksum` | string | MAY | SHA-256 hash of manifest content |
-
-## Entity Object
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | string | MUST | Entity name (snake_case) |
-| `description` | string | SHOULD | Human-readable entity description |
-| `actions` | Action[] | MUST | Array of actions on this entity |
+When two elements declare the same intent, generators keep the first and report the second (`AXAG-CORE-003`).
 
 ## Action Object
 
+| Field | Type | Required | Filled from |
+|-------|------|----------|-------------|
+| `intent` | string | MUST | `axag-intent` |
+| `entity` | string | MUST | `axag-entity`, or the part of the intent before the dot |
+| `action_type` | string | MUST | `axag-action-type` (`read` when absent) |
+| `description` | string | MUST | `axag-description`, or the intent in words (`cart.add_item` → `Cart Add Item`) |
+| `operation_id` | string | SHOULD | `axag-operation-id`, or the intent with `.` → `_` |
+| `required_parameters` | Parameter[] | SHOULD | `axag-required-parameters` |
+| `optional_parameters` | Parameter[] | MAY | `axag-optional-parameters` |
+| `risk_level` | string | SHOULD | `axag-risk-level` |
+| `confirmation_required` | boolean | MUST (high/critical) | `axag-confirmation-required` |
+| `approval_required` | boolean | MAY | `axag-approval-required` |
+| `approval_roles` | string[] | MUST (if approval) | `axag-approval-roles` |
+| `idempotent` | boolean | SHOULD (write/delete) | `axag-idempotent` |
+| `async` | boolean | MAY | `axag-async` |
+| `scope` | string | SHOULD | `axag-scope` |
+| `tenant_boundary` | string | MAY | `axag-tenant-boundary` |
+| `required_roles` | string[] | MAY | `axag-required-roles` |
+| `preconditions` | string[] | MAY | `axag-preconditions` |
+| `postconditions` | string[] | MAY | `axag-postconditions` |
+| `side_effects` | string[] | MAY | `axag-side-effects` |
+| `element_selector` | string | MAY | CSS path, when read from a live page |
+| `source_file` / `source_line` | string / integer | MAY | Where the annotation was found |
+
+Optional fields appear only when the annotation declares them.
+
+## Parameter Object
+
+Parameters listed by name (`'["query"]'`) become `{ "name": "query", "type": "string" }`. The object form carries types and constraints through unchanged:
+
+```html
+axag-required-parameters='[{"name":"quantity","type":"integer","min":1,"max":99}]'
+```
+
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `intent` | string | MUST | `entity.action` identifier |
-| `operation_id` | string | SHOULD | Unique operation ID (snake_case) |
-| `action_type` | string | MUST | `read`, `write`, or `delete` |
-| `description` | string | SHOULD | Human-readable description |
-| `parameters` | Parameters | SHOULD | Parameter definitions |
-| `risk_level` | string | SHOULD | `none`/`low`/`medium`/`high`/`critical` |
-| `idempotent` | boolean | SHOULD | Safe to retry? |
-| `confirmation_required` | boolean | SHOULD | User confirmation needed? |
-| `approval_required` | boolean | MAY | Role-based approval needed? |
-| `approval_roles` | string[] | MUST (if approval) | Roles that can approve |
-| `preconditions` | string[] | MAY | Pre-execution conditions |
-| `postconditions` | string[] | MAY | Post-execution guarantees |
-| `side_effects` | string[] | MAY | External side-effects |
-| `scope` | string | SHOULD | Data access scope |
-| `tenant_boundary` | string | MAY | `strict` or `relaxed` |
-| `async` | boolean | MAY | Asynchronous operation? |
-
-## Parameter Definition Object
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | MUST | JSON Schema type |
-| `required` | boolean | MUST | Is this parameter required? |
+| `name` | string | MUST | Parameter name |
+| `type` | string | MUST | `string`, `number`, `integer`, `boolean`, `array`, `object` |
 | `description` | string | MAY | Parameter description |
 | `enum` | any[] | MAY | Allowed values |
-| `minimum` | number | MAY | Minimum numeric value |
-| `maximum` | number | MAY | Maximum numeric value |
-| `minLength` | integer | MAY | Minimum string length |
-| `maxLength` | integer | MAY | Maximum string length |
-| `pattern` | string | MAY | Regex pattern for validation |
-| `format` | string | MAY | `email`, `uri`, `date`, `date-time` |
-| `default` | any | MAY | Default value if not provided |
-| `items` | object | MAY | Array item schema (when type=array) |
-| `properties` | object | MAY | Nested object properties (when type=object) |
+| `min` / `max` | number | MAY | Numeric bounds |
+| `minLength` / `maxLength` | integer | MAY | String length bounds |
+| `pattern` | string | MAY | Regular expression the value must match |
+| `format` | string | MAY | `email`, `url`, `date`, `datetime`, `uuid` |
+| `default` | any | MAY | Value used when omitted |
+| `items` | object | MAY | JSON Schema for array elements |
+| `properties` | object | MAY | JSON Schema properties for objects |
 
 ## Example Manifest
 
 ```json
 {
-  "version": "1.0.0",
-  "metadata": {
-    "generator": "axag-cli",
-    "generated_at": "2024-01-15T10:30:00Z",
-    "source_url": "https://example.com"
-  },
-  "entities": [
+  "version": "1.1.0",
+  "generated_at": "2026-09-14T10:30:00.000Z",
+  "source": { "url": "https://example.com", "paths": ["src"], "tool": "axag-cli", "tool_version": "1.0.2" },
+  "conformance": "intermediate",
+  "actions": [
     {
-      "name": "product",
-      "description": "Product catalog entity",
-      "actions": [
-        {
-          "intent": "product.search",
-          "operation_id": "product_search",
-          "action_type": "read",
-          "description": "Search the product catalog",
-          "parameters": {
-            "query": { "type": "string", "required": true },
-            "category": { "type": "string", "required": false }
-          },
-          "risk_level": "none",
-          "idempotent": true,
-          "scope": "public"
-        }
-      ]
+      "intent": "product.search",
+      "entity": "product",
+      "action_type": "read",
+      "operation_id": "product_search",
+      "description": "Search the product catalog",
+      "required_parameters": [{ "name": "query", "type": "string" }],
+      "optional_parameters": [{ "name": "category", "type": "string" }],
+      "risk_level": "none",
+      "idempotent": true,
+      "scope": "public",
+      "source_file": "src/search.html",
+      "source_line": 12
     }
   ]
 }

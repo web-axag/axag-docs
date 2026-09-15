@@ -46,33 +46,36 @@ Creating a lead in a CRM captures contact information, source, and initial quali
 {
   "intent": "lead.create",
   "entity": "lead",
-  "operation_id": "lead_create",
   "action_type": "write",
-  "parameters": {
-    "first_name": { "type": "string", "required": true },
-    "last_name": { "type": "string", "required": true },
-    "email": { "type": "string", "required": true, "format": "email" },
-    "company": { "type": "string", "required": false },
-    "phone": { "type": "string", "required": false },
-    "source": {
+  "operation_id": "lead_create",
+  "description": "Create a new lead in the CRM",
+  "required_parameters": [
+    { "name": "first_name", "type": "string" },
+    { "name": "last_name", "type": "string" },
+    { "name": "email", "type": "string", "format": "email" }
+  ],
+  "optional_parameters": [
+    { "name": "company", "type": "string" },
+    { "name": "phone", "type": "string" },
+    {
+      "name": "source",
       "type": "string",
-      "required": false,
-      "enum": ["website","referral","event","cold_outreach","partner","other"]
+      "enum": ["website", "referral", "event", "cold_outreach", "partner", "other"]
     },
-    "notes": { "type": "string", "required": false, "maxLength": 5000 },
-    "custom_fields": { "type": "object", "required": false }
-  },
-  "postconditions": ["lead created", "assignment rules triggered"],
+    { "name": "notes", "type": "string", "maxLength": 5000 },
+    { "name": "custom_fields", "type": "object" }
+  ],
   "risk_level": "low",
   "idempotent": false,
-  "scope": "tenant"
+  "scope": "tenant",
+  "postconditions": ["lead created", "assignment rules triggered"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — lead_create" showLineNumbers
 {
-  "tool_name": "lead_create",
+  "name": "lead_create",
   "description": "Create a new lead in the CRM",
   "input_schema": {
     "type": "object",
@@ -82,13 +85,24 @@ Creating a lead in a CRM captures contact information, source, and initial quali
       "email": { "type": "string", "format": "email" },
       "company": { "type": "string" },
       "phone": { "type": "string" },
-      "source": { "type": "string", "enum": ["website","referral","event","cold_outreach","partner","other"] },
+      "source": {
+        "type": "string",
+        "enum": ["website", "referral", "event", "cold_outreach", "partner", "other"]
+      },
       "notes": { "type": "string", "maxLength": 5000 },
       "custom_fields": { "type": "object" }
     },
     "required": ["first_name", "last_name", "email"]
   },
-  "safety": { "risk_level": "low", "idempotent": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "low",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "lead.create",
+    "source_entity": "lead"
+  }
 }
 ```
 

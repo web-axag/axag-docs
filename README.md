@@ -1,6 +1,6 @@
 # AXAG — Agent Experience Accessibility Guidelines
 
-[![Build](https://img.shields.io/github/actions/workflow/status/me-saurabhkohli/mcp-agentify/ci.yml?branch=main&label=build)](https://github.com/me-saurabhkohli/mcp-agentify/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/web-axag/axag-docs/ci.yml?branch=main&label=build)](https://github.com/web-axag/axag-docs/actions)
 [![Version](https://img.shields.io/badge/version-1.0.0-green)](https://axag.org)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
@@ -10,8 +10,8 @@
 
 ```bash
 # Clone and install
-git clone https://github.com/me-saurabhkohli/mcp-agentify.git
-cd mcp-agentify/axag
+git clone https://github.com/web-axag/axag-docs.git
+cd axag-docs
 npm install
 
 # Start development server
@@ -82,8 +82,8 @@ This annotation generates a **semantic manifest** (JSON) which is then transform
 |---------|-------------|
 | `npm start` | Start development server |
 | `npm run build` | Production build |
-| `npm run validate` | Validate AXAG examples |
-| `npm run lint` | Lint documentation |
+| `npm run validate:axag` | Validate AXAG examples |
+| `npm run typecheck` | Type-check site components |
 | `npm run format` | Format code |
 
 ## 🤝 Contributing

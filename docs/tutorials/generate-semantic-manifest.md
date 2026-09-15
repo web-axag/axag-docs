@@ -16,65 +16,58 @@ This tutorial walks through generating an AXAG Semantic Manifest from annotated 
 ## Step 1: Install the CLI
 
 ```bash title="Install AXAG CLI"
-npm install -D @axag/cli
+npm install -D @web-axag/axag-cli
 ```
 
 ## Step 2: Scan Source Files
 
 ```bash title="Scan & generate manifest"
-npx axag scan --input src/ --output axag-manifest.json
+npx axag scan src/ --no-interactive --manifest axag-manifest.json --validate
 ```
 
 The scanner:
-1. Finds all files with `axag-*` attributes (.html, .jsx, .tsx, .vue, .svelte)
-2. Extracts annotation data from each element
-3. Groups actions by entity
-4. Outputs a structured Semantic Manifest
+1. Finds `.html`, `.htm`, `.jsx` and `.tsx` files (skipping `node_modules`, `dist`, `build`)
+2. Reads every element that declares `axag-intent`
+3. Builds one action per intent, sorted by intent, and warns about duplicates
+4. Writes the manifest and, with `--validate`, checks it against the JSON Schema
 
 ## Step 3: Review the Generated Manifest
 
 ```json title="axag-manifest.json" showLineNumbers
 {
-  "version": "1.0.0",
-  "metadata": {
-    "generator": "@axag/cli@1.0.0",
-    "generated_at": "2024-01-15T10:30:00Z",
-    "source_files": ["src/SearchPage.tsx", "src/CartPage.tsx", "src/AdminPage.tsx"]
-  },
-  "entities": [
+  "version": "1.1.0",
+  "generated_at": "2026-09-14T10:30:00.000Z",
+  "source": { "paths": ["/app/src"], "tool": "axag-cli", "tool_version": "1.0.2" },
+  "conformance": "intermediate",
+  "actions": [
     {
-      "name": "product",
-      "actions": [
-        {
-          "intent": "product.search",
-          "operation_id": "product_search",
-          "action_type": "read",
-          "description": "Search the product catalog",
-          "parameters": {
-            "query": { "type": "string", "required": true }
-          },
-          "risk_level": "none",
-          "idempotent": true
-        }
-      ]
+      "intent": "product.search",
+      "entity": "product",
+      "action_type": "read",
+      "operation_id": "product_search",
+      "description": "Search the product catalog",
+      "required_parameters": [{ "name": "query", "type": "string" }],
+      "optional_parameters": [],
+      "risk_level": "none",
+      "idempotent": true,
+      "source_file": "/app/src/SearchPage.tsx",
+      "source_line": 14
     }
   ]
 }
 ```
 
-## Step 4: Validate the Manifest
+## Step 4: Check the Output
 
-```bash title="Validate manifest"
-npx axag validate-manifest axag-manifest.json
-```
-
-Expected output:
+With `--validate`, the scan ends with:
 ```bash title="Validation output"
-✓ Manifest schema is valid
-✓ All intents follow naming convention
-✓ All required fields present
-✓ 12 actions across 4 entities
+✔ Manifest written to /app/axag-manifest.json
+  Actions: 12
+  Conformance: intermediate
+✔ Manifest passes schema validation ✅
 ```
+
+Any `AXAG-CORE-*` warnings (invalid enum values, invalid JSON arrays, duplicate intents) are printed with the file and line to fix.
 
 ## Step 5: Serve the Manifest
 
@@ -99,11 +92,8 @@ Link: </.well-known/axag-manifest.json>; rel="axag-manifest"
 
 ```yaml title=".github/workflows/axag.yml" showLineNumbers
 # .github/workflows/axag.yml
-- name: Generate manifest
-  run: npx axag scan --input src/ --output axag-manifest.json
-
-- name: Validate manifest
-  run: npx axag validate-manifest axag-manifest.json
+- name: Generate and validate manifest
+  run: npx axag scan src/ --no-interactive --manifest axag-manifest.json --validate
 
 - name: Deploy manifest
   run: cp axag-manifest.json public/.well-known/axag-manifest.json

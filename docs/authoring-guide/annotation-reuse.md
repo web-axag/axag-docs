@@ -13,7 +13,7 @@ In React, Vue, and other component-based frameworks, create annotated wrapper co
 interface AXAGButtonProps {
   intent: string;
   entity: string;
-  actionType: 'read' | 'create' | 'mutate' | 'delete' | 'navigate';
+  actionType: 'read' | 'write' | 'delete' | 'navigate';
   requiredParameters?: string[];
   riskLevel?: 'none' | 'low' | 'medium' | 'high' | 'critical';
   scope?: string;

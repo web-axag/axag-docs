@@ -9,7 +9,7 @@ slug: /tool-generation/generated-examples
 ## Example 1: Product Search (Read)
 ```json title="product_search — Read / No Risk"
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalog by text query with optional filters",
   "input_schema": {
     "type": "object",
@@ -18,36 +18,61 @@ slug: /tool-generation/generated-examples
       "category": { "type": "string", "description": "Category filter" },
       "price_min": { "type": "number", "minimum": 0, "description": "Minimum price" },
       "price_max": { "type": "number", "minimum": 0, "description": "Maximum price" },
-      "sort_by": { "type": "string", "enum": ["relevance", "price_asc", "price_desc", "newest"], "description": "Sort order" }
+      "sort_by": {
+        "type": "string",
+        "enum": ["relevance", "price_asc", "price_desc", "newest"],
+        "description": "Sort order"
+      }
     },
     "required": ["query"]
   },
-  "safety": { "execution_type": "read", "risk_level": "none", "idempotent": true, "confirmation_required": false }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
+  }
 }
 ```
 
-## Example 2: Cart Add Item (Create)
-```json title="cart_add_item — Create / Low Risk"
+## Example 2: Cart Add Item (Write)
+```json title="cart_add_item — Write / Low Risk"
 {
-  "tool_name": "cart_add_item",
+  "name": "cart_add_item",
   "description": "Add a product to the shopping cart",
   "input_schema": {
     "type": "object",
     "properties": {
       "product_id": { "type": "string", "description": "Product identifier" },
-      "quantity": { "type": "number", "minimum": 1, "maximum": 99, "description": "Quantity to add" },
+      "quantity": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 99,
+        "description": "Quantity to add"
+      },
       "variant_id": { "type": "string", "description": "Product variant (size, color)" }
     },
     "required": ["product_id", "quantity"]
   },
-  "safety": { "execution_type": "write", "risk_level": "low", "idempotent": false, "confirmation_required": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "low",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "cart.add_item",
+    "source_entity": "cart"
+  }
 }
 ```
 
-## Example 3: Begin Checkout (Mutate, High Risk)
-```json title="begin_checkout — Mutate / High Risk ⚠️" showLineNumbers
+## Example 3: Begin Checkout (Write, High Risk)
+```json title="checkout_begin — Write / High Risk ⚠️" showLineNumbers
 {
-  "tool_name": "begin_checkout",
+  "name": "checkout_begin",
   "description": "Start checkout for a validated cart and create a checkout session",
   "input_schema": {
     "type": "object",
@@ -58,14 +83,17 @@ slug: /tool-generation/generated-examples
     },
     "required": ["cart_id", "payment_method_id", "shipping_address_id"]
   },
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "high",
     "idempotent": false,
     "confirmation_required": true,
+    "approval_required": false,
+    "side_effects": ["inventory_locked", "payment_hold_created"],
     "preconditions": ["cart_validated", "inventory_reserved"],
     "postconditions": ["checkout_session_created"],
-    "side_effects": ["inventory_locked", "payment_hold_created"]
+    "source_intent": "checkout.begin",
+    "source_entity": "order"
   }
 }
 ```
@@ -73,7 +101,7 @@ slug: /tool-generation/generated-examples
 ## Example 4: Account Delete (Critical)
 ```json title="account_delete — Delete / Critical Risk 🔴" showLineNumbers
 {
-  "tool_name": "account_delete",
+  "name": "account_delete",
   "description": "Permanently delete user account and all associated data",
   "input_schema": {
     "type": "object",
@@ -83,14 +111,16 @@ slug: /tool-generation/generated-examples
     },
     "required": ["account_id", "confirmation_code"]
   },
-  "safety": {
-    "execution_type": "delete",
+  "metadata": {
+    "action_type": "delete",
     "risk_level": "critical",
     "idempotent": false,
     "confirmation_required": true,
     "approval_required": true,
     "approval_roles": ["admin"],
-    "side_effects": ["data_purged", "subscriptions_cancelled", "audit_log_created"]
+    "side_effects": ["data_purged", "subscriptions_cancelled", "audit_log_created"],
+    "source_intent": "account.delete",
+    "source_entity": "account"
   }
 }
 ```
@@ -98,7 +128,7 @@ slug: /tool-generation/generated-examples
 ## Example 5: Lead Create (CRM)
 ```json title="lead_create — CRM / Low Risk"
 {
-  "tool_name": "lead_create",
+  "name": "lead_create",
   "description": "Create a new sales lead in the CRM",
   "input_schema": {
     "type": "object",
@@ -111,14 +141,22 @@ slug: /tool-generation/generated-examples
     },
     "required": ["first_name", "last_name", "email"]
   },
-  "safety": { "execution_type": "write", "risk_level": "low", "idempotent": false, "confirmation_required": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "low",
+    "idempotent": false,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "lead.create",
+    "source_entity": "lead"
+  }
 }
 ```
 
 ## Example 6: Campaign Schedule (Marketing)
 ```json title="campaign_schedule — Marketing / Medium Risk"
 {
-  "tool_name": "campaign_schedule",
+  "name": "campaign_schedule",
   "description": "Schedule a marketing campaign for future delivery",
   "input_schema": {
     "type": "object",
@@ -129,12 +167,15 @@ slug: /tool-generation/generated-examples
     },
     "required": ["campaign_id", "scheduled_at"]
   },
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "medium",
     "idempotent": true,
     "confirmation_required": true,
-    "preconditions": ["campaign_approved", "audience_configured"]
+    "approval_required": false,
+    "preconditions": ["campaign_approved", "audience_configured"],
+    "source_intent": "campaign.schedule",
+    "source_entity": "campaign"
   }
 }
 ```
@@ -142,7 +183,7 @@ slug: /tool-generation/generated-examples
 ## Example 7: Ticket Escalate (Support)
 ```json title="ticket_escalate — Support / Medium Risk"
 {
-  "tool_name": "ticket_escalate",
+  "name": "ticket_escalate",
   "description": "Escalate a support ticket to a higher tier",
   "input_schema": {
     "type": "object",
@@ -153,12 +194,15 @@ slug: /tool-generation/generated-examples
     },
     "required": ["ticket_id", "escalation_reason", "target_tier"]
   },
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "medium",
     "idempotent": false,
     "confirmation_required": false,
-    "side_effects": ["notification_sent", "sla_timer_reset"]
+    "approval_required": false,
+    "side_effects": ["notification_sent", "sla_timer_reset"],
+    "source_intent": "ticket.escalate",
+    "source_entity": "ticket"
   }
 }
 ```
@@ -166,7 +210,7 @@ slug: /tool-generation/generated-examples
 ## Example 8: Report Generate (Analytics)
 ```json title="report_generate — Analytics / No Risk"
 {
-  "tool_name": "report_generate",
+  "name": "report_generate",
   "description": "Generate an analytics report with specified parameters",
   "input_schema": {
     "type": "object",
@@ -179,14 +223,22 @@ slug: /tool-generation/generated-examples
     },
     "required": ["report_type", "date_from", "date_to"]
   },
-  "safety": { "execution_type": "read", "risk_level": "none", "idempotent": true, "confirmation_required": false }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "report.generate",
+    "source_entity": "report"
+  }
 }
 ```
 
 ## Example 9: Booking Cancel (Travel)
 ```json title="booking_cancel — Travel / High Risk ⚠️"
 {
-  "tool_name": "booking_cancel",
+  "name": "booking_cancel",
   "description": "Cancel an existing travel booking",
   "input_schema": {
     "type": "object",
@@ -196,12 +248,15 @@ slug: /tool-generation/generated-examples
     },
     "required": ["booking_id"]
   },
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "high",
     "idempotent": true,
     "confirmation_required": true,
-    "side_effects": ["refund_initiated", "inventory_released", "confirmation_email_sent"]
+    "approval_required": false,
+    "side_effects": ["refund_initiated", "inventory_released", "confirmation_email_sent"],
+    "source_intent": "booking.cancel",
+    "source_entity": "booking"
   }
 }
 ```
@@ -209,7 +264,7 @@ slug: /tool-generation/generated-examples
 ## Example 10: Interview Schedule (Jobs)
 ```json title="interview_schedule — Jobs / Low Risk"
 {
-  "tool_name": "interview_schedule",
+  "name": "interview_schedule",
   "description": "Schedule a job interview for a candidate",
   "input_schema": {
     "type": "object",
@@ -222,12 +277,15 @@ slug: /tool-generation/generated-examples
     },
     "required": ["candidate_id", "job_id", "scheduled_at", "duration_minutes"]
   },
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "low",
     "idempotent": false,
     "confirmation_required": false,
-    "side_effects": ["calendar_invites_sent", "candidate_notified"]
+    "approval_required": false,
+    "side_effects": ["calendar_invites_sent", "candidate_notified"],
+    "source_intent": "interview.schedule",
+    "source_entity": "interview"
   }
 }
 ```

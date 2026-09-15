@@ -26,6 +26,5 @@ Operations that require a minimum interval between invocations SHOULD declare `a
 |------------|-------------|-------------|---------|
 | `read` | `none` | No | No |
 | `navigate` | `none` | No | No |
-| `create` | `low` | Recommended for `high`+ | For regulated operations |
-| `mutate` | `low` | Required for `high`+ | For high-impact changes |
+| `write` | `low` | Required for `high`+ | For regulated or high-impact changes |
 | `delete` | `medium` | Required | Recommended |

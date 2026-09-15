@@ -73,31 +73,35 @@ AXAG annotates each cart and checkout operation with intent, parameters, precond
       "intent": "cart.add_item",
       "entity": "cart",
       "action_type": "write",
-      "parameters": {
-        "product_id": { "type": "string", "required": true },
-        "quantity": { "type": "integer", "required": true, "minimum": 1, "maximum": 99 },
-        "variant_id": { "type": "string", "required": false }
-      },
-      "preconditions": ["product must be in stock"],
-      "postconditions": ["cart updated with new item"],
+      "operation_id": "cart_add_item",
+      "description": "Add a product to the shopping cart",
+      "required_parameters": [
+        { "name": "product_id", "type": "string" },
+        { "name": "quantity", "type": "integer", "min": 1, "max": 99 }
+      ],
+      "optional_parameters": [{ "name": "variant_id", "type": "string" }],
       "risk_level": "low",
-      "idempotent": false
+      "idempotent": false,
+      "preconditions": ["product must be in stock"],
+      "postconditions": ["cart updated with new item"]
     },
     {
       "intent": "cart.begin_checkout",
       "entity": "cart",
       "action_type": "write",
-      "parameters": {
-        "cart_id": { "type": "string", "required": true },
-        "shipping_method": { "type": "string", "required": false },
-        "promo_code": { "type": "string", "required": false }
-      },
-      "preconditions": ["cart must have at least one item", "user must be authenticated"],
-      "postconditions": ["checkout session created", "inventory reserved for 15 minutes"],
+      "operation_id": "cart_begin_checkout",
+      "description": "Begin the checkout process for the current cart",
+      "required_parameters": [{ "name": "cart_id", "type": "string" }],
+      "optional_parameters": [
+        { "name": "shipping_method", "type": "string" },
+        { "name": "promo_code", "type": "string" }
+      ],
       "risk_level": "medium",
       "confirmation_required": true,
       "idempotent": false,
-      "side_effects": ["inventory_reservation", "price_lock"]
+      "side_effects": ["inventory_reservation", "price_lock"],
+      "preconditions": ["cart must have at least one item", "user must be authenticated"],
+      "postconditions": ["checkout session created", "inventory reserved for 15 minutes"]
     }
   ]
 }
@@ -106,7 +110,7 @@ AXAG annotates each cart and checkout operation with intent, parameters, precond
 ## Generated Tool Examples
 ```json
 {
-  "tool_name": "cart_add_item",
+  "name": "cart_add_item",
   "description": "Add a product to the shopping cart",
   "input_schema": {
     "type": "object",
@@ -117,10 +121,15 @@ AXAG annotates each cart and checkout operation with intent, parameters, precond
     },
     "required": ["product_id", "quantity"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "write",
     "risk_level": "low",
     "idempotent": false,
-    "preconditions": ["product must be in stock"]
+    "confirmation_required": false,
+    "approval_required": false,
+    "preconditions": ["product must be in stock"],
+    "source_intent": "cart.add_item",
+    "source_entity": "cart"
   }
 }
 ```
@@ -129,4 +138,4 @@ AXAG annotates each cart and checkout operation with intent, parameters, precond
 - `cart.begin_checkout` requires confirmation because it reserves inventory
 - Quantity is bounded to 1–99 to prevent abuse
 - Cart operations are NOT idempotent — adding twice doubles the quantity
-- `begin_checkout` side-effects (inventory reservation, price lock) are time-bounded (15 min)
+- `cart_begin_checkout` side-effects (inventory reservation, price lock) are time-bounded (15 min)

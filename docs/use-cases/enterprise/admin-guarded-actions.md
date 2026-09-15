@@ -70,29 +70,26 @@ Admin-guarded actions declare `axag-required-roles` and `axag-preconditions` wit
 {
   "intent": "billing.change_plan",
   "entity": "billing",
-  "operation_id": "billing_change_plan",
   "action_type": "write",
-  "parameters": {
-    "plan_id": { "type": "string", "required": true },
-    "billing_cycle": { "type": "string", "required": false, "enum": ["monthly","annual"] },
-    "promo_code": { "type": "string", "required": false }
-  },
-  "preconditions": [
-    "caller must have billing_admin role",
-    "account must not have past-due invoices"
-  ],
-  "postconditions": [
-    "plan changed",
-    "prorated charges applied",
-    "confirmation email sent"
+  "operation_id": "billing_change_plan",
+  "description": "Change the organization's billing plan",
+  "required_parameters": [{ "name": "plan_id", "type": "string" }],
+  "optional_parameters": [
+    { "name": "billing_cycle", "type": "string", "enum": ["monthly", "annual"] },
+    { "name": "promo_code", "type": "string" }
   ],
   "risk_level": "critical",
   "confirmation_required": true,
   "approval_required": true,
   "approval_roles": ["super_admin"],
   "idempotent": true,
+  "scope": "tenant",
   "side_effects": ["billing_change", "proration", "email_notification"],
-  "scope": "tenant"
+  "preconditions": [
+    "caller must have billing_admin role",
+    "account must not have past-due invoices"
+  ],
+  "postconditions": ["plan changed", "prorated charges applied", "confirmation email sent"]
 }
 ```
 

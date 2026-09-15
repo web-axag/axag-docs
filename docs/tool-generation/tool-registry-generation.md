@@ -11,13 +11,13 @@ The Tool Registry is a collection of all MCP tool definitions generated from the
 ## Registry Structure
 ```json title="Tool registry structure"
 {
-  "registry_version": "1.0.0",
-  "generated_at": "2026-03-14T10:00:00Z",
-  "source_manifest": "ecommerce-app",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-03-14T10:00:00.000Z",
+  "source_manifest": "axag-manifest.json",
   "tools": [
-    { "tool_name": "product_search", "..." : "..." },
-    { "tool_name": "cart_add_item", "..." : "..." },
-    { "tool_name": "begin_checkout", "..." : "..." }
+    { "name": "product_search", "description": "…", "input_schema": {}, "metadata": {} },
+    { "name": "cart_add_item", "description": "…", "input_schema": {}, "metadata": {} },
+    { "name": "checkout_begin", "description": "…", "input_schema": {}, "metadata": {} }
   ]
 }
 ```

@@ -11,7 +11,7 @@ At minimum (Basic Conformance), every AXAG-annotated element MUST include:
 
 1. **`axag-intent`** — The semantic intent in `entity.verb` format (e.g., `product.search`, `order.create`)
 2. **`axag-entity`** — The domain entity being operated on (e.g., `product`, `order`, `ticket`)
-3. **`axag-action-type`** — The operation classification (`read`, `create`, `mutate`, `delete`, `navigate`)
+3. **`axag-action-type`** — The operation classification (`read`, `write`, `delete`, `navigate`)
 
 At Intermediate Conformance, these additional fields are REQUIRED:
 

@@ -6,7 +6,7 @@ slug: /semantic-manifest/manifest-schema
 ---
 # Manifest Schema
 
-The Semantic Manifest is validated by a JSON Schema published at [`/schema/v1.1/axag-manifest.schema.json`](pathname:///schema/v1.1/axag-manifest.schema.json). The [v1 schema](pathname:///schema/v1/axag-manifest.schema.json) stays published for existing manifests; v1.1 only adds values and remains backward compatible.
+The Semantic Manifest is validated by a JSON Schema published at [`/schema/v1.1/axag-manifest.schema.json`](pathname:///schema/v1.1/axag-manifest.schema.json). The [v1 schema](pathname:///schema/v1/axag-manifest.schema.json) stays published for existing manifests; v1.1 only adds optional fields and enum values, so every valid v1 manifest is also valid under v1.1.
 
 ## Top-Level Fields
 | Field | Type | Required | Description |
@@ -40,7 +40,10 @@ The Semantic Manifest is validated by a JSON Schema published at [`/schema/v1.1/
 | `approval_required` | `boolean` | No | Role-based approval gate |
 | `approval_roles` | `string[]` | No | Roles that can approve |
 | `idempotent` | `boolean` | No | Retry safety |
+| `async` | `boolean` | No | Completes asynchronously (1.1) |
 | `scope` | `enum` | No | `public`, `user`, `tenant`, `global` (`public` added in 1.1) |
+| `tenant_boundary` | `enum` | No | `strict`, `relaxed` (1.1) |
+| `required_roles` | `string[]` | No | Roles permitted to invoke (1.1) |
 | `side_effects` | `string[]` | No | Observable changes |
 | `preconditions` | `string[]` | No | Required state |
 | `postconditions` | `string[]` | No | Guaranteed state |
@@ -52,12 +55,15 @@ The Semantic Manifest is validated by a JSON Schema published at [`/schema/v1.1/
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | `string` | Yes | Parameter name |
-| `type` | `enum` | Yes | `string`, `number`, `boolean`, `array`, `object` |
+| `type` | `enum` | Yes | `string`, `number`, `integer`, `boolean`, `array`, `object` (`integer` added in 1.1) |
 | `description` | `string` | No | Human-readable description |
 | `enum` | `array` | No | Allowed values |
 | `min` / `max` | `number` | No | Numeric bounds |
-| `maxLength` | `integer` | No | Maximum string length |
+| `minLength` / `maxLength` | `integer` | No | String length bounds (`minLength` added in 1.1) |
+| `pattern` | `string` | No | Regular expression the value must match (1.1) |
 | `format` | `enum` | No | `email`, `url`, `date`, `datetime`, `uuid` |
 | `default` | any | No | Value used when omitted |
+| `items` | `object` | No | JSON Schema for array elements (1.1) |
+| `properties` | `object` | No | JSON Schema properties for objects (1.1) |
 
 Which optional fields a manifest fills in determines its [conformance level](/docs/specification/conformance-levels).

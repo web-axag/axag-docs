@@ -47,38 +47,45 @@ Moving a sales opportunity through pipeline stages (Prospecting → Qualificatio
 {
   "intent": "opportunity.advance_stage",
   "entity": "opportunity",
-  "operation_id": "opportunity_advance_stage",
   "action_type": "write",
-  "parameters": {
-    "opportunity_id": { "type": "string", "required": true },
-    "target_stage": {
+  "operation_id": "opportunity_advance_stage",
+  "description": "Advance an opportunity to the next pipeline stage",
+  "required_parameters": [
+    { "name": "opportunity_id", "type": "string" },
+    {
+      "name": "target_stage",
       "type": "string",
-      "required": true,
-      "enum": ["prospecting","qualification","proposal","negotiation","closed_won","closed_lost"]
-    },
-    "amount": { "type": "number", "required": false, "minimum": 0 },
-    "close_date": { "type": "string", "required": false, "format": "date" },
-    "win_probability": { "type": "number", "required": false, "minimum": 0, "maximum": 100 },
-    "notes": { "type": "string", "required": false }
-  },
+      "enum": [
+        "prospecting",
+        "qualification",
+        "proposal",
+        "negotiation",
+        "closed_won",
+        "closed_lost"
+      ]
+    }
+  ],
+  "optional_parameters": [
+    { "name": "amount", "type": "number", "min": 0 },
+    { "name": "close_date", "type": "string", "format": "date" },
+    { "name": "win_probability", "type": "number", "min": 0, "max": 100 },
+    { "name": "notes", "type": "string" }
+  ],
+  "risk_level": "medium",
+  "idempotent": true,
+  "scope": "tenant",
   "preconditions": [
     "opportunity must be in a valid predecessor stage",
     "required stage fields must be populated"
   ],
-  "postconditions": [
-    "opportunity moved to target stage",
-    "stage history updated"
-  ],
-  "risk_level": "medium",
-  "idempotent": true,
-  "scope": "tenant"
+  "postconditions": ["opportunity moved to target stage", "stage history updated"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — opportunity_advance_stage"
 {
-  "tool_name": "opportunity_advance_stage",
+  "name": "opportunity_advance_stage",
   "description": "Advance an opportunity to the next pipeline stage",
   "input_schema": {
     "type": "object",
@@ -86,7 +93,14 @@ Moving a sales opportunity through pipeline stages (Prospecting → Qualificatio
       "opportunity_id": { "type": "string" },
       "target_stage": {
         "type": "string",
-        "enum": ["prospecting","qualification","proposal","negotiation","closed_won","closed_lost"]
+        "enum": [
+          "prospecting",
+          "qualification",
+          "proposal",
+          "negotiation",
+          "closed_won",
+          "closed_lost"
+        ]
       },
       "amount": { "type": "number", "minimum": 0 },
       "close_date": { "type": "string", "format": "date" },
@@ -94,7 +108,15 @@ Moving a sales opportunity through pipeline stages (Prospecting → Qualificatio
     },
     "required": ["opportunity_id", "target_stage"]
   },
-  "safety": { "risk_level": "medium", "idempotent": true }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "medium",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "opportunity.advance_stage",
+    "source_entity": "opportunity"
+  }
 }
 ```
 

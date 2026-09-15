@@ -45,57 +45,69 @@ Generating a sales forecast aggregates pipeline data by period, stage, team, or 
 {
   "intent": "forecast.generate",
   "entity": "forecast",
-  "operation_id": "forecast_generate",
   "action_type": "read",
-  "parameters": {
-    "period": {
+  "operation_id": "forecast_generate",
+  "description": "Generate a sales forecast for the specified period",
+  "required_parameters": [
+    {
+      "name": "period",
       "type": "string",
-      "required": true,
-      "enum": ["current_quarter","next_quarter","current_year","custom"]
-    },
-    "team_id": { "type": "string", "required": false },
-    "product_line": { "type": "string", "required": false },
-    "stage_filter": {
+      "enum": ["current_quarter", "next_quarter", "current_year", "custom"]
+    }
+  ],
+  "optional_parameters": [
+    { "name": "team_id", "type": "string" },
+    { "name": "product_line", "type": "string" },
+    {
+      "name": "stage_filter",
       "type": "array",
-      "required": false,
       "items": {
         "type": "string",
-        "enum": ["prospecting","qualification","proposal","negotiation","closed_won"]
+        "enum": ["prospecting", "qualification", "proposal", "negotiation", "closed_won"]
       }
     },
-    "format": {
-      "type": "string",
-      "required": false,
-      "enum": ["json","csv","pdf"],
-      "default": "json"
-    }
-  },
-  "scope": "tenant",
+    { "name": "format", "type": "string", "enum": ["json", "csv", "pdf"], "default": "json" }
+  ],
   "risk_level": "none",
-  "idempotent": true
+  "idempotent": true,
+  "scope": "tenant"
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "forecast_generate",
+  "name": "forecast_generate",
   "description": "Generate a sales forecast for the specified period",
   "input_schema": {
     "type": "object",
     "properties": {
-      "period": { "type": "string", "enum": ["current_quarter","next_quarter","current_year","custom"] },
+      "period": {
+        "type": "string",
+        "enum": ["current_quarter", "next_quarter", "current_year", "custom"]
+      },
       "team_id": { "type": "string" },
       "product_line": { "type": "string" },
       "stage_filter": {
         "type": "array",
-        "items": { "type": "string", "enum": ["prospecting","qualification","proposal","negotiation","closed_won"] }
+        "items": {
+          "type": "string",
+          "enum": ["prospecting", "qualification", "proposal", "negotiation", "closed_won"]
+        }
       },
-      "format": { "type": "string", "enum": ["json","csv","pdf"], "default": "json" }
+      "format": { "type": "string", "enum": ["json", "csv", "pdf"], "default": "json" }
     },
     "required": ["period"]
   },
-  "safety": { "risk_level": "none", "idempotent": true }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "forecast.generate",
+    "source_entity": "forecast"
+  }
 }
 ```
 

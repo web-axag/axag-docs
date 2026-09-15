@@ -75,9 +75,9 @@ Yes. Large applications may publish one manifest per section or per page. Agents
 
 Each intent in the manifest maps to one MCP tool:
 - `intent` → tool `name` (dots replaced with underscores)
-- `parameters` → `inputSchema`
-- `constraints` → JSON Schema validations (`enum`, `minimum`, `maximum`, etc.)
-- `risk_level`, `confirmation_required` → tool metadata
+- `required_parameters`, `optional_parameters` → `input_schema`
+- parameter constraints → JSON Schema validations (`enum`, `minimum`, `maximum`, etc.)
+- `risk_level`, `confirmation_required` and other safety fields → tool `metadata`
 
 See [Mapping Rules](/docs/tool-generation/mapping-rules).
 

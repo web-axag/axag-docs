@@ -48,57 +48,77 @@ Escalating a support ticket transfers it to a higher-tier team with a reason and
 {
   "intent": "ticket.escalate",
   "entity": "ticket",
-  "operation_id": "ticket_escalate",
   "action_type": "write",
-  "parameters": {
-    "ticket_id": { "type": "string", "required": true },
-    "reason": {
+  "operation_id": "ticket_escalate",
+  "description": "Escalate a support ticket to a higher-tier team",
+  "required_parameters": [
+    { "name": "ticket_id", "type": "string" },
+    {
+      "name": "reason",
       "type": "string",
-      "required": true,
-      "enum": ["customer_request","technical_complexity","sla_risk","vip_customer","unresolved","other"]
-    },
-    "target_tier": {
+      "enum": [
+        "customer_request",
+        "technical_complexity",
+        "sla_risk",
+        "vip_customer",
+        "unresolved",
+        "other"
+      ]
+    }
+  ],
+  "optional_parameters": [
+    {
+      "name": "target_tier",
       "type": "string",
-      "required": false,
-      "enum": ["tier_2","tier_3","engineering","management"]
+      "enum": ["tier_2", "tier_3", "engineering", "management"]
     },
-    "urgency_override": {
-      "type": "string",
-      "required": false,
-      "enum": ["high","urgent","critical"]
-    },
-    "notes": { "type": "string", "required": false, "maxLength": 2000 }
-  },
-  "preconditions": ["ticket must be open", "user must have escalation permission"],
-  "postconditions": ["ticket escalated", "SLA updated", "manager notified"],
+    { "name": "urgency_override", "type": "string", "enum": ["high", "urgent", "critical"] },
+    { "name": "notes", "type": "string", "maxLength": 2000 }
+  ],
   "risk_level": "medium",
   "confirmation_required": true,
   "idempotent": false,
-  "side_effects": ["sla_update", "manager_notification", "assignment_change"]
+  "side_effects": ["sla_update", "manager_notification", "assignment_change"],
+  "preconditions": ["ticket must be open", "user must have escalation permission"],
+  "postconditions": ["ticket escalated", "SLA updated", "manager notified"]
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "ticket_escalate",
+  "name": "ticket_escalate",
   "description": "Escalate a support ticket to a higher-tier team",
   "input_schema": {
     "type": "object",
     "properties": {
       "ticket_id": { "type": "string" },
-      "reason": { "type": "string", "enum": ["customer_request","technical_complexity","sla_risk","vip_customer","unresolved","other"] },
-      "target_tier": { "type": "string", "enum": ["tier_2","tier_3","engineering","management"] },
-      "urgency_override": { "type": "string", "enum": ["high","urgent","critical"] },
+      "reason": {
+        "type": "string",
+        "enum": [
+          "customer_request",
+          "technical_complexity",
+          "sla_risk",
+          "vip_customer",
+          "unresolved",
+          "other"
+        ]
+      },
+      "target_tier": { "type": "string", "enum": ["tier_2", "tier_3", "engineering", "management"] },
+      "urgency_override": { "type": "string", "enum": ["high", "urgent", "critical"] },
       "notes": { "type": "string", "maxLength": 2000 }
     },
     "required": ["ticket_id", "reason"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "write",
     "risk_level": "medium",
-    "confirmation_required": true,
     "idempotent": false,
-    "side_effects": ["sla_update", "manager_notification", "assignment_change"]
+    "confirmation_required": true,
+    "approval_required": false,
+    "side_effects": ["sla_update", "manager_notification", "assignment_change"],
+    "source_intent": "ticket.escalate",
+    "source_entity": "ticket"
   }
 }
 ```

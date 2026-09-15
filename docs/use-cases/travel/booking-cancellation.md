@@ -48,49 +48,51 @@ Cancelling a travel booking involves verifying the cancellation policy, calculat
 {
   "intent": "booking.cancel",
   "entity": "reservation",
-  "operation_id": "booking_cancel",
   "action_type": "delete",
-  "parameters": {
-    "reservation_id": { "type": "string", "required": true },
-    "reason": {
+  "operation_id": "booking_cancel",
+  "description": "Cancel an existing travel reservation",
+  "required_parameters": [{ "name": "reservation_id", "type": "string" }],
+  "optional_parameters": [
+    {
+      "name": "reason",
       "type": "string",
-      "required": false,
-      "enum": ["change_of_plans","found_better_deal","emergency","other"]
+      "enum": ["change_of_plans", "found_better_deal", "emergency", "other"]
     }
-  },
-  "preconditions": [
-    "reservation must exist",
-    "reservation must not be checked-in"
-  ],
-  "postconditions": [
-    "reservation cancelled",
-    "refund processed per cancellation policy"
   ],
   "risk_level": "high",
   "confirmation_required": true,
   "idempotent": true,
-  "side_effects": ["refund_processing", "availability_release", "cancellation_email"]
+  "side_effects": ["refund_processing", "availability_release", "cancellation_email"],
+  "preconditions": ["reservation must exist", "reservation must not be checked-in"],
+  "postconditions": ["reservation cancelled", "refund processed per cancellation policy"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — booking_cancel"
 {
-  "tool_name": "booking_cancel",
+  "name": "booking_cancel",
   "description": "Cancel an existing travel reservation",
   "input_schema": {
     "type": "object",
     "properties": {
       "reservation_id": { "type": "string" },
-      "reason": { "type": "string", "enum": ["change_of_plans","found_better_deal","emergency","other"] }
+      "reason": {
+        "type": "string",
+        "enum": ["change_of_plans", "found_better_deal", "emergency", "other"]
+      }
     },
     "required": ["reservation_id"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "delete",
     "risk_level": "high",
-    "confirmation_required": true,
     "idempotent": true,
-    "side_effects": ["refund_processing", "availability_release", "cancellation_email"]
+    "confirmation_required": true,
+    "approval_required": false,
+    "side_effects": ["refund_processing", "availability_release", "cancellation_email"],
+    "source_intent": "booking.cancel",
+    "source_entity": "reservation"
   }
 }
 ```

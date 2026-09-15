@@ -89,7 +89,7 @@ Each CRUD operation is annotated with entity type, parameters, risk level, and r
 ```json
 [
   {
-    "tool_name": "user_list",
+    "name": "user_list",
     "description": "List users with optional filtering and pagination",
     "input_schema": {
       "type": "object",
@@ -97,36 +97,61 @@ Each CRUD operation is annotated with entity type, parameters, risk level, and r
         "page": { "type": "integer", "minimum": 1 },
         "page_size": { "type": "integer", "minimum": 1, "maximum": 100 },
         "sort_by": { "type": "string" },
-        "sort_order": { "type": "string", "enum": ["asc","desc"] },
+        "sort_order": { "type": "string", "enum": ["asc", "desc"] },
         "filters": { "type": "object" }
-      }
+      },
+      "required": []
     },
-    "safety": { "risk_level": "none", "idempotent": true }
+    "metadata": {
+      "action_type": "read",
+      "risk_level": "none",
+      "idempotent": true,
+      "confirmation_required": false,
+      "approval_required": false,
+      "source_intent": "user.list",
+      "source_entity": "user"
+    }
   },
   {
-    "tool_name": "user_create",
+    "name": "user_create",
     "description": "Create a new user in the system",
     "input_schema": {
       "type": "object",
       "properties": {
         "email": { "type": "string", "format": "email" },
-        "role": { "type": "string", "enum": ["viewer","editor","admin"] },
+        "role": { "type": "string", "enum": ["viewer", "editor", "admin"] },
         "first_name": { "type": "string" },
         "last_name": { "type": "string" }
       },
       "required": ["email", "role"]
     },
-    "safety": { "risk_level": "medium", "idempotent": false }
+    "metadata": {
+      "action_type": "read",
+      "risk_level": "medium",
+      "idempotent": false,
+      "confirmation_required": false,
+      "approval_required": false,
+      "source_intent": "user.create",
+      "source_entity": "user"
+    }
   },
   {
-    "tool_name": "user_delete",
+    "name": "user_delete",
     "description": "Delete (deactivate) a user from the system",
     "input_schema": {
       "type": "object",
       "properties": { "user_id": { "type": "string" } },
       "required": ["user_id"]
     },
-    "safety": { "risk_level": "high", "confirmation_required": true, "idempotent": true }
+    "metadata": {
+      "action_type": "read",
+      "risk_level": "high",
+      "idempotent": true,
+      "confirmation_required": true,
+      "approval_required": false,
+      "source_intent": "user.delete",
+      "source_entity": "user"
+    }
   }
 ]
 ```

@@ -15,14 +15,16 @@ This section defines the rules for transforming Semantic Manifest operations int
 
 | Manifest Field | MCP Tool Field | Transformation |
 |---------------|---------------|----------------|
-| `operation_id` | `tool_name` | Direct mapping |
+| `intent` | `name` | `.` → `_` |
 | `description` | `description` | Direct mapping |
-| `parameters` | `input_schema.properties` | Transform to JSON Schema |
-| Required parameter names | `input_schema.required` | Extract required field names |
-| `action_type` | `safety.execution_type` | Direct mapping |
-| `risk_level` | `safety.risk_level` | Direct mapping |
-| `confirmation_required` | `safety.confirmation_required` | Direct mapping |
-| `idempotent` | `safety.idempotent` | Direct mapping |
+| `required_parameters`, `optional_parameters` | `input_schema.properties` | Transform to JSON Schema |
+| `required_parameters[].name` | `input_schema.required` | Collect names |
+| `action_type` | `metadata.action_type` | Direct mapping |
+| `risk_level` | `metadata.risk_level` | Direct mapping |
+| `confirmation_required` | `metadata.confirmation_required` | Direct mapping |
+| `idempotent` | `metadata.idempotent` | Direct mapping |
+
+The full table, including scope, roles and conditions, is in the [Tool Mapping Rules Reference](/docs/reference/tool-mapping-rules).
 
 ## Parameter Transformation
 
@@ -30,33 +32,21 @@ Manifest parameters transform to JSON Schema properties:
 
 **Manifest parameter:**
 ```json title="Manifest parameter definition"
-{
-  "cart_id": {
-    "type": "string",
-    "required": true,
-    "description": "The cart identifier"
-  }
-}
+{ "required_parameters": [{ "name": "cart_id", "type": "string", "description": "The cart identifier" }] }
 ```
 
 **Generated JSON Schema property:**
 ```json title="Generated JSON Schema"
-{
-  "cart_id": {
-    "type": "string",
-    "description": "The cart identifier"
-  }
-}
+{ "cart_id": { "type": "string", "description": "The cart identifier" } }
 ```
 
-> `"cart_id"` is added to the `"required"` array in the generated `inputSchema`.
+> `"cart_id"` is added to the `"required"` array of the generated `input_schema` because it is a required parameter.
 
 ## Tool Name Generation
 
-Tool names are derived from the `intent` field:
-- Replace `.` with `_`
-- Convert to snake_case
-- Example: `checkout.begin` → `begin_checkout` (verb-first for action clarity)
+Tool names are derived from the `intent` field by replacing `.` with `_`:
+- `product.search` → `product_search`
+- `checkout.begin` → `checkout_begin`
 
 ## Complete Example
 
@@ -65,23 +55,23 @@ Tool names are derived from the `intent` field:
 {
   "intent": "product.search",
   "entity": "product",
+  "action_type": "read",
   "operation_id": "product_search",
   "description": "Search the product catalog",
-  "action_type": "read",
-  "parameters": {
-    "query": { "type": "string", "required": true, "description": "Search query" },
-    "category": { "type": "string", "required": false, "description": "Category filter" }
-  },
-  "scope": "public",
+  "required_parameters": [{ "name": "query", "type": "string", "description": "Search query" }],
+  "optional_parameters": [
+    { "name": "category", "type": "string", "description": "Category filter" }
+  ],
   "risk_level": "none",
-  "idempotent": true
+  "idempotent": true,
+  "scope": "public"
 }
 ```
 
 **Generated MCP Tool:**
 ```json title="Generated MCP tool — product_search" showLineNumbers
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalog",
   "input_schema": {
     "type": "object",
@@ -91,11 +81,14 @@ Tool names are derived from the `intent` field:
     },
     "required": ["query"]
   },
-  "safety": {
-    "execution_type": "read",
+  "metadata": {
+    "action_type": "read",
     "risk_level": "none",
     "idempotent": true,
-    "confirmation_required": false
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
   }
 }
 ```

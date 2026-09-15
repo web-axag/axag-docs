@@ -33,10 +33,16 @@ A visual gallery of AXAG-annotated UI patterns across industry domains. Each car
   "intent": "product.search",
   "entity": "product",
   "action_type": "read",
-  "parameters": {
-    "required": ["query"],
-    "optional": ["category", "price_min", "price_max", "sort_by", "page"]
-  }
+  "operation_id": "product_search",
+  "description": "Search the product catalogue",
+  "required_parameters": [{ "name": "query", "type": "string" }],
+  "optional_parameters": [
+    { "name": "category", "type": "string" },
+    { "name": "price_min", "type": "string" },
+    { "name": "price_max", "type": "string" },
+    { "name": "sort_by", "type": "string" },
+    { "name": "page", "type": "string" }
+  ]
 }
 ```
 

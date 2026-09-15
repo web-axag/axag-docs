@@ -13,43 +13,39 @@ Complete reference for mapping AXAG Semantic Manifest actions to MCP tool defini
 
 | Manifest Field | MCP Tool Field | Transformation |
 |---------------|---------------|----------------|
-| `operation_id` | `tool_name` | Direct copy (snake_case) |
+| `intent` | `name` | Replace `.` with `_` |
 | `description` | `description` | Direct copy |
-| `parameters` | `input_schema.properties` | Convert to JSON Schema properties |
-| `parameters[x].required=true` | `input_schema.required` | Collect into required array |
-| `parameters[x].type` | `input_schema.properties[x].type` | Direct copy |
-| `parameters[x].enum` | `input_schema.properties[x].enum` | Direct copy |
-| `parameters[x].minimum` | `input_schema.properties[x].minimum` | Direct copy |
-| `parameters[x].maximum` | `input_schema.properties[x].maximum` | Direct copy |
-| `parameters[x].format` | `input_schema.properties[x].format` | Direct copy |
-| `parameters[x].default` | `input_schema.properties[x].default` | Direct copy |
-| `risk_level` | `safety.risk_level` | Direct copy |
-| `idempotent` | `safety.idempotent` | Direct copy |
-| `confirmation_required` | `safety.confirmation_required` | Direct copy |
-| `approval_required` | `safety.approval_required` | Direct copy |
-| `preconditions` | `safety.preconditions` | Direct copy |
-| `side_effects` | `safety.side_effects` | Direct copy |
+| `required_parameters[]` | `input_schema.properties` + `input_schema.required` | One property per parameter; names collected into `required` |
+| `optional_parameters[]` | `input_schema.properties` | One property per parameter |
+| `parameter.min` / `max` | `properties[x].minimum` / `maximum` | Renamed to JSON Schema keywords |
+| `parameter.format` | `properties[x].format` | `url` → `uri`, `datetime` → `date-time`; others copied |
+| `parameter.type`, `enum`, `minLength`, `maxLength`, `pattern`, `default`, `items`, `properties`, `description` | Same name | Direct copy |
+| `action_type` | `metadata.action_type` | Direct copy |
+| `risk_level` | `metadata.risk_level` | Direct copy, `none` when absent |
+| `idempotent` | `metadata.idempotent` | Direct copy, `false` when absent |
+| `confirmation_required` | `metadata.confirmation_required` | Direct copy, `false` when absent |
+| `approval_required` | `metadata.approval_required` | Direct copy, `false` when absent |
+| `approval_roles`, `async`, `scope`, `tenant_boundary`, `required_roles`, `side_effects`, `preconditions`, `postconditions` | `metadata.*` | Copied when present and non-empty |
+| `intent`, `entity` | `metadata.source_intent`, `metadata.source_entity` | Direct copy |
 
 ## Tool Name Generation
 
 ```
-tool_name = operation_id || (entity + "_" + action)
+name = intent.replaceAll(".", "_")
 ```
 
 Examples:
 - `product.search` → `product_search`
 - `cart.add_item` → `cart_add_item`
-- `billing.change_plan` → `billing_change_plan`
+- `checkout.begin` → `checkout_begin`
 
 ## Input Schema Generation
 
-Parameters are converted from AXAG format to JSON Schema:
-
-### AXAG Parameter Definition
+### Manifest parameters
 ```json
 {
-  "query": { "type": "string", "required": true },
-  "price_max": { "type": "number", "required": false, "minimum": 0 }
+  "required_parameters": [{ "name": "query", "type": "string" }],
+  "optional_parameters": [{ "name": "price_max", "type": "number", "min": 0 }]
 }
 ```
 
@@ -65,41 +61,43 @@ Parameters are converted from AXAG format to JSON Schema:
 }
 ```
 
-Note: `required` is moved from individual parameters to the schema-level `required` array.
+## Metadata Generation
 
-## Safety Metadata Generation
-
-All safety-related manifest fields are grouped into a `safety` object on the tool:
+Safety and scope fields are grouped into `metadata` on the tool:
 
 ```json
 {
-  "safety": {
-    "execution_type": "write",
+  "metadata": {
+    "action_type": "write",
     "risk_level": "high",
     "idempotent": false,
     "confirmation_required": true,
     "approval_required": false,
-    "preconditions": ["order must be within return window"],
-    "side_effects": ["refund_processing", "inventory_update"]
+    "preconditions": ["cart_validated"],
+    "side_effects": ["inventory_locked"],
+    "source_intent": "checkout.begin",
+    "source_entity": "order"
   }
 }
 ```
 
 ## Nested Object Handling
 
-When a parameter has `type: "object"`, its `properties` are recursively converted:
+`properties` on an `object` parameter is JSON Schema and is copied into the tool unchanged, including any nested `required` list:
 
-### AXAG
+### Manifest
 ```json
 {
-  "budget": {
-    "type": "object",
-    "required": true,
-    "properties": {
-      "amount": { "type": "number", "minimum": 0 },
-      "currency": { "type": "string", "enum": ["USD","EUR"] }
+  "required_parameters": [
+    {
+      "name": "budget",
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "enum": ["USD", "EUR"] }
+      }
     }
-  }
+  ]
 }
 ```
 
@@ -110,34 +108,26 @@ When a parameter has `type: "object"`, its `properties` are recursively converte
     "type": "object",
     "properties": {
       "amount": { "type": "number", "minimum": 0 },
-      "currency": { "type": "string", "enum": ["USD","EUR"] }
-    },
-    "required": ["amount", "currency"]
+      "currency": { "type": "string", "enum": ["USD", "EUR"] }
+    }
   }
 }
 ```
 
 ## Array Handling
 
-When a parameter has `type: "array"`, the `items` schema is included:
+`items` on an `array` parameter is copied the same way:
 
-### AXAG
+### Manifest
 ```json
-{
-  "tags": {
-    "type": "array",
-    "required": false,
-    "items": { "type": "string" }
-  }
-}
+{ "optional_parameters": [{ "name": "tags", "type": "array", "items": { "type": "string" } }] }
 ```
 
 ### Generated
 ```json
-{
-  "tags": {
-    "type": "array",
-    "items": { "type": "string" }
-  }
-}
+{ "tags": { "type": "array", "items": { "type": "string" } } }
 ```
+
+## Registry
+
+`generateToolRegistry` wraps the tools with `schema_version`, `generated_at` and `source_manifest`. See [Tool Registry Generation](/docs/tool-generation/tool-registry-generation).

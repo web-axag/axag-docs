@@ -45,45 +45,38 @@ Analytics dashboards let users filter data by date range, dimensions, metrics, a
 {
   "intent": "dashboard.filter",
   "entity": "dashboard",
-  "operation_id": "dashboard_filter",
   "action_type": "read",
-  "parameters": {
-    "dashboard_id": { "type": "string", "required": true },
-    "date_range": {
+  "operation_id": "dashboard_filter",
+  "description": "Retrieve filtered dashboard data",
+  "required_parameters": [{ "name": "dashboard_id", "type": "string" }],
+  "optional_parameters": [
+    {
+      "name": "date_range",
       "type": "object",
-      "required": false,
       "properties": {
         "start": { "type": "string", "format": "date" },
         "end": { "type": "string", "format": "date" }
       }
     },
-    "dimensions": {
-      "type": "array",
-      "required": false,
-      "items": { "type": "string" }
-    },
-    "metrics": {
-      "type": "array",
-      "required": false,
-      "items": { "type": "string" }
-    },
-    "segment_id": { "type": "string", "required": false },
-    "granularity": {
+    { "name": "dimensions", "type": "array", "items": { "type": "string" } },
+    { "name": "metrics", "type": "array", "items": { "type": "string" } },
+    { "name": "segment_id", "type": "string" },
+    {
+      "name": "granularity",
       "type": "string",
-      "required": false,
-      "enum": ["hourly","daily","weekly","monthly","quarterly","yearly"]
+      "enum": ["hourly", "daily", "weekly", "monthly", "quarterly", "yearly"]
     }
-  },
-  "scope": "tenant",
+  ],
   "risk_level": "none",
-  "idempotent": true
+  "idempotent": true,
+  "scope": "tenant"
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "dashboard_filter",
+  "name": "dashboard_filter",
   "description": "Retrieve filtered dashboard data",
   "input_schema": {
     "type": "object",
@@ -98,11 +91,22 @@ Analytics dashboards let users filter data by date range, dimensions, metrics, a
       },
       "dimensions": { "type": "array", "items": { "type": "string" } },
       "metrics": { "type": "array", "items": { "type": "string" } },
-      "granularity": { "type": "string", "enum": ["hourly","daily","weekly","monthly","quarterly","yearly"] }
+      "granularity": {
+        "type": "string",
+        "enum": ["hourly", "daily", "weekly", "monthly", "quarterly", "yearly"]
+      }
     },
     "required": ["dashboard_id"]
   },
-  "safety": { "risk_level": "none", "idempotent": true }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "dashboard.filter",
+    "source_entity": "dashboard"
+  }
 }
 ```
 

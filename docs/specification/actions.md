@@ -13,14 +13,13 @@ The `axag-action-type` attribute classifies the nature of an operation.
 | Type | Semantic | Side Effects | Idempotent by Default |
 |------|----------|-------------|----------------------|
 | `read` | Retrieves data without modification | None | Yes |
-| `create` | Creates a new entity instance | Entity creation | No |
-| `mutate` | Modifies an existing entity | State change | Depends |
+| `write` | Creates or modifies an entity | Entity creation or state change | Depends — declare `axag-idempotent` |
 | `delete` | Removes an entity | Entity removal | Depends |
 | `navigate` | Changes view context without data mutation | None | Yes |
 
 ## Rules
 
 - `read` and `navigate` actions SHOULD have `axag-risk-level="none"` unless special circumstances apply
-- `create`, `mutate`, and `delete` actions MUST declare `axag-risk-level`
+- `write` and `delete` actions MUST declare `axag-risk-level`
 - `delete` actions SHOULD have `axag-confirmation-required="true"` unless the deletion is trivially reversible
-- `mutate` actions that produce financial impact SHOULD be classified as `high` or `critical` risk
+- `write` actions that produce financial impact SHOULD be classified as `high` or `critical` risk

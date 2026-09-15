@@ -87,56 +87,69 @@ Multi-tenant SaaS platforms require strict data isolation. Admin operations must
       "intent": "admin.list_users",
       "entity": "user",
       "action_type": "read",
-      "parameters": {
-        "role_filter": { "type": "string", "required": false },
-        "status_filter": { "type": "string", "required": false, "enum": ["active","inactive","suspended"] },
-        "page": { "type": "integer", "required": false, "minimum": 1 },
-        "page_size": { "type": "integer", "required": false, "minimum": 1, "maximum": 100 }
-      },
-      "preconditions": ["caller must have tenant_admin role"],
+      "operation_id": "admin_list_users",
+      "description": "List all users in the current tenant",
+      "required_parameters": [],
+      "optional_parameters": [
+        { "name": "role_filter", "type": "string" },
+        { "name": "status_filter", "type": "string", "enum": ["active", "inactive", "suspended"] },
+        { "name": "page", "type": "integer", "min": 1 },
+        { "name": "page_size", "type": "integer", "min": 1, "max": 100 }
+      ],
       "risk_level": "none",
-      "idempotent": true
+      "idempotent": true,
+      "preconditions": ["caller must have tenant_admin role"]
     },
     {
       "intent": "admin.update_tenant_settings",
       "entity": "tenant_settings",
       "action_type": "write",
-      "parameters": {
-        "setting_key": { "type": "string", "required": true },
-        "setting_value": { "required": true }
-      },
-      "preconditions": ["caller must have tenant_admin role"],
-      "postconditions": ["setting updated", "audit log entry created"],
+      "operation_id": "admin_update_tenant_settings",
+      "description": "Update a tenant-level configuration setting",
+      "required_parameters": [
+        { "name": "setting_key", "type": "string" },
+        { "name": "setting_value", "type": "string" }
+      ],
+      "optional_parameters": [],
       "risk_level": "high",
       "confirmation_required": true,
       "idempotent": true,
-      "side_effects": ["audit_log", "setting_propagation"]
+      "side_effects": ["audit_log", "setting_propagation"],
+      "preconditions": ["caller must have tenant_admin role"],
+      "postconditions": ["setting updated", "audit log entry created"]
     },
     {
       "intent": "admin.export_tenant_data",
       "entity": "tenant_data",
       "action_type": "read",
-      "async": true,
-      "parameters": {
-        "export_type": {
+      "operation_id": "admin_export_tenant_data",
+      "description": "Export all tenant data for compliance or migration purposes",
+      "required_parameters": [
+        {
+          "name": "export_type",
           "type": "string",
-          "required": true,
-          "enum": ["full","users_only","audit_logs","gdpr_request"]
-        },
-        "date_range": {
+          "enum": ["full", "users_only", "audit_logs", "gdpr_request"]
+        }
+      ],
+      "optional_parameters": [
+        {
+          "name": "date_range",
           "type": "object",
-          "required": false,
           "properties": {
             "start": { "type": "string", "format": "date" },
             "end": { "type": "string", "format": "date" }
           }
         },
-        "format": { "type": "string", "required": false, "enum": ["json","csv","zip"], "default": "zip" }
-      },
-      "preconditions": ["caller must have tenant_admin role", "export must comply with data retention policy"],
-      "postconditions": ["export job created"],
+        { "name": "format", "type": "string", "enum": ["json", "csv", "zip"], "default": "zip" }
+      ],
       "risk_level": "high",
-      "confirmation_required": true
+      "confirmation_required": true,
+      "async": true,
+      "preconditions": [
+        "caller must have tenant_admin role",
+        "export must comply with data retention policy"
+      ],
+      "postconditions": ["export job created"]
     }
   ]
 }

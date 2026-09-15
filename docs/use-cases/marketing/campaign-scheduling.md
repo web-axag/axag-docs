@@ -48,33 +48,28 @@ Scheduling a campaign to go live involves setting a date/time, timezone, and opt
 {
   "intent": "campaign.schedule",
   "entity": "campaign",
-  "operation_id": "campaign_schedule",
   "action_type": "write",
-  "parameters": {
-    "campaign_id": { "type": "string", "required": true },
-    "send_at": { "type": "string", "required": true, "format": "date-time" },
-    "timezone": { "type": "string", "required": true },
-    "send_time_optimization": { "type": "boolean", "required": false, "default": false }
-  },
-  "preconditions": [
-    "campaign must be in draft status",
-    "creative must be approved"
+  "operation_id": "campaign_schedule",
+  "description": "Schedule a campaign for delivery at a specific date and time",
+  "required_parameters": [
+    { "name": "campaign_id", "type": "string" },
+    { "name": "send_at", "type": "string", "format": "datetime" },
+    { "name": "timezone", "type": "string" }
   ],
-  "postconditions": [
-    "campaign status changed to scheduled",
-    "messages queued for delivery"
-  ],
+  "optional_parameters": [{ "name": "send_time_optimization", "type": "boolean", "default": false }],
   "risk_level": "high",
   "confirmation_required": true,
   "idempotent": true,
-  "side_effects": ["message_delivery_queued"]
+  "side_effects": ["message_delivery_queued"],
+  "preconditions": ["campaign must be in draft status", "creative must be approved"],
+  "postconditions": ["campaign status changed to scheduled", "messages queued for delivery"]
 }
 ```
 
 ## Generated Tool Example
 ```json title="Tool — campaign_schedule"
 {
-  "tool_name": "campaign_schedule",
+  "name": "campaign_schedule",
   "description": "Schedule a campaign for delivery at a specific date and time",
   "input_schema": {
     "type": "object",
@@ -86,11 +81,15 @@ Scheduling a campaign to go live involves setting a date/time, timezone, and opt
     },
     "required": ["campaign_id", "send_at", "timezone"]
   },
-  "safety": {
+  "metadata": {
+    "action_type": "write",
     "risk_level": "high",
-    "confirmation_required": true,
     "idempotent": true,
-    "side_effects": ["message_delivery_queued"]
+    "confirmation_required": true,
+    "approval_required": false,
+    "side_effects": ["message_delivery_queued"],
+    "source_intent": "campaign.schedule",
+    "source_entity": "campaign"
   }
 }
 ```

@@ -43,30 +43,36 @@ After purchase, users need to track order status, estimated delivery, and shipme
 {
   "intent": "order.track",
   "entity": "order",
-  "operation_id": "order_track",
   "action_type": "read",
-  "parameters": {
-    "order_id": { "type": "string", "required": true }
-  },
-  "scope": "user",
+  "operation_id": "order_track",
+  "description": "Get the current status and tracking details for an order",
+  "required_parameters": [{ "name": "order_id", "type": "string" }],
+  "optional_parameters": [],
   "risk_level": "none",
-  "idempotent": true
+  "idempotent": true,
+  "scope": "user"
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "order_track",
+  "name": "order_track",
   "description": "Get the current status and tracking details for an order",
   "input_schema": {
     "type": "object",
-    "properties": {
-      "order_id": { "type": "string" }
-    },
+    "properties": { "order_id": { "type": "string" } },
     "required": ["order_id"]
   },
-  "safety": { "execution_type": "read", "risk_level": "none", "idempotent": true }
+  "metadata": {
+    "action_type": "read",
+    "risk_level": "none",
+    "idempotent": true,
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "order.track",
+    "source_entity": "order"
+  }
 }
 ```
 

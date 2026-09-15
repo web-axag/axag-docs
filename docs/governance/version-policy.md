@@ -50,8 +50,9 @@ Each Semantic Manifest includes a version field:
 
 ```json
 {
-  "version": "1.0.0",
-  "entities": ["product", "cart", "order"]
+  "version": "1.1.0",
+  "conformance": "intermediate",
+  "actions": []
 }
 ```
 

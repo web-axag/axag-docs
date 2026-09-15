@@ -17,7 +17,7 @@ Given the manifest entry from the previous step, the generated MCP tool definiti
 
 ```json title="MCP tool — product_search" showLineNumbers
 {
-  "tool_name": "product_search",
+  "name": "product_search",
   "description": "Search the product catalog by text query with optional filters",
   "input_schema": {
     "type": "object",
@@ -26,26 +26,20 @@ Given the manifest entry from the previous step, the generated MCP tool definiti
         "type": "string",
         "description": "Free-text search query for product name, description, or SKU"
       },
-      "category": {
-        "type": "string",
-        "description": "Filter by product category"
-      },
-      "price_min": {
-        "type": "number",
-        "description": "Minimum price filter"
-      },
-      "price_max": {
-        "type": "number",
-        "description": "Maximum price filter"
-      }
+      "category": { "type": "string", "description": "Filter by product category" },
+      "price_min": { "type": "number", "description": "Minimum price filter" },
+      "price_max": { "type": "number", "description": "Maximum price filter" }
     },
     "required": ["query"]
   },
-  "safety": {
-    "execution_type": "read",
+  "metadata": {
+    "action_type": "read",
     "risk_level": "none",
     "idempotent": true,
-    "confirmation_required": false
+    "confirmation_required": false,
+    "approval_required": false,
+    "source_intent": "product.search",
+    "source_entity": "product"
   }
 }
 ```
@@ -56,10 +50,10 @@ MCP tool definitions contain:
 
 | Field | Purpose |
 |-------|---------|
-| `tool_name` | Unique identifier derived from intent |
+| `name` | Unique identifier derived from the intent (`product.search` → `product_search`) |
 | `description` | Human-readable description for agent planning |
 | `input_schema` | JSON Schema for tool parameters |
-| `safety` | Execution type, risk, idempotency, confirmation |
+| `metadata` | Action type, risk, idempotency, confirmation, and the source intent |
 
 ## How Agents Use This Tool
 

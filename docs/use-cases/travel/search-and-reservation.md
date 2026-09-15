@@ -66,16 +66,28 @@ Travel search involves querying availability across hotels, flights, or rental c
       "intent": "travel.search",
       "entity": "travel_listing",
       "action_type": "read",
-      "parameters": {
-        "destination": { "type": "string", "required": true },
-        "check_in": { "type": "string", "required": true, "format": "date" },
-        "check_out": { "type": "string", "required": true, "format": "date" },
-        "guests": { "type": "integer", "required": true, "minimum": 1 },
-        "property_type": { "type": "string", "required": false, "enum": ["hotel","apartment","villa","hostel"] },
-        "price_max": { "type": "number", "required": false, "minimum": 0 },
-        "amenities": { "type": "array", "required": false, "items": { "type": "string" } },
-        "sort_by": { "type": "string", "required": false, "enum": ["price_asc","price_desc","rating","distance"] }
-      },
+      "operation_id": "travel_search",
+      "description": "Search for available travel accommodations",
+      "required_parameters": [
+        { "name": "destination", "type": "string" },
+        { "name": "check_in", "type": "string", "format": "date" },
+        { "name": "check_out", "type": "string", "format": "date" },
+        { "name": "guests", "type": "integer", "min": 1 }
+      ],
+      "optional_parameters": [
+        {
+          "name": "property_type",
+          "type": "string",
+          "enum": ["hotel", "apartment", "villa", "hostel"]
+        },
+        { "name": "price_max", "type": "number", "min": 0 },
+        { "name": "amenities", "type": "array", "items": { "type": "string" } },
+        {
+          "name": "sort_by",
+          "type": "string",
+          "enum": ["price_asc", "price_desc", "rating", "distance"]
+        }
+      ],
       "risk_level": "none",
       "idempotent": true
     },
@@ -83,21 +95,28 @@ Travel search involves querying availability across hotels, flights, or rental c
       "intent": "travel.book",
       "entity": "reservation",
       "action_type": "write",
-      "parameters": {
-        "listing_id": { "type": "string", "required": true },
-        "check_in": { "type": "string", "required": true, "format": "date" },
-        "check_out": { "type": "string", "required": true, "format": "date" },
-        "guests": { "type": "integer", "required": true, "minimum": 1 },
-        "payment_method_id": { "type": "string", "required": true },
-        "special_requests": { "type": "string", "required": false },
-        "add_ons": { "type": "array", "required": false, "items": { "type": "string" } }
-      },
-      "preconditions": ["listing must be available for requested dates", "payment method must be valid"],
-      "postconditions": ["reservation created", "payment authorized", "confirmation email sent"],
+      "operation_id": "travel_book",
+      "description": "Book a travel accommodation",
+      "required_parameters": [
+        { "name": "listing_id", "type": "string" },
+        { "name": "check_in", "type": "string", "format": "date" },
+        { "name": "check_out", "type": "string", "format": "date" },
+        { "name": "guests", "type": "integer", "min": 1 },
+        { "name": "payment_method_id", "type": "string" }
+      ],
+      "optional_parameters": [
+        { "name": "special_requests", "type": "string" },
+        { "name": "add_ons", "type": "array", "items": { "type": "string" } }
+      ],
       "risk_level": "critical",
       "confirmation_required": true,
       "idempotent": false,
-      "side_effects": ["payment_authorization", "email_notification", "availability_update"]
+      "side_effects": ["payment_authorization", "email_notification", "availability_update"],
+      "preconditions": [
+        "listing must be available for requested dates",
+        "payment method must be valid"
+      ],
+      "postconditions": ["reservation created", "payment authorized", "confirmation email sent"]
     }
   ]
 }

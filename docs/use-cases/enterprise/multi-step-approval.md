@@ -91,21 +91,29 @@ Enterprise workflows often require sequential approvals from multiple stakeholde
 ```json title="Tools — submit / approve / reject" showLineNumbers
 [
   {
-    "tool_name": "approval_submit",
+    "name": "approval_submit",
     "description": "Submit a purchase requisition for approval",
     "input_schema": {
       "type": "object",
       "properties": {
         "requisition_id": { "type": "string" },
         "justification": { "type": "string" },
-        "urgency": { "type": "string", "enum": ["normal","high","critical"] }
+        "urgency": { "type": "string", "enum": ["normal", "high", "critical"] }
       },
       "required": ["requisition_id"]
     },
-    "safety": { "risk_level": "medium", "confirmation_required": true, "idempotent": true }
+    "metadata": {
+      "action_type": "read",
+      "risk_level": "medium",
+      "idempotent": true,
+      "confirmation_required": true,
+      "approval_required": false,
+      "source_intent": "approval.submit",
+      "source_entity": "approval"
+    }
   },
   {
-    "tool_name": "approval_approve",
+    "name": "approval_approve",
     "description": "Approve a purchase requisition at the current step",
     "input_schema": {
       "type": "object",
@@ -117,10 +125,18 @@ Enterprise workflows often require sequential approvals from multiple stakeholde
       },
       "required": ["requisition_id", "approval_step_id"]
     },
-    "safety": { "risk_level": "high", "confirmation_required": true, "idempotent": true }
+    "metadata": {
+      "action_type": "read",
+      "risk_level": "high",
+      "idempotent": true,
+      "confirmation_required": true,
+      "approval_required": false,
+      "source_intent": "approval.approve",
+      "source_entity": "approval"
+    }
   },
   {
-    "tool_name": "approval_reject",
+    "name": "approval_reject",
     "description": "Reject a purchase requisition at the current step",
     "input_schema": {
       "type": "object",
@@ -131,7 +147,15 @@ Enterprise workflows often require sequential approvals from multiple stakeholde
       },
       "required": ["requisition_id", "approval_step_id", "reason"]
     },
-    "safety": { "risk_level": "high", "confirmation_required": true, "idempotent": true }
+    "metadata": {
+      "action_type": "read",
+      "risk_level": "high",
+      "idempotent": true,
+      "confirmation_required": true,
+      "approval_required": false,
+      "source_intent": "approval.reject",
+      "source_entity": "approval"
+    }
   }
 ]
 ```

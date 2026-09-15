@@ -47,42 +47,42 @@ Submitting a job application involves attaching a resume, cover letter, answerin
 {
   "intent": "application.submit",
   "entity": "application",
-  "operation_id": "application_submit",
   "action_type": "write",
-  "parameters": {
-    "job_id": { "type": "string", "required": true },
-    "resume_url": { "type": "string", "required": true, "format": "uri" },
-    "first_name": { "type": "string", "required": true },
-    "last_name": { "type": "string", "required": true },
-    "email": { "type": "string", "required": true, "format": "email" },
-    "cover_letter_url": { "type": "string", "required": false, "format": "uri" },
-    "phone": { "type": "string", "required": false },
-    "linkedin_url": { "type": "string", "required": false, "format": "uri" },
-    "screening_answers": {
+  "operation_id": "application_submit",
+  "description": "Submit a job application",
+  "required_parameters": [
+    { "name": "job_id", "type": "string" },
+    { "name": "resume_url", "type": "string", "format": "url" },
+    { "name": "first_name", "type": "string" },
+    { "name": "last_name", "type": "string" },
+    { "name": "email", "type": "string", "format": "email" }
+  ],
+  "optional_parameters": [
+    { "name": "cover_letter_url", "type": "string", "format": "url" },
+    { "name": "phone", "type": "string" },
+    { "name": "linkedin_url", "type": "string", "format": "url" },
+    {
+      "name": "screening_answers",
       "type": "array",
-      "required": false,
       "items": {
         "type": "object",
-        "properties": {
-          "question_id": { "type": "string" },
-          "answer": { "type": "string" }
-        }
+        "properties": { "question_id": { "type": "string" }, "answer": { "type": "string" } }
       }
     },
-    "referral_source": { "type": "string", "required": false }
-  },
-  "preconditions": ["job listing must be active", "user must not have already applied"],
-  "postconditions": ["application submitted", "confirmation email sent"],
+    { "name": "referral_source", "type": "string" }
+  ],
   "risk_level": "medium",
   "confirmation_required": true,
-  "idempotent": false
+  "idempotent": false,
+  "preconditions": ["job listing must be active", "user must not have already applied"],
+  "postconditions": ["application submitted", "confirmation email sent"]
 }
 ```
 
 ## Generated Tool Example
 ```json
 {
-  "tool_name": "application_submit",
+  "name": "application_submit",
   "description": "Submit a job application",
   "input_schema": {
     "type": "object",
@@ -99,17 +99,22 @@ Submitting a job application involves attaching a resume, cover letter, answerin
         "type": "array",
         "items": {
           "type": "object",
-          "properties": {
-            "question_id": { "type": "string" },
-            "answer": { "type": "string" }
-          },
+          "properties": { "question_id": { "type": "string" }, "answer": { "type": "string" } },
           "required": ["question_id", "answer"]
         }
       }
     },
     "required": ["job_id", "resume_url", "first_name", "last_name", "email"]
   },
-  "safety": { "risk_level": "medium", "confirmation_required": true, "idempotent": false }
+  "metadata": {
+    "action_type": "write",
+    "risk_level": "medium",
+    "idempotent": false,
+    "confirmation_required": true,
+    "approval_required": false,
+    "source_intent": "application.submit",
+    "source_entity": "application"
+  }
 }
 ```
 
