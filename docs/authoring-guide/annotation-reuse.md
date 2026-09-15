@@ -53,7 +53,7 @@ export function AXAGButton({
   entity="product"
   actionType="read"
   requiredParameters={["query"]}
-  scope="catalog"
+  scope="public"
   description="Search the product catalog"
 >
   Search

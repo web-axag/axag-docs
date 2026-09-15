@@ -14,7 +14,7 @@ slug: /concepts/intent-vs-presentation
 | Button text | "Submit" | `order.create` |
 | Visual state | Grayed-out button | `precondition: cart_validated` |
 | Color coding | Red button | `risk_level: high` |
-| Position | Below the form | `action_type: mutate` |
+| Position | Below the form | `action_type: write` |
 
 AXAG captures intent. CSS captures presentation. Both are necessary; only intent is machine-readable.
 

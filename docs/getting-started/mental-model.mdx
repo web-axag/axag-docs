@@ -76,7 +76,7 @@ Here is the complete transformation path for a single UI element:
 <button
   axag-intent="checkout.begin"
   axag-entity="order"
-  axag-action-type="mutate"
+  axag-action-type="write"
   axag-required-parameters='["cart_id","payment_method_id","shipping_address_id"]'
   <!-- axag-highlight-start -->
   axag-preconditions='["cart_validated","inventory_reserved"]'
@@ -84,7 +84,7 @@ Here is the complete transformation path for a single UI element:
   axag-risk-level="high"
   axag-confirmation-required="true"
   <!-- axag-highlight-end -->
-  axag-scope="customer"
+  axag-scope="user"
   onclick="handleCheckout()"
 >
   Proceed to Checkout
@@ -105,8 +105,8 @@ Here is the complete transformation path for a single UI element:
   "preconditions": ["cart_validated", "inventory_reserved"],
   "postconditions": ["checkout_session_created"],
   "risk_level": "high",
-  "scope": "customer",
-  "execution_type": "mutate",
+  "scope": "user",
+  "execution_type": "write",
   "confirmation_required": true
 }
 ```
@@ -126,7 +126,7 @@ Here is the complete transformation path for a single UI element:
     "required": ["cart_id", "payment_method_id", "shipping_address_id"]
   },
   "safety": {
-    "execution_type": "mutate",
+    "execution_type": "write",
     "risk_level": "high",
     "confirmation_required": true
   }

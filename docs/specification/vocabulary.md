@@ -65,9 +65,8 @@ The prefix `axag-` is reserved for AXAG annotations. Implementations MUST NOT us
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
-| `axag-scope` | `string` | Operational boundary |
-| `axag-tenant-context` | `string` | Tenant identifier context |
-| `axag-cross-tenant` | `boolean` | Whether cross-tenant operation is allowed |
+| `axag-scope` | `enum` | `public`, `user`, `tenant`, `global` |
+| `axag-tenant-boundary` | `enum` | `strict` (never crosses tenants) or `relaxed` (cross-tenant access where authorized) |
 | `axag-required-roles` | `string[]` | Roles permitted to invoke |
 | `axag-role-escalation` | `boolean` | Whether role escalation is permitted |
 
@@ -103,10 +102,22 @@ The prefix `axag-` is reserved for AXAG annotations. Implementations MUST NOT us
 | Value | Description |
 |-------|-------------|
 | `read` | Non-mutating data retrieval |
-| `create` | Creates a new entity instance |
-| `mutate` | Modifies an existing entity |
-| `delete` | Removes an entity |
+| `write` | Creates or modifies an entity |
+| `delete` | Removes, cancels, or deactivates an entity |
 | `navigate` | Changes the view or context without data mutation |
+
+:::note Changed in 1.1
+Earlier drafts of this page listed `create` and `mutate`. The manifest schema and all AXAG tooling only ever accepted `write`; use `write` for both.
+:::
+
+## Scope Values
+
+| Value | Description |
+|-------|-------------|
+| `public` | Available without authentication (catalog browsing, help pages) |
+| `user` | Affects only the signed-in user's own data |
+| `tenant` | Affects data shared across the user's organization |
+| `global` | Affects every tenant or the whole platform |
 
 ## Risk Level Values
 

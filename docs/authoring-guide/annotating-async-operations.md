@@ -12,7 +12,7 @@ Asynchronous operations produce results after a delay. Annotate them with postco
 <button
   axag-intent="report.generate"
   axag-entity="report"
-  axag-action-type="create"
+  axag-action-type="write"
   axag-required-parameters='["report_type","date_range"]'
   axag-risk-level="none"
   axag-async="true"

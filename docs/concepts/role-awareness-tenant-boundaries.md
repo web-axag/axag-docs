@@ -26,19 +26,18 @@ This declares that only `admin` and `super_admin` roles can invoke this operatio
 ## Tenant Boundaries
 
 ```html
-<div axag-scope="tenant" axag-tenant-context="current">
+<div axag-scope="tenant" axag-tenant-boundary="strict">
   <button
     axag-intent="settings.update"
     axag-entity="tenant_settings"
-    axag-action-type="mutate"
-    axag-cross-tenant="false"
+    axag-action-type="write"
   >
     Update Settings
   </button>
 </div>
 ```
 
-The `axag-cross-tenant="false"` declaration prevents agents from attempting cross-tenant operations.
+The inherited `axag-tenant-boundary="strict"` declaration prevents agents from attempting cross-tenant operations.
 
 ## Why These Matter
 

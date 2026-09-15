@@ -22,7 +22,7 @@ Given the annotation from the previous step:
   axag-action-type="read"
   axag-required-parameters='["query"]'
   axag-optional-parameters='["category","price_min","price_max"]'
-  axag-scope="catalog"
+  axag-scope="public"
   axag-risk-level="none"
   axag-idempotent="true"
   axag-description="Search the product catalog by text query with optional filters"
@@ -35,45 +35,34 @@ The generated Semantic Manifest entry is:
 
 ```json title="axag-manifest.json — generated output" showLineNumbers
 {
-  "version": "1.0.0",
-  "generated_at": "2026-03-14T00:00:00Z",
-  "source": "product-search-page",
-  "operations": [
+  "version": "1.1.0",
+  "generated_at": "2026-09-14T00:00:00.000Z",
+  "source": {
+    "paths": ["src"],
+    "tool": "axag-cli",
+    "tool_version": "1.0.2"
+  },
+  "conformance": "intermediate",
+  "actions": [
     {
       "intent": "product.search",
       "entity": "product",
+      "action_type": "read",
       "operation_id": "product_search",
       "description": "Search the product catalog by text query with optional filters",
-      "action_type": "read",
-      "parameters": {
-        "query": {
-          "type": "string",
-          "required": true,
-          "description": "Free-text search query for product name, description, or SKU"
-        },
-        "category": {
-          "type": "string",
-          "required": false,
-          "description": "Filter by product category"
-        },
-        "price_min": {
-          "type": "number",
-          "required": false,
-          "description": "Minimum price filter"
-        },
-        "price_max": {
-          "type": "number",
-          "required": false,
-          "description": "Maximum price filter"
-        }
-      },
-      "scope": "catalog",
+      "required_parameters": [
+        { "name": "query", "type": "string" }
+      ],
+      "optional_parameters": [
+        { "name": "category", "type": "string" },
+        { "name": "price_min", "type": "string" },
+        { "name": "price_max", "type": "string" }
+      ],
       "risk_level": "none",
       "idempotent": true,
-      "preconditions": [],
-      "postconditions": [],
-      "confirmation_required": false,
-      "side_effects": []
+      "scope": "public",
+      "source_file": "src/pages/search.html",
+      "source_line": 1
     }
   ]
 }
@@ -85,12 +74,17 @@ Every Semantic Manifest contains:
 
 | Field | Purpose |
 |-------|---------|
-| `version` | The AXAG specification version |
+| `version` | The AXAG specification version the manifest conforms to |
 | `generated_at` | Timestamp of manifest generation |
-| `source` | Identifier for the source page or component |
-| `operations` | Array of annotated operation definitions |
+| `source` | Where the annotations were read from, and the tool that read them |
+| `conformance` | `basic`, `intermediate`, or `full` — computed from the declared metadata |
+| `actions` | Array of annotated operation definitions, sorted by intent |
 
-Each operation contains the full semantic contract: intent, entity, parameters, constraints, safety metadata, and execution semantics.
+Each action contains the full semantic contract: intent, entity, parameters, safety metadata, and the source location it came from.
+
+:::tip Parameter types
+Parameters listed by name (`'["query"]'`) are typed as `string`. To declare types and constraints, use the object form: `axag-required-parameters='[{"name":"price_min","type":"number","min":0}]'`.
+:::
 
 ## Generation Approaches
 

@@ -22,33 +22,34 @@ The manifest:
 
 ```json title="axag-manifest.json — example structure" showLineNumbers
 {
-  "version": "1.0.0",
-  "conformance_level": "intermediate",
-  "generated_at": "2026-03-14T10:00:00Z",
-  "source": "ecommerce-app",
-  "pages": [
+  "version": "1.1.0",
+  "generated_at": "2026-09-14T00:00:00.000Z",
+  "source": {
+    "paths": ["src"],
+    "tool": "axag-cli",
+    "tool_version": "1.0.2"
+  },
+  "conformance": "intermediate",
+  "actions": [
     {
-      "page_id": "product-listing",
-      "url_pattern": "/products",
-      "operations": [
-        {
-          "intent": "product.search",
-          "entity": "product",
-          "operation_id": "product_search",
-          "description": "Search the product catalog",
-          "action_type": "read",
-          "parameters": {
-            "query": { "type": "string", "required": true },
-            "category": { "type": "string", "required": false }
-          },
-          "scope": "catalog",
-          "risk_level": "none",
-          "idempotent": true,
-          "preconditions": [],
-          "postconditions": [],
-          "confirmation_required": false
-        }
-      ]
+      "intent": "product.search",
+      "entity": "product",
+      "action_type": "read",
+      "operation_id": "product_search",
+      "description": "Search the product catalog by text query with optional filters",
+      "required_parameters": [
+        { "name": "query", "type": "string" }
+      ],
+      "optional_parameters": [
+        { "name": "category", "type": "string" },
+        { "name": "price_min", "type": "string" },
+        { "name": "price_max", "type": "string" }
+      ],
+      "risk_level": "none",
+      "idempotent": true,
+      "scope": "public",
+      "source_file": "src/pages/search.html",
+      "source_line": 1
     }
   ]
 }

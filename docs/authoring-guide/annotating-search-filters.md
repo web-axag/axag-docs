@@ -9,7 +9,7 @@ slug: /authoring-guide/annotating-search-filters
 Search and filter controls combine read operations with multiple optional parameters.
 
 ```html title="Search with filters — form-level annotation" showLineNumbers
-<div axag-intent="product.search" axag-entity="product" axag-action-type="read" axag-scope="catalog">
+<div axag-intent="product.search" axag-entity="product" axag-action-type="read" axag-scope="public">
   <input axag-parameter="query" axag-parameter-type="string" axag-parameter-required="true" />
   <select axag-parameter="category" axag-parameter-type="enum" axag-parameter-required="false"
     axag-parameter-enum='["electronics","clothing","home"]'>

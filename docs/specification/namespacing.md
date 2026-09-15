@@ -19,7 +19,7 @@ Organizations MAY extend the AXAG vocabulary with custom attributes using namesp
 <button
   axag-intent="order.create"
   axag-entity="order"
-  axag-action-type="create"
+  axag-action-type="write"
   axag-x-acme-billing-code="SALES-001"
   axag-x-acme-department="sales"
 >Create Order</button>

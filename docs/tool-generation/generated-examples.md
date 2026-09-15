@@ -40,7 +40,7 @@ slug: /tool-generation/generated-examples
     },
     "required": ["product_id", "quantity"]
   },
-  "safety": { "execution_type": "create", "risk_level": "low", "idempotent": false, "confirmation_required": false }
+  "safety": { "execution_type": "write", "risk_level": "low", "idempotent": false, "confirmation_required": false }
 }
 ```
 
@@ -59,7 +59,7 @@ slug: /tool-generation/generated-examples
     "required": ["cart_id", "payment_method_id", "shipping_address_id"]
   },
   "safety": {
-    "execution_type": "mutate",
+    "execution_type": "write",
     "risk_level": "high",
     "idempotent": false,
     "confirmation_required": true,
@@ -111,7 +111,7 @@ slug: /tool-generation/generated-examples
     },
     "required": ["first_name", "last_name", "email"]
   },
-  "safety": { "execution_type": "create", "risk_level": "low", "idempotent": false, "confirmation_required": false }
+  "safety": { "execution_type": "write", "risk_level": "low", "idempotent": false, "confirmation_required": false }
 }
 ```
 
@@ -130,7 +130,7 @@ slug: /tool-generation/generated-examples
     "required": ["campaign_id", "scheduled_at"]
   },
   "safety": {
-    "execution_type": "mutate",
+    "execution_type": "write",
     "risk_level": "medium",
     "idempotent": true,
     "confirmation_required": true,
@@ -154,7 +154,7 @@ slug: /tool-generation/generated-examples
     "required": ["ticket_id", "escalation_reason", "target_tier"]
   },
   "safety": {
-    "execution_type": "mutate",
+    "execution_type": "write",
     "risk_level": "medium",
     "idempotent": false,
     "confirmation_required": false,
@@ -197,7 +197,7 @@ slug: /tool-generation/generated-examples
     "required": ["booking_id"]
   },
   "safety": {
-    "execution_type": "mutate",
+    "execution_type": "write",
     "risk_level": "high",
     "idempotent": true,
     "confirmation_required": true,
@@ -223,7 +223,7 @@ slug: /tool-generation/generated-examples
     "required": ["candidate_id", "job_id", "scheduled_at", "duration_minutes"]
   },
   "safety": {
-    "execution_type": "create",
+    "execution_type": "write",
     "risk_level": "low",
     "idempotent": false,
     "confirmation_required": false,

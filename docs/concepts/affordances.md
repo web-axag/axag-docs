@@ -15,7 +15,7 @@ In AX, affordances are **declared capabilities**. An AXAG-annotated element decl
 
 | Visual Affordance | Semantic Affordance |
 |------------------|---------------------|
-| A button shape suggests "clickable" | `axag-action-type="mutate"` declares "invocable operation" |
+| A button shape suggests "clickable" | `axag-action-type="write"` declares "invocable operation" |
 | A text field suggests "typeable" | `axag-parameter-type="string"` declares "accepts text input" |
 | A dropdown suggests "selectable" | `axag-parameter-type="enum"` declares "accepts constrained value" |
 

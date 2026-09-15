@@ -12,7 +12,7 @@ Safety metadata from the manifest translates to the tool's `safety` object, enab
 ```json title="Safety object — high-risk mutating operation" showLineNumbers
 {
   "safety": {
-    "execution_type": "mutate",
+    "action_type": "write",
     "risk_level": "high",
     "idempotent": false,
     "confirmation_required": true,

@@ -27,7 +27,7 @@ Optional fields extend the semantic contract with additional dimensions. They ar
 ## Access Control Fields
 - `axag-required-roles`
 - `axag-role-escalation`
-- `axag-cross-tenant`
+- `axag-tenant-boundary`
 
 ## Workflow Fields
 - `axag-workflow-id`, `axag-workflow-step`, `axag-workflow-total-steps`

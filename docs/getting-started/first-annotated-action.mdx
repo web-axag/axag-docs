@@ -71,7 +71,7 @@ The attribute syntax shown below is a Proposed Implementation Pattern.
     axag-action-type="read"
     axag-required-parameters='["query"]'
     axag-optional-parameters='["category","price_min","price_max"]'
-    axag-scope="catalog"
+    axag-scope="public"
     axag-risk-level="none"
     axag-idempotent="true"
     axag-description="Search the product catalog by text query with optional filters"
@@ -111,7 +111,7 @@ An agent reading this contract can:
 | Mistake | Problem | Fix |
 |---------|---------|-----|
 | Missing `axag-intent` | Agent cannot determine purpose | Always declare intent |
-| Using `axag-action-type="mutate"` for a search | Misclassifies a read operation | Use `read` for non-mutating operations |
+| Using `axag-action-type="write"` for a search | Misclassifies a read operation | Use `read` for non-mutating operations |
 | Omitting `axag-scope` | Agent cannot determine access boundaries | Always declare scope |
 | Setting `axag-risk-level="high"` for a search | Over-classifying a safe operation | Match risk to actual impact |
 

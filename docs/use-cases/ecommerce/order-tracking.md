@@ -31,7 +31,7 @@ After purchase, users need to track order status, estimated delivery, and shipme
   axag-entity="order"
   axag-action-type="read"
   axag-required-parameters='["order_id"]'
-  axag-scope="user_orders"
+  axag-scope="user"
   axag-risk-level="none"
   axag-idempotent="true"
   axag-description="Get the current status and tracking details for an order"
@@ -48,7 +48,7 @@ After purchase, users need to track order status, estimated delivery, and shipme
   "parameters": {
     "order_id": { "type": "string", "required": true }
   },
-  "scope": "user_orders",
+  "scope": "user",
   "risk_level": "none",
   "idempotent": true
 }
@@ -72,5 +72,5 @@ After purchase, users need to track order status, estimated delivery, and shipme
 
 ## Constraints & Safety Notes
 - Read-only, no side-effects
-- Scoped to `user_orders` — agents can only track orders belonging to the authenticated user
+- Scoped to `user` — agents can only track orders belonging to the authenticated user
 - No tenant-crossing: User A cannot track User B's order

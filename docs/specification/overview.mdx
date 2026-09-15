@@ -133,12 +133,12 @@ AXAG annotations MUST be expressed as HTML data attributes prefixed with `axag-`
 <button
   axag-intent="checkout.begin"
   axag-entity="order"
-  axag-action-type="mutate"
+  axag-action-type="write"
   axag-required-parameters='["cart_id","payment_method_id","shipping_address_id"]'
   axag-optional-parameters='["promo_code"]'
   axag-preconditions='["cart_validated","inventory_reserved"]'
   axag-postconditions='["checkout_session_created"]'
-  axag-scope="customer"
+  axag-scope="user"
   axag-risk-level="high"
   axag-confirmation-required="true"
   axag-idempotent="false"

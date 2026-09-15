@@ -30,11 +30,11 @@ An agent operating within a multi-tenant SaaS product must know that `tenant` sc
 AXAG supports context inheritance — child elements can inherit scope from parent containers:
 
 ```html
-<div axag-scope="tenant" axag-tenant-id="acme-corp">
-  <button axag-intent="user.create" axag-entity="user" axag-action-type="create">
+<div axag-scope="tenant" axag-tenant-boundary="strict">
+  <button axag-intent="user.create" axag-entity="user" axag-action-type="write">
     Add User
   </button>
-  <!-- This button inherits scope="tenant" and tenant-id="acme-corp" -->
+  <!-- This button inherits scope="tenant" and tenant-boundary="strict" -->
 </div>
 ```
 

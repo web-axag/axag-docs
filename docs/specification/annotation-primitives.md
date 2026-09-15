@@ -40,7 +40,7 @@ Declare risk and authorization:
 Declare operational boundaries:
 - `axag-scope` — Boundary level
 - `axag-required-roles` — Role constraints
-- `axag-tenant-context` — Tenant isolation
+- `axag-tenant-boundary` — Tenant isolation (`strict` or `relaxed`)
 
 ## Composition Rules
 

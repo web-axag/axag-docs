@@ -19,6 +19,14 @@ const DOCS_DIR = join(process.cwd(), 'docs');
 const REQUIRED_ATTRIBUTES = ['axag-intent', 'axag-entity', 'axag-action-type'];
 const STRICT_MODE = process.argv.includes('--strict');
 
+// Keep in step with @axag/core's vocabulary and static/schema/v1.1.
+const ALLOWED_VALUES = {
+  'axag-action-type': ['read', 'write', 'delete', 'navigate'],
+  'axag-risk-level': ['none', 'low', 'medium', 'high', 'critical'],
+  'axag-scope': ['public', 'user', 'tenant', 'global'],
+  'axag-tenant-boundary': ['strict', 'relaxed'],
+};
+
 let totalFiles = 0;
 let totalJsonBlocks = 0;
 let totalHtmlBlocks = 0;
@@ -73,6 +81,16 @@ function validateJsonBlock(code, file, line) {
 function validateHtmlBlock(code, file, line) {
   const hasAxag = code.includes('axag-');
   if (!hasAxag) return true; // Not an AXAG annotation
+
+  for (const [attr, allowed] of Object.entries(ALLOWED_VALUES)) {
+    for (const match of code.matchAll(new RegExp(`${attr}="([^"]*)"`, 'g'))) {
+      if (allowed.includes(match[1])) continue;
+      const level = STRICT_MODE ? '❌' : '⚠️';
+      console.warn(`${level} Invalid ${attr}="${match[1]}" in ${file}:${line}`);
+      console.warn(`   Allowed: ${allowed.join(', ')}`);
+      htmlWarnings++;
+    }
+  }
 
   const missing = REQUIRED_ATTRIBUTES.filter(attr => !code.includes(attr));
   if (missing.length > 0) {

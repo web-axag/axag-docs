@@ -24,11 +24,13 @@ Suitable for: production deployments, external-facing products, agent-accessible
 Suitable for: regulated industries, high-trust agent interactions, enterprise standards compliance.
 
 ## Claiming Conformance
-Implementations SHOULD declare their conformance level in the Semantic Manifest:
+Every Semantic Manifest declares its conformance level in the `conformance` field. Generators compute it from the metadata the actions actually declare, so a claim can't exceed what the annotations support:
 ```json
 {
-  "version": "1.0.0",
-  "conformance_level": "intermediate",
-  "operations": ["product.search", "product.create"]
+  "version": "1.1.0",
+  "conformance": "intermediate",
+  "actions": []
 }
 ```
+
+The CLI's `axag-cli validate --level` flag accepts the same names. The earlier `A`, `AA`, `AAA` names are still accepted and map to `basic`, `intermediate`, `full`.

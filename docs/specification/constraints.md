@@ -22,7 +22,7 @@ State requirements: preconditions, rate limits, cooldown periods, temporal windo
 <button
   axag-intent="booking.create"
   axag-entity="reservation"
-  axag-action-type="create"
+  axag-action-type="write"
   axag-required-parameters='["check_in","check_out","guests"]'
   axag-constraints='{"check_out_after_check_in": "check_out > check_in", "max_guests": "guests <= 10"}'
   axag-preconditions='["room_available"]'

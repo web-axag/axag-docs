@@ -10,12 +10,12 @@ Tables with row-level and bulk actions require annotations on action controls wi
 
 ## Row Action
 ```html title="Row-level actions — view & cancel" showLineNumbers
-<table axag-entity="order" axag-scope="customer">
+<table axag-entity="order" axag-scope="user">
   <tr>
     <td>Order #1234</td>
     <td>
       <button axag-intent="order.view" axag-action-type="navigate" axag-required-parameters='["order_id"]'>View</button>
-      <button axag-intent="order.cancel" axag-action-type="mutate" axag-risk-level="high"
+      <button axag-intent="order.cancel" axag-action-type="write" axag-risk-level="high"
         axag-confirmation-required="true" axag-required-parameters='["order_id"]'>Cancel</button>
     </td>
   </tr>
@@ -29,7 +29,7 @@ Tables with row-level and bulk actions require annotations on action controls wi
   axag-entity="order"
   axag-action-type="read"
   axag-required-parameters='["order_ids"]'
-  axag-scope="customer"
+  axag-scope="user"
   axag-risk-level="none"
   axag-description="Export selected orders as CSV"
 >Export Selected</button>

@@ -15,7 +15,7 @@ Links that perform navigation SHOULD be annotated with `axag-action-type="naviga
   axag-entity="product"
   axag-action-type="navigate"
   axag-required-parameters='["product_id"]'
-  axag-scope="catalog"
+  axag-scope="public"
   axag-risk-level="none"
 >
   View Product Details

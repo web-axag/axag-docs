@@ -10,7 +10,7 @@ Forms require annotations on both the submission action and individual input fie
 
 ## Form-Level Annotation
 ```html title="Lead creation form — full annotation" showLineNumbers
-<form axag-intent="lead.create" axag-entity="lead" axag-action-type="create" axag-scope="organization">
+<form axag-intent="lead.create" axag-entity="lead" axag-action-type="write" axag-scope="tenant">
   <input axag-parameter="first_name" axag-parameter-type="string" axag-parameter-required="true" />
   <input axag-parameter="last_name" axag-parameter-type="string" axag-parameter-required="true" />
   <input axag-parameter="email" axag-parameter-type="string" axag-parameter-required="true"

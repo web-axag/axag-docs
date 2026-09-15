@@ -17,7 +17,7 @@ Buttons are the most common interactive elements requiring AXAG annotations. Eve
   axag-action-type="read"
   <!-- axag-highlight-end -->
   axag-required-parameters='["query"]'
-  axag-scope="catalog"
+  axag-scope="public"
   axag-risk-level="none"
   axag-description="Search the product catalog"
 >
@@ -30,9 +30,9 @@ Buttons are the most common interactive elements requiring AXAG annotations. Eve
 <button
   axag-intent="order.cancel"
   axag-entity="order"
-  axag-action-type="mutate"
+  axag-action-type="write"
   axag-required-parameters='["order_id"]'
-  axag-scope="customer"
+  axag-scope="user"
   <!-- axag-highlight-start -->
   axag-risk-level="high"
   axag-confirmation-required="true"
@@ -66,7 +66,7 @@ Icon buttons without text labels are especially important to annotate, as agents
 <button
   axag-intent="notification.toggle"
   axag-entity="notification_preference"
-  axag-action-type="mutate"
+  axag-action-type="write"
   axag-required-parameters='["notification_type","enabled"]'
   axag-scope="user"
   axag-risk-level="low"
@@ -78,6 +78,6 @@ Icon buttons without text labels are especially important to annotate, as agents
 
 ## Common Mistakes
 - Annotating decorative buttons that don't trigger operations
-- Using `axag-action-type="mutate"` for buttons that only navigate
+- Using `axag-action-type="write"` for buttons that only navigate
 - Forgetting to annotate icon-only buttons
 - Not declaring side effects on buttons that trigger background processes

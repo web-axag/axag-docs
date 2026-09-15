@@ -36,7 +36,7 @@ Agents read the AXAG annotation and Semantic Manifest to discover `product.searc
   <!-- axag-highlight-end -->
   axag-required-parameters='["query"]'
   axag-optional-parameters='["category","price_min","price_max","brand","sort_by","page","page_size"]'
-  axag-scope="catalog"
+  axag-scope="public"
   axag-risk-level="none"
   axag-idempotent="true"
   axag-description="Search the product catalog with text query and optional filters"
@@ -60,7 +60,7 @@ Agents read the AXAG annotation and Semantic Manifest to discover `product.searc
     "page": { "type": "number", "required": false, "minimum": 1 },
     "page_size": { "type": "number", "required": false, "minimum": 1, "maximum": 100 }
   },
-  "scope": "catalog",
+  "scope": "public",
   "risk_level": "none",
   "idempotent": true
 }

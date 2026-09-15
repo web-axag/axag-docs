@@ -12,13 +12,13 @@ Operations requiring multi-party approval need explicit approval annotations.
 <button
   axag-intent="refund.process"
   axag-entity="refund"
-  axag-action-type="create"
+  axag-action-type="write"
   axag-required-parameters='["order_id","amount","reason"]'
   axag-risk-level="high"
   axag-approval-required="true"
   axag-approval-roles='["finance_manager"]'
   axag-approval-count="1"
-  axag-scope="organization"
+  axag-scope="tenant"
 >Process Refund</button>
 ```
 

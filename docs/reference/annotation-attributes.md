@@ -43,12 +43,13 @@ axag-entity="billing"
 
 **Type**: `enum`  
 **Required**: MUST  
-**Values**: `read`, `write`, `delete`
+**Values**: `read`, `write`, `delete`, `navigate`
 
 ```html title="axag-action-type — operation classification"
 axag-action-type="read"    <!-- Query, search, list, get, view -->
 axag-action-type="write"   <!-- Create, update, submit, schedule -->
 axag-action-type="delete"  <!-- Remove, cancel, deactivate -->
+axag-action-type="navigate"  <!-- Change view without mutating data -->
 ```
 
 ## axag-description

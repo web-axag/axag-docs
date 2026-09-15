@@ -72,7 +72,7 @@ Tool names are derived from the `intent` field:
     "query": { "type": "string", "required": true, "description": "Search query" },
     "category": { "type": "string", "required": false, "description": "Category filter" }
   },
-  "scope": "catalog",
+  "scope": "public",
   "risk_level": "none",
   "idempotent": true
 }

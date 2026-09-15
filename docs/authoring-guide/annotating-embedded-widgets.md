@@ -12,11 +12,11 @@ Third-party widgets (payment forms, maps, calendars) embedded in your applicatio
 <div
   axag-intent="payment.collect"
   axag-entity="payment"
-  axag-action-type="mutate"
+  axag-action-type="write"
   axag-required-parameters='["amount","currency","payment_method"]'
   axag-risk-level="high"
   axag-confirmation-required="true"
-  axag-scope="customer"
+  axag-scope="user"
   axag-widget-type="third-party"
   axag-widget-provider="stripe"
 >
