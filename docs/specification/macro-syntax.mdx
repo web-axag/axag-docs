@@ -1,0 +1,97 @@
+---
+id: macro-syntax
+title: Macro Syntax
+sidebar_label: Macro Syntax
+slug: /specification/macro-syntax
+description: The axag macro attribute — one string that expands to the longhand axag-* attributes.
+keywords: [macro, shorthand, axag attribute, syntax]
+---
+
+import ProposedPattern from '@site/src/components/ProposedPattern';
+
+# Macro Syntax
+
+The `axag` attribute packs the most common annotation fields into one string. It expands to exactly the longhand `axag-*` attributes an author could have written, so validators, manifests and generated tools are identical whichever form a page uses.
+
+<ProposedPattern>
+The macro is a Proposed Implementation Pattern in AXAG 1.1. Tooling (`@web-axag/axag-lint`, `axag-cli`, the VS Code extension) supports it; it becomes normative once the 1.1 review period closes.
+</ProposedPattern>
+
+```html title="Longhand"
+<button
+  axag-intent="user.deactivate"
+  axag-entity="user"
+  axag-action-type="write"
+  axag-risk-level="critical"
+  axag-approval-required="true"
+  axag-approval-roles='["security_admin"]'
+>Deactivate</button>
+```
+
+```html title="Macro"
+<button axag="write:user.deactivate!critical?approval&roles=security_admin">Deactivate</button>
+```
+
+## Grammar
+
+```text
+macro        = action-type ":" intent [ "!" risk-level ] [ "?" pair *( "&" pair ) ]
+action-type  = "read" | "write" | "delete" | "navigate"
+intent       = entity "." verb                ; lowercase letters and _, as axag-intent
+risk-level   = "none" | "low" | "medium" | "high" | "critical"
+pair         = key [ "=" value ]              ; a bare key means true
+value        = token *( "," token )
+token        = 1*( ALPHA / DIGIT / "_" / "-" )
+```
+
+No escaping is needed: intents cannot contain `: ! ? & = ,`, so values never collide with separators. Whitespace is not allowed inside the macro.
+
+## Keys
+
+| Key | Expands to | Value |
+|-----|-----------|-------|
+| `approval` | `axag-approval-required` | `true` / `false` (bare key = `true`) |
+| `confirm` | `axag-confirmation-required` | `true` / `false` |
+| `idempotent` | `axag-idempotent` | `true` / `false` |
+| `async` | `axag-async` | `true` / `false` |
+| `scope` | `axag-scope` | `public`, `user`, `tenant`, `global` |
+| `tenant` | `axag-tenant-boundary` | `strict`, `relaxed` |
+| `roles` | `axag-approval-roles` | comma-separated list |
+| `effects` | `axag-side-effects` | comma-separated list |
+| `req` | `axag-required-parameters` | comma-separated parameter names |
+| `opt` | `axag-optional-parameters` | comma-separated parameter names |
+
+Each key MAY appear at most once. List values become JSON string arrays: `roles=owner,security_admin` is `axag-approval-roles='["owner","security_admin"]'`.
+
+## Rules
+
+1. The macro expands to longhand attributes before any validation, manifest generation or tool generation.
+2. `axag-entity` defaults to the part of the intent before the dot. An explicit `axag-entity` overrides it and is not a conflict.
+3. Longhand attributes MAY sit next to the macro to add fields the grammar cannot express: `axag-description`, `axag-preconditions`, `axag-postconditions`, typed parameter objects, and list items containing spaces.
+4. A longhand attribute that sets the same field as the macro to a different value is an error (**AXAG-LINT-028**). Implementations use the longhand value and report the conflict.
+5. A macro that does not match the grammar is an error (**AXAG-LINT-027**), reported with the column where parsing failed. Parts that do parse still apply.
+6. An empty `axag` attribute is ignored. In JSX, `axag={spec}` is a dynamic value and is not read as a macro.
+
+## Examples
+
+| Macro | Meaning |
+|-------|---------|
+| `read:product.search!none?idempotent&req=query&opt=category,price_max` | Idempotent search with one required and two optional parameters |
+| `write:cart.add_item!low?idempotent=false&effects=cart_updated` | Non-idempotent write with a side effect |
+| `delete:invoice.void!high?confirm&idempotent&scope=tenant&tenant=strict` | Confirmed, tenant-bound delete |
+| `navigate:settings.open?scope=user` | Navigation, no risk level declared |
+
+## Converting existing pages
+
+`axag-cli` rewrites files in either direction without touching other attributes:
+
+```bash
+npx axag fmt src --to macro      # longhand → macro
+npx axag fmt src --to longhand   # macro → longhand
+npx axag fmt src --check         # CI: fail if any file isn't in macro form
+```
+
+## Next Steps
+
+- [Annotation Attributes Reference](/docs/reference/annotation-attributes)
+- [Required Fields](/docs/specification/required-fields)

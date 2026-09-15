@@ -83,6 +83,23 @@ The attribute syntax shown below is a Proposed Implementation Pattern.
 </div>
 ```
 
+### The same annotation as a macro
+
+The identity, safety and parameter-name attributes fit in one [`axag` macro](/docs/specification/macro-syntax); the description stays longhand:
+
+```html title="After — macro shorthand"
+<button
+  axag="read:product.search!none?idempotent&scope=public&req=query&opt=category,price_min,price_max"
+  axag-description="Search the product catalog by text query with optional filters"
+  class="btn-search"
+  onclick="searchProducts()"
+>
+  Search
+</button>
+```
+
+Both forms produce the same Semantic Manifest. `npx axag fmt` converts between them.
+
 ## Step 3: Validate Your Annotation
 
 Check your annotation against these rules:

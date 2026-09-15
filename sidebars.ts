@@ -62,6 +62,7 @@ const sidebars: SidebarsConfig = {
         'specification/overview',
         'specification/vocabulary',
         'specification/annotation-primitives',
+        'specification/macro-syntax',
         'specification/required-fields',
         'specification/optional-fields',
         'specification/entities',

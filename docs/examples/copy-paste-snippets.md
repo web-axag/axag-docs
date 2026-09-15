@@ -9,6 +9,16 @@ slug: /examples/copy-paste-snippets
 
 Ready-to-use annotation templates for common UI patterns. Copy, paste, and customize.
 
+## Macro Shorthand
+
+Every template below can also be written as a single [`axag` macro](/docs/specification/macro-syntax) (replace `entity` with your entity name); add longhand attributes for anything the macro can't express, such as descriptions:
+
+```html title="⚡ Macro templates"
+<button axag="read:entity.search!none?idempotent&req=query&opt=category,sort_by" axag-description="Search ENTITY_PLURAL">Search</button>
+<button axag="write:entity.create!low?idempotent=false" axag-description="Create a ENTITY">Create</button>
+<button axag="delete:entity.delete!high?confirm&idempotent&scope=tenant" axag-description="Delete a ENTITY">Delete</button>
+```
+
 ## Read Operations
 
 ### Search

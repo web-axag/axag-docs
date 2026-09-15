@@ -9,6 +9,17 @@ slug: /reference/annotation-attributes
 
 Complete reference for all `axag-*` HTML attributes with usage examples.
 
+## axag
+
+**Type**: `macro`  
+**Required**: MAY
+
+Shorthand for the identity and safety attributes below. See [Macro Syntax](/docs/specification/macro-syntax).
+
+```html title="axag — macro shorthand"
+axag="write:user.deactivate!critical?approval&roles=security_admin"
+```
+
 ## axag-intent
 
 **Type**: `string`  

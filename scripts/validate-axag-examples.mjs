@@ -118,9 +118,21 @@ function validateJsonBlock(code, file, line) {
   }
 }
 
+// Mirrors the head of the macro grammar in @axag/core (docs/specification/macro-syntax.mdx).
+const MACRO_HEAD = /^(read|write|delete|navigate):[a-z_]+\.[a-z_]+(!(none|low|medium|high|critical))?(\?|$)/;
+
 function validateHtmlBlock(code, file, line) {
-  const hasAxag = code.includes('axag-');
+  const macros = [...code.matchAll(/\baxag="([^"]*)"/g)].map(m => m[1]);
+  for (const macro of macros) {
+    if (MACRO_HEAD.test(macro)) continue;
+    const level = STRICT_MODE ? '❌' : '⚠️';
+    console.warn(`${level} Invalid axag macro "${macro}" in ${file}:${line}`);
+    htmlWarnings++;
+  }
+
+  const hasAxag = code.includes('axag-') || macros.length > 0;
   if (!hasAxag) return true; // Not an AXAG annotation
+  if (macros.length > 0) return true; // Macros carry intent and action type
 
   for (const [attr, allowed] of Object.entries(ALLOWED_VALUES)) {
     for (const match of code.matchAll(new RegExp(`${attr}="([^"]*)"`, 'g'))) {
