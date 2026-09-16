@@ -6,7 +6,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "docusaurus build",
+    "build": "npm run generate:llms && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -17,6 +17,7 @@
     "lint": "eslint src/ docs/ --ext .ts,.tsx,.md,.mdx",
     "lint:fix": "eslint src/ docs/ --ext .ts,.tsx,.md,.mdx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md,mdx}\" \"docs/**/*.{md,mdx}\"",
+    "generate:llms": "node scripts/generate-llms-txt.mjs",
     "validate:axag": "node scripts/validate-axag-examples.mjs",
     "test": "jest"
   },

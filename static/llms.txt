@@ -1,0 +1,236 @@
+# AXAG — Agent Experience Accessibility Guidelines
+
+> AXAG (Agent Experience Accessibility Guidelines) is a standard for annotating web UIs so AI agents can discover and invoke what a page does, instead of scraping it. Authors add `axag-*` attributes to existing HTML; tooling turns those into a Semantic Manifest and MCP or WebMCP tools an agent runtime can register.
+
+Key ideas: an **intent** (`entity.verb`) names what an action does; **risk level**, **confirmation** and
+**approval** describe how dangerous it is; **parameters** come from the form the action submits. A page
+annotated this way produces a manifest that is the same whether it was read at build time or in the browser.
+
+The whole specification as one file: https://axag.org/llms-full.txt
+Machine-readable manifest schema: https://axag.org/schema/v1.1/axag-manifest.schema.json
+
+## Introduction
+
+- [What is Agent Experience (AX)?](https://axag.org/docs/intro/what-is-ax): Agent Experience (AX) is a design discipline that treats AI agents as first-class product consumers alongside human users.
+- [What is AXAG?](https://axag.org/docs/intro/what-is-axag): AXAG is an annotation standard that defines a machine-readable semantic interaction contract for AI agents.
+- [Why Human Interfaces Fail Agents](https://axag.org/docs/intro/why-human-interfaces-fail-agents): Human-designed interfaces are semantically insufficient for AI agent interaction. This page explains why.
+- [What Problems AXAG Solves](https://axag.org/docs/intro/what-problems-axag-solves): AXAG solves the semantic gap between human interfaces and AI agent interaction through explicit annotation contracts.
+- [AXAG as a Semantic Contract](https://axag.org/docs/intro/axag-as-semantic-contract): Understanding AXAG as a semantic interaction contract rather than simple metadata.
+- [Who Should Use AXAG](https://axag.org/docs/intro/who-should-use-axag): Target audiences for the AXAG standard and their specific use cases.
+
+## Getting Started
+
+- [Mental Model: How AXAG Works](https://axag.org/docs/getting-started/mental-model): The mental model for understanding how AXAG transforms human interfaces into agent-consumable semantic contracts.
+- [Your First Annotated Action](https://axag.org/docs/getting-started/first-annotated-action): Step-by-step guide to annotating your first UI element with AXAG.
+- [Your First Semantic Manifest](https://axag.org/docs/getting-started/first-semantic-manifest): Generate your first Semantic Manifest from AXAG annotations.
+- [Your First Generated Tool](https://axag.org/docs/getting-started/first-generated-tool): Generate your first MCP tool definition from a Semantic Manifest.
+- [First End-to-End Agent Action](https://axag.org/docs/getting-started/first-end-to-end-agent-action): Walk through a complete agent interaction powered by AXAG.
+- [Implementation Prerequisites](https://axag.org/docs/getting-started/implementation-prerequisites): What you need before implementing AXAG in your product.
+
+## Core Concepts
+
+- [Core Concept: Agent Experience](https://axag.org/docs/concepts/agent-experience): Agent Experience as a design discipline for treating AI agents as first-class interface consumers.
+- [Core Concept: Semantic Contract](https://axag.org/docs/concepts/semantic-contract): The semantic contract model that underpins AXAG annotations.
+- [Core Concept: Intent vs Presentation](https://axag.org/docs/concepts/intent-vs-presentation)
+- [Core Concept: Affordances](https://axag.org/docs/concepts/affordances)
+- [Core Concept: Constraints](https://axag.org/docs/concepts/constraints)
+- [Core Concept: Preconditions and Postconditions](https://axag.org/docs/concepts/preconditions-postconditions)
+- [Core Concept: Context and Scope](https://axag.org/docs/concepts/context-and-scope)
+- [Core Concept: Visibility vs Operability](https://axag.org/docs/concepts/visibility-vs-operability)
+- [Core Concept: Determinism and Trust](https://axag.org/docs/concepts/determinism-and-trust)
+- [Core Concept: Safety Boundaries](https://axag.org/docs/concepts/safety-boundaries)
+- [Core Concept: Idempotency and Side Effects](https://axag.org/docs/concepts/idempotency-side-effects)
+- [Core Concept: Role Awareness and Tenant Boundaries](https://axag.org/docs/concepts/role-awareness-tenant-boundaries)
+
+## AXAG Specification
+
+- [AXAG Specification Overview](https://axag.org/docs/specification/overview): Overview of the AXAG specification — the formal definition of semantic interaction contracts for AI agents.
+- [Canonical Vocabulary](https://axag.org/docs/specification/vocabulary)
+- [Annotation Primitives](https://axag.org/docs/specification/annotation-primitives)
+- [Macro Syntax](https://axag.org/docs/specification/macro-syntax): The axag macro attribute — one string that expands to the longhand axag-* attributes.
+- [Required Fields](https://axag.org/docs/specification/required-fields)
+- [Optional Fields](https://axag.org/docs/specification/optional-fields)
+- [Entities](https://axag.org/docs/specification/entities)
+- [Actions](https://axag.org/docs/specification/actions)
+- [Parameters](https://axag.org/docs/specification/parameters)
+- [Constraints](https://axag.org/docs/specification/constraints)
+- [Risk Classification](https://axag.org/docs/specification/risk-classification)
+- [Safety Boundaries](https://axag.org/docs/specification/safety-boundaries)
+- [Confirmation Requirements](https://axag.org/docs/specification/confirmation-requirements)
+- [Approval Requirements](https://axag.org/docs/specification/approval-requirements)
+- [Context Inheritance](https://axag.org/docs/specification/context-inheritance)
+- [Namespacing](https://axag.org/docs/specification/namespacing)
+- [Specification Versioning](https://axag.org/docs/specification/versioning)
+- [Error Semantics](https://axag.org/docs/specification/error-semantics)
+- [Conformance Levels](https://axag.org/docs/specification/conformance-levels)
+
+## Semantic Manifest
+
+- [Semantic Manifest: What It Is](https://axag.org/docs/semantic-manifest/what-it-is)
+- [Why the Semantic Manifest Exists](https://axag.org/docs/semantic-manifest/why-it-exists)
+- [Manifest Schema](https://axag.org/docs/semantic-manifest/manifest-schema)
+- [Manifest Generation Model](https://axag.org/docs/semantic-manifest/generation-model)
+- [Schema Harvesting](https://axag.org/docs/semantic-manifest/schema-harvesting): How manifest generators derive action parameters from form markup and bound schemas.
+- [Manifest Discovery Model](https://axag.org/docs/semantic-manifest/discovery-model)
+- [Execution Planning Role](https://axag.org/docs/semantic-manifest/execution-planning-role)
+- [Manifest Field Reference](https://axag.org/docs/semantic-manifest/field-reference)
+- [Manifest Validation](https://axag.org/docs/semantic-manifest/manifest-validation)
+
+## MCP Tool Generation
+
+- [Tool Generation Mapping Rules](https://axag.org/docs/tool-generation/mapping-rules): Rules for mapping Semantic Manifest operations to MCP tool definitions.
+- [Tool Signatures](https://axag.org/docs/tool-generation/tool-signatures)
+- [Input Schema Translation](https://axag.org/docs/tool-generation/input-schema-translation)
+- [Constraints and Safety Translation](https://axag.org/docs/tool-generation/constraints-safety-translation)
+- [Authorization and Identity](https://axag.org/docs/tool-generation/authorization-identity)
+- [Build-Time Compilation](https://axag.org/docs/tool-generation/build-time-compilation): Generate the manifest and WebMCP tools from your bundler, on every build.
+- [Tool Registry Generation](https://axag.org/docs/tool-generation/tool-registry-generation)
+- [Generated Tool Examples](https://axag.org/docs/tool-generation/generated-examples)
+- [Runtime Consumption Patterns](https://axag.org/docs/tool-generation/runtime-consumption-patterns)
+
+## Frameworks
+
+- [Agent Runtime](https://axag.org/docs/frameworks/runtime): Register AXAG actions as WebMCP tools for exactly as long as their UI is on screen.
+- [React](https://axag.org/docs/frameworks/react): Register agent actions for as long as the component is mounted.
+- [Vue](https://axag.org/docs/frameworks/vue): Register agent actions for as long as the component is mounted.
+- [Angular](https://axag.org/docs/frameworks/angular): Register agent actions for as long as the element is in the view.
+- [Safety Enforcers](https://axag.org/docs/frameworks/safety): Confirmation, approval, tenant scope, CSRF and audit — in the page and on the server.
+- [Browsers Without WebMCP](https://axag.org/docs/frameworks/bridge): A registry for browsers that lack WebMCP, and a local relay that lets any MCP client reach a tab's tools.
+
+## Authoring Guide
+
+- [Annotating Buttons and Action Controls](https://axag.org/docs/authoring-guide/annotating-buttons)
+- [Annotating Links and Navigation](https://axag.org/docs/authoring-guide/annotating-links)
+- [Annotating Forms](https://axag.org/docs/authoring-guide/annotating-forms)
+- [Annotating Tables and Bulk Actions](https://axag.org/docs/authoring-guide/annotating-tables)
+- [Annotating Search and Filters](https://axag.org/docs/authoring-guide/annotating-search-filters)
+- [Annotating Multi-Step Workflows](https://axag.org/docs/authoring-guide/annotating-multi-step-workflows)
+- [Annotating Approval Gates](https://axag.org/docs/authoring-guide/annotating-approval-gates)
+- [Annotating Destructive Actions](https://axag.org/docs/authoring-guide/annotating-destructive-actions)
+- [Annotating Async Operations](https://axag.org/docs/authoring-guide/annotating-async-operations)
+- [Annotating Composite Flows](https://axag.org/docs/authoring-guide/annotating-composite-flows)
+- [Annotating Embedded Widgets](https://axag.org/docs/authoring-guide/annotating-embedded-widgets)
+- [Annotation Reuse Through Component Libraries](https://axag.org/docs/authoring-guide/annotation-reuse)
+
+## Use Cases
+
+- [Use Cases Overview](https://axag.org/docs/use-cases/overview)
+
+## E-Commerce
+
+- [E-Commerce: Product Search](https://axag.org/docs/use-cases/ecommerce/product-search)
+- [E-Commerce: Cart & Checkout](https://axag.org/docs/use-cases/ecommerce/cart-and-checkout)
+- [E-Commerce: Order Tracking](https://axag.org/docs/use-cases/ecommerce/order-tracking)
+- [E-Commerce: Returns & Refunds](https://axag.org/docs/use-cases/ecommerce/returns)
+
+## Marketing Automation
+
+- [Marketing: Campaign Creation](https://axag.org/docs/use-cases/marketing/campaign-creation)
+- [Marketing: Audience Segmentation](https://axag.org/docs/use-cases/marketing/audience-segmentation)
+- [Marketing: Campaign Scheduling](https://axag.org/docs/use-cases/marketing/campaign-scheduling)
+
+## Sales & CRM
+
+- [CRM: Lead Creation](https://axag.org/docs/use-cases/crm/lead-creation)
+- [CRM: Opportunity Progression](https://axag.org/docs/use-cases/crm/opportunity-progression)
+- [CRM: Sales Forecasting](https://axag.org/docs/use-cases/crm/sales-forecasting)
+
+## Travel & Booking
+
+- [Travel: Search & Reservation](https://axag.org/docs/use-cases/travel/search-and-reservation)
+- [Travel: Booking Cancellation](https://axag.org/docs/use-cases/travel/booking-cancellation)
+
+## Job Platforms
+
+- [Jobs: Job Search](https://axag.org/docs/use-cases/jobs/job-search)
+- [Jobs: Application Submission](https://axag.org/docs/use-cases/jobs/application-submission)
+- [Jobs: Interview Scheduling](https://axag.org/docs/use-cases/jobs/interview-scheduling)
+
+## Analytics & BI
+
+- [Analytics: Dashboard Filtering](https://axag.org/docs/use-cases/analytics/dashboard-filtering)
+- [Analytics: Report Generation](https://axag.org/docs/use-cases/analytics/report-generation)
+- [Analytics: Dataset Export](https://axag.org/docs/use-cases/analytics/dataset-export)
+
+## Customer Support
+
+- [Support: Ticket Creation](https://axag.org/docs/use-cases/support/ticket-creation)
+- [Support: Ticket Escalation](https://axag.org/docs/use-cases/support/escalation)
+
+## Enterprise & SaaS
+
+- [Enterprise: CRUD Dashboard](https://axag.org/docs/use-cases/enterprise/crud-dashboard)
+- [Enterprise: Admin-Guarded Actions](https://axag.org/docs/use-cases/enterprise/admin-guarded-actions)
+- [Enterprise: Multi-Step Approval](https://axag.org/docs/use-cases/enterprise/multi-step-approval)
+- [Enterprise: Tenant-Scoped Admin](https://axag.org/docs/use-cases/enterprise/tenant-scoped-admin)
+- [Cross-Domain Comparison](https://axag.org/docs/use-cases/cross-domain-comparison)
+- [Accessibility-Aligned Interaction Patterns](https://axag.org/docs/use-cases/accessibility-patterns)
+- [Failure Recovery and Retry Flows](https://axag.org/docs/use-cases/retry-and-recovery)
+
+## Validation
+
+- [Static Validation](https://axag.org/docs/validation/static-validation)
+- [Runtime Validation](https://axag.org/docs/validation/runtime-validation)
+- [CI/CD Linting](https://axag.org/docs/validation/ci-linting)
+- [Schema Conformance](https://axag.org/docs/validation/schema-conformance)
+- [Contradictory Annotation Detection](https://axag.org/docs/validation/contradictory-annotation-detection)
+- [Missing Intent Detection](https://axag.org/docs/validation/missing-intent-detection)
+- [Unsafe Mutation Exposure Detection](https://axag.org/docs/validation/unsafe-mutation-detection)
+- [Scope Mismatch Detection](https://axag.org/docs/validation/scope-mismatch-detection)
+- [Risk-Level Validation](https://axag.org/docs/validation/risk-level-validation)
+- [Common Validation Failures](https://axag.org/docs/validation/common-failures)
+- [Remediation Guidance](https://axag.org/docs/validation/remediation-guidance)
+
+## Governance
+
+- [Ownership Model](https://axag.org/docs/governance/ownership-model)
+- [Change Review Workflow](https://axag.org/docs/governance/change-review-workflow)
+- [Version Policy](https://axag.org/docs/governance/version-policy)
+- [Backward Compatibility](https://axag.org/docs/governance/backward-compatibility)
+- [Deprecation Strategy](https://axag.org/docs/governance/deprecation-strategy)
+- [Release Notes Model](https://axag.org/docs/governance/release-notes-model)
+- [Standard Evolution Process](https://axag.org/docs/governance/standard-evolution-process)
+- [Conformance Adoption Levels](https://axag.org/docs/governance/conformance-adoption-levels)
+
+## Reference
+
+- [Schema Reference](https://axag.org/docs/reference/schema-reference)
+- [Annotation Attributes Reference](https://axag.org/docs/reference/annotation-attributes)
+- [Reserved Terms](https://axag.org/docs/reference/reserved-terms)
+- [Error Codes Reference](https://axag.org/docs/reference/error-codes)
+- [Manifest Fields Reference](https://axag.org/docs/reference/manifest-fields)
+- [Tool Mapping Rules Reference](https://axag.org/docs/reference/tool-mapping-rules)
+- [Glossary](https://axag.org/docs/reference/glossary)
+- [Term Disambiguation](https://axag.org/docs/reference/term-disambiguation)
+
+## Tutorials
+
+- [Tutorial: Add AXAG to a Page](https://axag.org/docs/tutorials/add-axag-to-page)
+- [Tutorial: Convert Scraping to Semantic](https://axag.org/docs/tutorials/convert-scraping-to-semantic)
+- [Tutorial: Generate a Semantic Manifest](https://axag.org/docs/tutorials/generate-semantic-manifest)
+- [Tutorial: Bind Zod or OpenAPI Schemas](https://axag.org/docs/tutorials/bind-schemas)
+- [Tutorial: Generate MCP Tools](https://axag.org/docs/tutorials/generate-mcp-tools)
+- [Tutorial: Add Validation to CI](https://axag.org/docs/tutorials/add-validation-to-ci)
+- [Tutorial: Incremental Rollout](https://axag.org/docs/tutorials/incremental-rollout)
+- [Tutorial: Cross-Domain Agent Workflow](https://axag.org/docs/tutorials/cross-domain-example)
+
+## Examples
+
+- [Examples Overview](https://axag.org/docs/examples/overview)
+- [Before & After Examples](https://axag.org/docs/examples/before-and-after)
+- [Anti-Patterns](https://axag.org/docs/examples/anti-patterns)
+- [Copy-Paste Snippets](https://axag.org/docs/examples/copy-paste-snippets)
+- [Domain Gallery](https://axag.org/docs/examples/domain-gallery)
+- [Proposed Patterns vs Normative Rules](https://axag.org/docs/examples/proposed-vs-normative)
+- [Frequently Asked Questions](https://axag.org/docs/faq)
+
+## Contributor Guide
+
+- [Contributor Guide](https://axag.org/docs/contributors/guide)
+- [Style Guide](https://axag.org/docs/contributors/style-guide)
+- [Adding Use Cases](https://axag.org/docs/contributors/adding-use-cases)
+- [Review Checklist](https://axag.org/docs/contributors/review-checklist)
+
+## Other pages
+
+- [ADR 001: Docusaurus as Documentation Platform](https://axag.org/docs/adr/001-docusaurus)

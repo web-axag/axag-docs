@@ -83,8 +83,21 @@ This annotation generates a **semantic manifest** (JSON) which is then transform
 | `npm start` | Start development server |
 | `npm run build` | Production build |
 | `npm run validate:axag` | Validate AXAG examples |
+| `npm run generate:llms` | Regenerate `llms.txt` and `llms-full.txt` (runs as part of the build) |
 | `npm run typecheck` | Type-check site components |
 | `npm run format` | Format code |
+
+## 🤖 For language models
+
+The site publishes plain-text entry points, so an agent can read the standard without rendering it:
+
+| File | Contents |
+|------|----------|
+| [`/llms.txt`](https://axag.org/llms.txt) | Every page, one line each, in reading order |
+| [`/llms-full.txt`](https://axag.org/llms-full.txt) | The whole specification as plain text |
+| [`/schema/v1.1/axag-manifest.schema.json`](https://axag.org/schema/v1.1/axag-manifest.schema.json) | The manifest schema |
+
+Both text files are generated from the documentation during the build, so they can't drift from it.
 
 ## 🤝 Contributing
 

@@ -36,9 +36,24 @@ const config: Config = {
         },
       }),
     },
+    // Plain-text entry points, so a model can read the standard without rendering it.
     {
       tagName: 'link',
-      attributes: { rel: 'canonical', href: 'https://axag.org' },
+      attributes: {
+        rel: 'alternate',
+        type: 'text/plain',
+        href: 'https://axag.org/llms.txt',
+        title: 'AXAG for language models — page index',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'alternate',
+        type: 'text/plain',
+        href: 'https://axag.org/llms-full.txt',
+        title: 'AXAG for language models — full text',
+      },
     },
   ],
 

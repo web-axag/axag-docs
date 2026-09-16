@@ -1,5 +1,45 @@
-# axag.org robots.txt
+# axag.org — Agent Experience Accessibility Guidelines
+#
+# AXAG is a standard for making web UIs legible to AI agents, so it would be
+# strange to hide it from them. Everything here is public documentation and is
+# open to search crawlers, answer engines and model training alike.
+
 User-agent: *
 Allow: /
 
+# Answer engines and AI crawlers, named explicitly so a default-deny policy
+# elsewhere in a fleet doesn't accidentally exclude the specification.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: Bingbot
+User-agent: meta-externalagent
+User-agent: Amazonbot
+User-agent: Bytespider
+User-agent: CCBot
+User-agent: cohere-ai
+User-agent: DuckAssistBot
+User-agent: MistralAI-User
+User-agent: YouBot
+Allow: /
+
+# Build output and search parameters carry nothing a reader needs.
+User-agent: *
+Disallow: /*?q=
+Disallow: /404.html
+
 Sitemap: https://axag.org/sitemap.xml
+
+# Structured entry points for language models:
+#   https://axag.org/llms.txt       — the map: every page, one line each
+#   https://axag.org/llms-full.txt  — the whole specification as plain text
