@@ -117,6 +117,19 @@ const sidebars: SidebarsConfig = {
       ],
     },
 
+    // ─── Frameworks ─────────────────────────────────
+    {
+      type: 'category',
+      label: 'Frameworks',
+      collapsed: true,
+      items: [
+        'frameworks/runtime',
+        'frameworks/react',
+        'frameworks/vue',
+        'frameworks/angular',
+      ],
+    },
+
     // ─── Authoring Guide ────────────────────────────
     {
       type: 'category',
