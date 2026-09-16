@@ -1,7 +1,10 @@
 {
   "name": "axag-docs",
   "version": "1.0.1",
-  "description": "AXAG Standard Documentation — Agent Experience Accessibility Guidelines",
+  "description": "AXAG Standard Documentation \u2014 Agent Experience Accessibility Guidelines",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -53,8 +56,5 @@
       "last 3 firefox version",
       "last 5 safari version"
     ]
-  },
-  "engines": {
-    "node": ">=18.0"
   }
 }

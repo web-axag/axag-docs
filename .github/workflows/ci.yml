@@ -12,7 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18, 20]
+        # Docusaurus 3 requires Node 20 or newer.
+        node-version: [20, 22]
 
     steps:
       - name: Checkout
