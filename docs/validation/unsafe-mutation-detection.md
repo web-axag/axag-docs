@@ -127,7 +127,7 @@ Fix: Add axag-side-effects listing observable state changes
 
 ```yaml
 - name: Check for unsafe mutations
-  run: npx axag-lint --rules unsafe-mutations --format=github
+  run: npx axag-lint src --format github
 ```
 
 ## Next Steps

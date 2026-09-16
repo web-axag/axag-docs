@@ -53,8 +53,8 @@ Expand to all customer-facing user flows:
 
 ### Add CI validation
 ```bash title="Add linting to CI"
-npm install -D @axag/lint
-# Add GitHub Actions workflow (see Add Validation to CI tutorial)
+npm install -D @web-axag/axag-lint
+# Add the GitHub Actions workflow from the Add Validation to CI tutorial
 ```
 
 ### Success criteria
@@ -76,8 +76,10 @@ npm install -D @axag/lint
 
 ### Target full conformance
 ```bash title="Target full conformance"
-npx axag conformance --manifest axag-manifest.json --level full
+npx axag validate src --level full --strict
 ```
+
+The manifest's own `conformance` field is computed from what the annotations declare, so `axag generate --validate` shows where you have reached.
 
 ### Success criteria
 - [ ] 100% of actionable elements annotated

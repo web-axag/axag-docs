@@ -12,41 +12,41 @@ This tutorial shows how to integrate AXAG validation into your CI/CD pipeline to
 ## Step 1: Install Dependencies
 
 ```bash title="Install AXAG dev dependencies"
-npm install -D @axag/cli @axag/lint
+npm install -D @web-axag/axag-cli @web-axag/axag-lint
 ```
 
 ## Step 2: Create Lint Configuration
 
-Create `.axag-lint.json`:
+Create `.axaglintrc.json`. Every rule has a default severity, so list only the ones you want to change:
 
-```json title=".axag-lint.json" showLineNumbers
+```json title=".axaglintrc.json" showLineNumbers
 {
-  "extends": "@axag/lint/recommended",
-  "rules": {
-    "AXAG-LINT-001": "error",
-    "AXAG-LINT-002": "error",
-    "AXAG-LINT-003": "error",
-    "AXAG-LINT-006": "error",
-    "AXAG-LINT-007": "warn"
-  },
+  "include": ["**/*.{html,htm,jsx,tsx,vue}"],
+  "exclude": ["node_modules/**", "dist/**", "**/*.test.*", "**/*.spec.*"],
   "manifestPath": "./axag-manifest.json",
-  "ignorePatterns": ["**/*.test.*", "**/*.spec.*"]
+  "rules": {
+    "AXAG-LINT-032": "warning"
+  }
 }
 ```
+
+`npx axag-lint --init` writes the file with every rule at its default.
 
 ## Step 3: Add npm Scripts
 
 ```json title="package.json — AXAG scripts"
 {
   "scripts": {
-    "axag:scan": "axag scan --input src/ --output axag-manifest.json",
-    "axag:lint": "axag lint src/ --config .axag-lint.json",
-    "axag:validate": "axag validate-manifest axag-manifest.json",
-    "axag:conformance": "axag conformance --manifest axag-manifest.json --level intermediate",
-    "axag:check": "npm run axag:scan && npm run axag:lint && npm run axag:validate && npm run axag:conformance"
+    "axag:generate": "axag generate src --manifest axag-manifest.json --validate",
+    "axag:lint": "axag-lint src --manifest axag-manifest.json",
+    "axag:check": "npm run axag:generate && npm run axag:lint"
   }
 }
 ```
+
+`axag generate` compiles the manifest from your sources and `--validate` checks it against the JSON Schema. Generating the manifest first means the cross-reference rules have something current to compare with.
+
+An app with a bundler can skip the generate step: [`@axag/compiler`](/docs/tool-generation/build-time-compilation) writes the manifest on every build.
 
 ## Step 4: GitHub Actions Workflow
 
@@ -60,7 +60,7 @@ on:
     paths:
       - 'src/**'
       - 'axag-manifest.json'
-      - '.axag-lint.json'
+      - '.axaglintrc.json'
 
 jobs:
   validate:
@@ -76,17 +76,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Scan annotations
-        run: npm run axag:scan
+      - name: Generate and validate the manifest
+        run: npm run axag:generate
 
       - name: Lint annotations
-        run: npm run axag:lint -- --format github
-
-      - name: Validate manifest
-        run: npm run axag:validate
-
-      - name: Check conformance
-        run: npm run axag:conformance
+        run: npx axag-lint src --manifest axag-manifest.json --format github
 
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v4
@@ -95,10 +89,14 @@ jobs:
           path: axag-manifest.json
 ```
 
+`--format github` turns findings into annotations on the pull request, at the file and line they came from.
+
 ## Step 5: Add Pre-Commit Hook
 
-```bash title="Add pre-commit hook"
-npx husky add .husky/pre-commit "npm run axag:lint -- --staged"
+```bash title=".husky/pre-commit"
+git diff --cached --name-only --diff-filter=ACM \
+  | grep -E '\.(html|htm|jsx|tsx|vue)$' \
+  | xargs -r npx axag-lint
 ```
 
 ## Step 6: Add Status Badge
@@ -111,12 +109,16 @@ npx husky add .husky/pre-commit "npm run axag:lint -- --staged"
 
 ### CI fails with AXAG-LINT-010 (Intent not found in manifest)
 
-The manifest may be out of date. Run `npm run axag:scan` to regenerate it.
+The manifest is out of date. Regenerate it with `npm run axag:generate`, and generate it before linting in CI.
 
-### CI fails with conformance check
+### CI fails on the conformance level you target
 
-Your annotations don't meet the target conformance level. Run with `--verbose` to see which fields are missing:
+The manifest's `conformance` field is computed from what the annotations actually declare, so it drops when an action is missing risk, scope or idempotency. To fail the build on annotations below a level:
 
-```bash title="Debug conformance failures"
-npx axag conformance --manifest axag-manifest.json --level intermediate --verbose
+```bash title="Check annotations against a conformance level"
+npx axag validate src --level intermediate --strict
 ```
+
+### Lint reports AXAG-LINT-033 for a component action
+
+`axag={spec}` is read at build time only when the spec is a module-level `const` or a `defineAction({...})` call. A spec built from props is registered at runtime and can't be in the manifest.

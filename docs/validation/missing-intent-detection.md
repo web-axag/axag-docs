@@ -130,7 +130,7 @@ For elements that intentionally lack annotations (e.g., purely decorative intera
 
 ```yaml
 - name: Check for missing intents
-  run: npx axag-lint --rules missing-intent --threshold 80 --format=github
+  run: npx axag-lint src --format github
 ```
 
 The `--threshold` flag sets the minimum annotation coverage percentage. The build fails if coverage drops below this threshold.

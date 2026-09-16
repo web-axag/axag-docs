@@ -69,7 +69,7 @@ After fixing annotations, ensure the Semantic Manifest is in sync:
 
 ```bash title="Regenerate manifest after fixes"
 # Regenerate manifest from annotations
-npx axag-generate-manifest --input src/ --output axag-manifest.json
+npx axag generate src --manifest axag-manifest.json
 
 # Or manually add missing intents to existing manifest
 # Edit axag-manifest.json and add the missing action definitions
@@ -96,7 +96,7 @@ After remediation, verify your target conformance level:
 
 ```bash
 # Check target level
-npx axag-conformance --manifest axag-manifest.json --level intermediate --verbose
+npx axag validate src --level intermediate --strict
 
 # Verbose output shows:
 # ✓ 45/45 actions have intent declared

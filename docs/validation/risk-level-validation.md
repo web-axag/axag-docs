@@ -143,7 +143,7 @@ When assigning a risk level, consider:
 
 ```yaml
 - name: Validate risk levels
-  run: npx axag-lint --rules risk-level --format=github
+  run: npx axag-lint src --format github
 ```
 
 ## Next Steps

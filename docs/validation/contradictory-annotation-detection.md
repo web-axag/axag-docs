@@ -127,7 +127,7 @@ An operation declared idempotent but with non-idempotent side effects:
 ```yaml
 # In your CI pipeline
 - name: Check for contradictory annotations
-  run: npx axag-lint --rules contradictions --format=github
+  run: npx axag-lint src --format github
 ```
 
 ## Next Steps

@@ -116,7 +116,7 @@ For operations with prerequisites or guaranteed outcomes:
 Run the AXAG validator to check your annotations:
 
 ```bash title="Validate annotations"
-npx axag-validate --input src/my-page.html
+npx axag-lint src/my-page.html
 ```
 
 ## Complete Example

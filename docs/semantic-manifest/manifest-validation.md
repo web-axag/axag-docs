@@ -22,7 +22,7 @@ Manifests MUST be validated before consumption by agent runtimes.
 ```yaml
 # Example CI step
 - name: Validate AXAG Manifest
-  run: npx axag-cli validate --manifest ./public/axag-manifest.json --level intermediate
+  run: npx axag validate src --level intermediate --strict
 ```
 
 ## Common Validation Failures

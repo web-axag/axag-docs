@@ -33,7 +33,7 @@ Static validation checks AXAG annotations at build time — before the page is s
 
 ```bash title="Static validation output"
 # Run static validation
-npx axag-validate --input src/ --manifest axag-manifest.json
+npx axag-lint src --manifest axag-manifest.json
 
 # Output
 ✓ 47 annotations found
@@ -46,70 +46,67 @@ npx axag-validate --input src/ --manifest axag-manifest.json
 
 ## Integration with Build Tools
 
-### Webpack Plugin
-```javascript title="webpack.config.js — AXAG plugin"
-// webpack.config.js
-const AXAGValidatePlugin = require('axag-validate-webpack');
+`@axag/compiler` reads annotations during the build and fails it on error diagnostics, so a broken annotation never reaches a deploy. See [Build-Time Compilation](/docs/tool-generation/build-time-compilation).
+
+### Vite
+```typescript title="vite.config.ts"
+import { defineConfig } from 'vite';
+import axag from '@axag/compiler/vite';
+
+export default defineConfig({
+  plugins: [axag({ failOnError: true })],
+});
+```
+
+### webpack
+```javascript title="webpack.config.js"
+const axag = require('@axag/compiler/webpack').default;
 
 module.exports = {
-  plugins: [
-    new AXAGValidatePlugin({
-      manifestPath: './axag-manifest.json',
-      failOnError: true,
-      failOnWarning: false,
-    }),
-  ],
+  plugins: [axag({ failOnError: true })],
 };
 ```
 
-### Vite Plugin
-```typescript title="vite.config.ts — AXAG plugin"
-// vite.config.ts
-import { axagValidate } from 'axag-validate-vite';
-
-export default {
-  plugins: [
-    axagValidate({
-      manifestPath: './axag-manifest.json',
-      strict: true,
-    }),
-  ],
-};
-```
+Rollup, Rspack and esbuild import from `@axag/compiler/rollup`, `/rspack` and `/esbuild`.
 
 ## Lint Rules
 
-Static validation includes a set of named lint rules:
+`axag-lint` ships 35 rules, grouped by what they protect:
 
-| Rule ID | Description | Severity |
-|---------|------------|----------|
-| `AXAG-LINT-001` | Missing `axag-intent` on annotated element | Error |
-| `AXAG-LINT-002` | Missing `axag-entity` on annotated element | Error |
-| `AXAG-LINT-003` | Missing `axag-action-type` on annotated element | Error |
-| `AXAG-LINT-004` | Invalid `axag-action-type` value | Error |
-| `AXAG-LINT-005` | Invalid `axag-risk-level` value | Error |
-| `AXAG-LINT-006` | Missing confirmation for high/critical risk | Warning |
-| `AXAG-LINT-007` | Missing `axag-idempotent` on write/delete action | Warning |
-| `AXAG-LINT-008` | Overlapping required and optional parameters | Error |
-| `AXAG-LINT-009` | Invalid JSON in parameter attributes | Error |
-| `AXAG-LINT-010` | Intent not found in manifest | Warning |
-| `AXAG-LINT-011` | Missing `axag-scope` on tenant-sensitive action | Warning |
-| `AXAG-LINT-012` | `axag-approval-required` without `axag-approval-roles` | Error |
+| Rules | Cover |
+|-------|-------|
+| 001–003, 034–035 | Identity: intent, entity and action type present and correctly shaped |
+| 004–005 | Enum values |
+| 006–007, 023–026 | Safety: risk, confirmation, approval, idempotency |
+| 008–009 | Parameters |
+| 010 | Cross-reference against a generated manifest |
+| 011, 018–022 | Scope and tenancy |
+| 012–016 | Contradictions between attributes |
+| 017 | Unsafe mutations |
+| 027–028 | Macro syntax and macro/longhand conflicts |
+| 029–032 | Harvesting: unnamed controls, schema drift, accessible names, labels |
+| 033 | Annotations that exist only at runtime |
 
-## Custom Rules
+Each has a default severity you can change per project. See [CI/CD Linting](/docs/validation/ci-linting) for the configuration file, and the [axag-lint README](https://www.npmjs.com/package/@web-axag/axag-lint) for the full list.
 
-Teams can define custom lint rules for domain-specific requirements:
+## Project-Specific Severities
 
-```json
+Rules are turned up, down or off per project rather than rewritten:
+
+```json title=".axaglintrc.json"
 {
-  "customRules": [
-    {
-      "id": "AXAG-CUSTOM-001",
-      "description": "All financial operations must have risk_level >= high",
-      "selector": "[axag-entity='billing'],[axag-entity='payment'],[axag-entity='refund']",
-      "assert": { "axag-risk-level": ["high", "critical"] },
-      "severity": "error"
-    }
-  ]
+  "rules": {
+    "AXAG-LINT-024": "error",
+    "AXAG-LINT-025": "off"
+  }
 }
+```
+
+Domain rules of your own — "every billing action must be high risk or above" — aren't part of the linter yet; today that check belongs in a CI script over the generated manifest, which is JSON:
+
+```bash title="A domain rule over the manifest"
+npx axag generate src --manifest axag-manifest.json
+node -e "const m=require('./axag-manifest.json');\
+  const bad=m.actions.filter(a=>['billing','payment','refund'].includes(a.entity) && !['high','critical'].includes(a.risk_level));\
+  if (bad.length) { console.error('Financial actions below high risk:', bad.map(a=>a.intent)); process.exit(1); }"
 ```

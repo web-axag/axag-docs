@@ -33,17 +33,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run AXAG static validation
-        run: npx axag-validate --input src/ --manifest axag-manifest.json --format github
+      - name: Generate and validate the manifest
+        run: npx axag generate src --manifest axag-manifest.json --validate
 
       - name: Run AXAG lint rules
-        run: npx axag-lint src/ --config .axag-lint.json --format github
-
-      - name: Validate manifest schema
-        run: npx axag-validate-manifest axag-manifest.json --schema axag-manifest-schema.json
+        run: npx axag-lint src --manifest axag-manifest.json --format github
 
       - name: Check conformance level
-        run: npx axag-conformance --manifest axag-manifest.json --level intermediate
+        run: npx axag validate src --level intermediate --strict
 ```
 
 ## GitLab CI Configuration
@@ -54,8 +51,8 @@ axag-validate:
   image: node:20
   script:
     - npm ci
-    - npx axag-validate --input src/ --manifest axag-manifest.json
-    - npx axag-lint src/ --config .axag-lint.json
+    - npx axag generate src --manifest axag-manifest.json --validate
+    - npx axag-lint src --manifest axag-manifest.json --format json
   rules:
     - changes:
         - src/**
@@ -64,40 +61,50 @@ axag-validate:
 
 ## Lint Configuration File
 
-Create `.axag-lint.json` in your project root:
+Create `.axaglintrc.json` in your project root, or put the same object under an `"axag-lint"` key in `package.json`. Anything you leave out keeps its default.
 
-```json title=".axag-lint.json" showLineNumbers
+```json title=".axaglintrc.json" showLineNumbers
 {
-  "extends": "axag-lint/recommended",
+  "include": ["**/*.{html,htm,jsx,tsx,vue}"],
+  "exclude": ["node_modules/**", "dist/**", "build/**", "**/*.test.*"],
+  "manifestPath": "./axag-manifest.json",
   "rules": {
-    "AXAG-LINT-001": "error",
-    "AXAG-LINT-002": "error",
-    "AXAG-LINT-003": "error",
-    "AXAG-LINT-004": "error",
-    "AXAG-LINT-005": "error",
-    "AXAG-LINT-006": "error",
-    "AXAG-LINT-007": "warn",
-    "AXAG-LINT-008": "error",
-    "AXAG-LINT-009": "error",
-    "AXAG-LINT-010": "warn",
-    "AXAG-LINT-011": "warn",
-    "AXAG-LINT-012": "error"
-  },
-  "ignorePatterns": [
-    "src/**/*.test.*",
-    "src/**/*.spec.*"
-  ],
-  "manifestPath": "./axag-manifest.json"
+    "AXAG-LINT-025": "off",
+    "AXAG-LINT-031": "warning",
+    "AXAG-LINT-032": "off"
+  }
 }
 ```
+
+Each rule takes `"error"`, `"warning"`, `"info"` or `"off"`. Run `npx axag-lint --init` to write the file with every rule at its default severity.
+
+### What the rules cover
+
+| Rules | Cover |
+|-------|-------|
+| 001–003, 034–035 | Identity: intent, entity and action type present and correctly shaped |
+| 004–005 | Enum values |
+| 006–007, 023–026 | Safety: risk, confirmation, approval, idempotency |
+| 008–009 | Parameters |
+| 010 | Cross-reference against the manifest (needs `manifestPath`) |
+| 011, 018–022 | Scope and tenancy |
+| 012–016 | Contradictions between attributes |
+| 017 | Unsafe mutations |
+| 027–028 | Macro syntax and macro/longhand conflicts |
+| 029–032 | Harvesting: unnamed controls, schema drift, accessible names, labels |
+| 033 | Annotations that only exist at runtime |
+
+The full list with default severities is in the [axag-lint README](https://www.npmjs.com/package/@web-axag/axag-lint).
 
 ## Pre-Commit Hook
 
 Use Husky to validate annotations before commit:
 
 ```bash title=".husky/pre-commit"
-# .husky/pre-commit
-npx axag-lint --staged --config .axag-lint.json
+# .husky/pre-commit — lint the files about to be committed
+git diff --cached --name-only --diff-filter=ACM \
+  | grep -E '\.(html|htm|jsx|tsx|vue)$' \
+  | xargs -r npx axag-lint
 ```
 
 ## CI Output Formats
@@ -106,24 +113,17 @@ The `--format` flag controls output format:
 
 | Format | Use Case |
 |--------|----------|
-| `text` | Local terminal output (default) |
-| `github` | GitHub Actions annotations (inline PR comments) |
-| `gitlab` | GitLab Code Quality report |
+| `console` | Local terminal output (default) |
+| `github` | GitHub Actions annotations, shown inline on the PR |
 | `json` | Machine-readable for custom tooling |
-| `junit` | JUnit XML for CI dashboard integration |
-| `sarif` | SARIF format for GitHub Security tab |
+
+`--quiet` shows errors only, and `--manifest <path>` turns on the rules that compare annotations with a generated manifest.
 
 ## Enforcing Conformance Levels in CI
 
 ```bash
-# Require basic conformance (mandatory fields only)
-npx axag-conformance --manifest axag-manifest.json --level basic
-
-# Require intermediate conformance (includes optional best practices)
-npx axag-conformance --manifest axag-manifest.json --level intermediate
-
-# Require full conformance (all fields, all safety metadata)
-npx axag-conformance --manifest axag-manifest.json --level full
+# Fail on annotations below a level (basic | intermediate | full)
+npx axag validate src --level intermediate --strict
 ```
 
-The conformance check exits with code 1 if the manifest doesn't meet the required level, blocking the CI pipeline.
+`axag validate` exits with code 1 when an annotation misses what the level requires, blocking the pipeline. The manifest also records the level it reached in its `conformance` field, so `axag generate --validate` shows where a codebase stands without failing the build.

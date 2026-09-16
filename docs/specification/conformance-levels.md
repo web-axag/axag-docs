@@ -33,4 +33,4 @@ Every Semantic Manifest declares its conformance level in the `conformance` fiel
 }
 ```
 
-The CLI's `axag-cli validate --level` flag accepts the same names. The earlier `A`, `AA`, `AAA` names are still accepted and map to `basic`, `intermediate`, `full`.
+The CLI's `axag validate --level` flag accepts the same names. The earlier `A`, `AA`, `AAA` names are still accepted and map to `basic`, `intermediate`, `full`.

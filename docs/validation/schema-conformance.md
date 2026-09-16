@@ -101,15 +101,18 @@ Intermediate + preconditions/postconditions, side-effects, approval roles, error
 ## Validation Commands
 
 ```bash
-# Validate manifest against schema
-npx axag-validate-manifest axag-manifest.json
+# Generate the manifest and validate it against the schema in one step
+npx axag generate src --manifest axag-manifest.json --validate
 
-# Validate with specific schema version
-npx axag-validate-manifest axag-manifest.json --schema-version 1.0.0
+# Validate a manifest you already have, against a published schema version
+curl -sO https://axag.org/schema/v1.1/axag-manifest.schema.json
+npx ajv-cli validate -s axag-manifest.schema.json -d axag-manifest.json
 
-# Check conformance level
-npx axag-conformance --manifest axag-manifest.json --level full --verbose
+# Check annotations against a conformance level
+npx axag validate src --level full --strict
 ```
+
+A manifest also reports the level it reached in its own `conformance` field, computed from what its actions declare.
 
 ## Schema Evolution
 

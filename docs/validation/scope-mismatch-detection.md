@@ -133,7 +133,7 @@ global
 
 ```yaml
 - name: Check for scope mismatches
-  run: npx axag-lint --rules scope-mismatch --format=github
+  run: npx axag-lint src --format github
 ```
 
 ## Next Steps
