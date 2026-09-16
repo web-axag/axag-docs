@@ -127,6 +127,8 @@ const sidebars: SidebarsConfig = {
         'frameworks/react',
         'frameworks/vue',
         'frameworks/angular',
+        'frameworks/safety',
+        'frameworks/bridge',
       ],
     },
 

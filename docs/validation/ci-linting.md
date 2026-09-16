@@ -114,10 +114,57 @@ The `--format` flag controls output format:
 | Format | Use Case |
 |--------|----------|
 | `console` | Local terminal output (default) |
-| `github` | GitHub Actions annotations, shown inline on the PR |
+| `github` | Annotations shown inline on the pull request |
+| `sarif` | GitHub code scanning — the Security tab |
 | `json` | Machine-readable for custom tooling |
 
-`--quiet` shows errors only, and `--manifest <path>` turns on the rules that compare annotations with a generated manifest.
+`--output <path>` writes the report to a file, `--quiet` shows errors only, and `--manifest <path>` turns on the rules that compare annotations with a generated manifest.
+
+## The action
+
+```yaml title=".github/workflows/axag.yml"
+name: AXAG
+
+on: pull_request
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  axag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Generate the manifest
+        run: npx --yes @web-axag/axag-cli generate src --manifest axag-manifest.json --validate
+
+      - uses: axag-cli/axag-sdk/.github/actions/axag-lint@main
+        with:
+          path: src
+          manifest: axag-manifest.json
+          changed-since: origin/${{ github.base_ref }}
+
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: axag-lint.sarif
+```
+
+## Turning it on in an existing codebase
+
+Rules like AXAG-LINT-031 (no accessible name) can fire hundreds of times on a codebase that predates them. A baseline records what is already there, so only new findings fail:
+
+```bash
+npx axag-lint src --update-baseline   # writes .axag-lint-baseline.json
+npx axag-lint src --baseline          # from now on, only new findings
+```
+
+The baseline records rule and file, not line numbers, so unrelated edits don't reset it — and a *new* finding of the same kind in the same file still reports.
+
+`--changed-since origin/main` narrows a run to the files a pull request touched, which pairs well with a baseline while a team works through the backlog.
 
 ## Enforcing Conformance Levels in CI
 
@@ -125,5 +172,7 @@ The `--format` flag controls output format:
 # Fail on annotations below a level (basic | intermediate | full)
 npx axag validate src --level intermediate --strict
 ```
+
+`axag validate` runs the same rules as `axag-lint`, limited to the categories that level asks for: identity, enums, parameters and macro syntax at `basic`; safety, scope and harvesting at `intermediate`; contradictions, manifest cross-references and enforcement at `full`.
 
 `axag validate` exits with code 1 when an annotation misses what the level requires, blocking the pipeline. The manifest also records the level it reached in its `conformance` field, so `axag generate --validate` shows where a codebase stands without failing the build.

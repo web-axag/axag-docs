@@ -6,6 +6,8 @@ slug: /specification/safety-boundaries
 ---
 # Safety Boundaries (Specification)
 
+Safety boundaries are declared in the annotation and enforced in two places: the agent runtime in the page, and the server that receives the call. A declaration alone constrains nothing — an agent holding the page's credentials can call the API directly — so an implementation MUST enforce `confirmation_required`, `approval_required`, `required_roles` and `tenant_boundary` on the server for any action at `high` risk or above. The page's enforcement is what gives a person the chance to refuse; see [Safety Enforcers](/docs/frameworks/safety).
+
 Safety boundaries define the guardrails around operation execution. This section defines the normative requirements for safety declarations.
 
 ## Confirmation Requirements
