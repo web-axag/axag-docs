@@ -29,6 +29,8 @@ The prefix `axag-` is reserved for AXAG annotations. Implementations MUST NOT us
 |-----------|------|-------------|
 | `axag-required-parameters` | `string[]` | JSON array of required parameter names |
 | `axag-optional-parameters` | `string[]` | JSON array of optional parameter names |
+| `axag-params-from` | `string` | `#id` of the form whose controls supply parameters |
+| `axag-schema` | `string` | Schema binding: `zod:<file>#<export>` or `openapi:[<file>#]<operationId>` |
 | `axag-parameter` | `string` | Parameter name (on input elements) |
 | `axag-parameter-type` | `string` | Parameter data type |
 | `axag-parameter-required` | `boolean` | Whether the parameter is required |
@@ -38,6 +40,8 @@ The prefix `axag-` is reserved for AXAG annotations. Implementations MUST NOT us
 | `axag-parameter-min` | `number` | Minimum value |
 | `axag-parameter-max` | `number` | Maximum value |
 | `axag-parameter-pattern` | `string` | Regex pattern for validation |
+| `axag-parameter-min-length` | `number` | Minimum string length |
+| `axag-parameter-max-length` | `number` | Maximum string length |
 
 ## State Attributes
 

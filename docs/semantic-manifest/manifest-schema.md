@@ -65,5 +65,6 @@ The Semantic Manifest is validated by a JSON Schema published at [`/schema/v1.1/
 | `default` | any | No | Value used when omitted |
 | `items` | `object` | No | JSON Schema for array elements (1.1) |
 | `properties` | `object` | No | JSON Schema properties for objects (1.1) |
+| `source` | `enum` | No | `harvested:html`, `zod`, `openapi` — where an undeclared parameter came from (1.1) |
 
 Which optional fields a manifest fills in determines its [conformance level](/docs/specification/conformance-levels).

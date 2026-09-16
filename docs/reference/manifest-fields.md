@@ -51,7 +51,7 @@ Optional fields appear only when the annotation declares them.
 
 ## Parameter Object
 
-Parameters listed by name (`'["query"]'`) become `{ "name": "query", "type": "string" }`. The object form carries types and constraints through unchanged:
+Besides declared parameters, generators add parameters from bound schemas and from form controls; see [Schema Harvesting](/docs/semantic-manifest/schema-harvesting). Parameters listed by name (`'["query"]'`) become `{ "name": "query", "type": "string" }`. The object form carries types and constraints through unchanged:
 
 ```html
 axag-required-parameters='[{"name":"quantity","type":"integer","min":1,"max":99}]'
@@ -70,6 +70,7 @@ axag-required-parameters='[{"name":"quantity","type":"integer","min":1,"max":99}
 | `default` | any | MAY | Value used when omitted |
 | `items` | object | MAY | JSON Schema for array elements |
 | `properties` | object | MAY | JSON Schema properties for objects |
+| `source` | string | MAY | `harvested:html`, `zod` or `openapi` for parameters not declared on the annotation — see [Schema Harvesting](/docs/semantic-manifest/schema-harvesting) |
 
 ## Example Manifest
 

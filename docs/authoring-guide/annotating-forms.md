@@ -6,29 +6,75 @@ slug: /authoring-guide/annotating-forms
 ---
 # Annotating Forms
 
-Forms require annotations on both the submission action and individual input fields.
+Annotate the form once. Its parameters come from the controls it already has: names, `required`, input types, constraints and labels. You only add AXAG attributes for what the markup can't say.
 
-## Form-Level Annotation
-```html title="Lead creation form — full annotation" showLineNumbers
-<form axag-intent="lead.create" axag-entity="lead" axag-action-type="write" axag-scope="tenant">
-  <input axag-parameter="first_name" axag-parameter-type="string" axag-parameter-required="true" />
-  <input axag-parameter="last_name" axag-parameter-type="string" axag-parameter-required="true" />
-  <input axag-parameter="email" axag-parameter-type="string" axag-parameter-required="true"
-    axag-parameter-format="email" />
-  <select axag-parameter="source" axag-parameter-type="enum"
-    axag-parameter-enum='["web","referral","event"]' axag-parameter-required="false">
+## A form with no parameter attributes
+
+```html title="Lead creation form" showLineNumbers
+<form axag="write:lead.create!low?idempotent=false&scope=tenant" axag-description="Create a new sales lead">
+  <label for="first-name">First name</label>
+  <input id="first-name" name="first_name" required maxlength="80">
+  <label for="last-name">Last name</label>
+  <input id="last-name" name="last_name" required maxlength="80">
+  <label for="email">Work email</label>
+  <input id="email" name="email" type="email" required>
+  <label for="source">Lead source</label>
+  <select id="source" name="source">
     <option value="web">Web</option>
     <option value="referral">Referral</option>
     <option value="event">Event</option>
   </select>
-  <button type="submit" axag-risk-level="low" axag-description="Create a new sales lead">
-    Create Lead
-  </button>
+  <button type="submit">Create lead</button>
 </form>
 ```
 
+Generated manifest action:
+
+```json title="axag-manifest.json — lead.create"
+{
+  "intent": "lead.create",
+  "entity": "lead",
+  "action_type": "write",
+  "operation_id": "lead_create",
+  "description": "Create a new sales lead",
+  "required_parameters": [
+    { "name": "first_name", "type": "string", "maxLength": 80, "description": "First name", "source": "harvested:html" },
+    { "name": "last_name", "type": "string", "maxLength": 80, "description": "Last name", "source": "harvested:html" },
+    { "name": "email", "type": "string", "format": "email", "description": "Work email", "source": "harvested:html" }
+  ],
+  "optional_parameters": [
+    { "name": "source", "type": "string", "enum": ["web", "referral", "event"], "description": "Lead source", "source": "harvested:html" }
+  ],
+  "risk_level": "low",
+  "idempotent": false,
+  "scope": "tenant"
+}
+```
+
+See [Schema Harvesting](/docs/semantic-manifest/schema-harvesting) for the full mapping from HTML to parameters.
+
+## Where to put the annotation
+
+- **On the `<form>`** — the usual choice.
+- **On the submit button** — a `<button type="submit">` or `<input type="submit">` uses the form it belongs to, including through `form="form-id"`.
+- **On anything else** — point it at the form with `axag-params-from="#form-id"`.
+
+## Adding what the markup can't say
+
+Use `axag-parameter-*` on a control to override what was harvested, or give a control without a `name` a parameter name:
+
+```html title="Overrides on a control"
+<input name="annual_revenue" inputmode="numeric"
+  axag-parameter-type="number"
+  axag-parameter-min="0"
+  axag-parameter-description="Estimated annual revenue in USD">
+```
+
+If a backend schema already defines the parameters, bind it instead of repeating them. See [Bind Zod or OpenAPI Schemas](/docs/tutorials/bind-schemas).
+
 ## Key Rules
-- The `<form>` element carries intent, entity, and action type
-- Each `<input>`, `<select>`, and `<textarea>` carries parameter metadata
-- The submit button carries risk level and description
-- Validation rules on inputs MUST match declared parameter constraints
+- Every control that is submitted SHOULD have a `name` (or `axag-parameter`); controls without one are reported as **AXAG-LINT-029**.
+- Every control SHOULD have a `<label>`, `aria-label` or `aria-labelledby`; a placeholder is not a label (**AXAG-LINT-032**). The label becomes the parameter description agents read.
+- Name radio and checkbox groups with a `<fieldset>` and `<legend>`, or `role="radiogroup"` with a label.
+- Parameters declared on the annotation (`axag-required-parameters` or `req=`/`opt=` in the macro) take precedence over harvested ones, so use them only when the form doesn't reflect the real contract.
+- Hidden, disabled and file inputs are not harvested.
