@@ -110,6 +110,7 @@ const sidebars: SidebarsConfig = {
         'tool-generation/input-schema-translation',
         'tool-generation/constraints-safety-translation',
         'tool-generation/authorization-identity',
+        'tool-generation/build-time-compilation',
         'tool-generation/tool-registry-generation',
         'tool-generation/generated-examples',
         'tool-generation/runtime-consumption-patterns',

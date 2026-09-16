@@ -69,7 +69,18 @@ With `--validate`, the scan ends with:
 
 Any `AXAG-CORE-*` warnings (invalid enum values, invalid JSON arrays, duplicate intents) are printed with the file and line to fix.
 
-## Step 5: Serve the Manifest
+## Step 5: Or generate it from your bundler
+
+An app with a bundler doesn't need a separate scan step. [`@axag/compiler`](/docs/tool-generation/build-time-compilation) reads the same sources on every build and writes the manifest into the output:
+
+```ts title="vite.config.ts"
+import axag from '@axag/compiler/vite';
+export default { plugins: [axag()] };
+```
+
+`axag scan` and `axag generate` stay useful for CI checks and for pages that aren't part of a bundled app.
+
+## Step 6: Serve the Manifest
 
 Make the manifest discoverable by agents:
 
@@ -88,12 +99,12 @@ Link: </.well-known/axag-manifest.json>; rel="axag-manifest"
 <meta name="axag-manifest" content="/.well-known/axag-manifest.json">
 ```
 
-## Step 6: Automate in CI
+## Step 7: Automate in CI
 
 ```yaml title=".github/workflows/axag.yml" showLineNumbers
 # .github/workflows/axag.yml
 - name: Generate and validate manifest
-  run: npx axag scan src/ --no-interactive --manifest axag-manifest.json --validate
+  run: npx axag generate src --manifest axag-manifest.json --validate
 
 - name: Deploy manifest
   run: cp axag-manifest.json public/.well-known/axag-manifest.json

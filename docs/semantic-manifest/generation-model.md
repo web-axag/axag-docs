@@ -22,13 +22,15 @@ graph LR
 ## Generation Approaches
 
 ### Build-Time Extraction (Recommended)
-A build plugin scans source files (HTML, JSX, TSX, Vue SFC) for `axag-*` attributes and generates the manifest during the build process.
+A bundler plugin reads source files (HTML, JSX, TSX, Vue SFC, Angular templates) and generates the manifest during the build. See [Build-Time Compilation](/docs/tool-generation/build-time-compilation).
 
 ### Runtime Extraction
 A client-side script reads `axag-*` attributes from the live DOM. Useful for dynamic applications where annotations are computed at runtime.
 
 ### Static Analysis
-An AST-based analyzer processes source files without rendering. Most reliable for CI/CD validation.
+An AST-based analyzer processes source files without rendering — `axag generate` in CI, using the same compiler as the bundler plugin. Most reliable for CI/CD validation.
+
+Annotations whose value is only known at runtime (`axag={spec}` built from props) can't be extracted statically. Generators list them under `dynamic_actions` so a runtime knows the manifest is incomplete for that page.
 
 ## Extraction Rules
 1. Scan all elements with any `axag-*` attribute
